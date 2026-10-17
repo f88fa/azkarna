@@ -9,17 +9,17 @@ sealed class Failure {
 }
 
 final class CacheFailure extends Failure {
-  const CacheFailure([super.message = 'Local storage error']);
+  const CacheFailure([super.message = 'خطأ في التخزين المحلي']);
 }
 
 final class ServerFailure extends Failure {
-  const ServerFailure([super.message = 'Server error']);
+  const ServerFailure([super.message = 'خطأ في الخادم']);
 }
 
 final class NetworkFailure extends Failure {
-  const NetworkFailure([super.message = 'No internet connection']);
+  const NetworkFailure([super.message = 'لا يوجد اتصال بالإنترنت']);
 }
 
 final class UnknownFailure extends Failure {
-  const UnknownFailure([super.message = 'Something went wrong']);
+  const UnknownFailure([super.message = 'حدث خطأ ما']);
 }

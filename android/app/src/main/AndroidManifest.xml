@@ -7,7 +7,7 @@
     <!-- Exact alarms: requested at runtime on Android 12+ via the plugin. -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <application
-        android:label="Azkarna"
+        android:label="أذكارنا"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

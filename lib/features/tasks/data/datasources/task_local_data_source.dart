@@ -16,7 +16,7 @@ class SqliteTaskLocalDataSource implements TaskLocalDataSource {
 
   @override
   Future<List<TaskModel>> getTasks() async {
-    final rows = await _db.query(DbTables.tasks, orderBy: 'created_at DESC');
+    final rows = await _db.query(DbTables.tasks, orderBy: 'created_at ASC');
     return rows.map(TaskModel.fromMap).toList();
   }
 

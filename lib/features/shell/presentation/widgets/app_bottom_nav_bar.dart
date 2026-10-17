@@ -63,8 +63,16 @@ class AppBottomNavBar extends StatelessWidget {
                 height: _height,
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: (isDark ? const Color(0xFF1C1C1E) : Colors.white)
-                      .withValues(alpha: isDark ? 0.72 : 0.78),
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      (isDark ? const Color(0xFF2C2C2E) : Colors.white)
+                          .withValues(alpha: isDark ? 0.78 : 0.88),
+                      (isDark ? const Color(0xFF1C1C1E) : Colors.white)
+                          .withValues(alpha: isDark ? 0.66 : 0.66),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(_radius),
                   border: Border.all(
                     color: (isDark ? Colors.white : Colors.black).withValues(
@@ -86,7 +94,12 @@ class AppBottomNavBar extends StatelessWidget {
                           width: itemWidth,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              color: active.withValues(alpha: 0.14),
+                              gradient: LinearGradient(
+                                colors: [
+                                  active.withValues(alpha: 0.20),
+                                  active.withValues(alpha: 0.10),
+                                ],
+                              ),
                               borderRadius: BorderRadius.circular(_radius - 6),
                             ),
                           ),
@@ -161,8 +174,8 @@ class _NavButton extends StatelessWidget {
             AnimatedDefaultTextStyle(
               duration: AppBottomNavBar._duration,
               style: TextStyle(
-                fontSize: 11,
-                letterSpacing: 0.1,
+                fontSize: 12,
+
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 color: color,
               ),

@@ -47,14 +47,12 @@ class _NotificationLifecycleHandlerState
     }
   }
 
-  /// Reload the prayer card when it shows a past day or offline data.
+  /// Reload the prayer card when it shows a past day.
   void _refreshPrayerTimesIfStale() {
     final times = ref.read(prayerTimesProvider);
     final value = times.asData?.value;
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    if (times.hasError ||
-        (value != null && (value.isCached || value.date != today))) {
+    final today = ref.read(prayerLocationProvider).today();
+    if (times.hasError || (value != null && value.date != today)) {
       ref.invalidate(prayerTimesProvider);
     }
   }
@@ -82,5 +80,11 @@ class _NotificationLifecycleHandlerState
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) {
+    // Re-schedule the Adhan notifications whenever a manual offset changes.
+    ref.listen(prayerOffsetsProvider, (previous, next) {
+      if (previous != next) _sync();
+    });
+    return widget.child;
+  }
 }

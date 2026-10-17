@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/utils/arabic_format.dart';
+import '../../../../core/widgets/glass_card.dart';
 import '../../domain/entities/adhkar_category.dart';
 
 class DhikrCounterCard extends StatelessWidget {
@@ -20,27 +22,21 @@ class DhikrCounterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final primary = theme.colorScheme.primary;
     final secondary = theme.colorScheme.onSurface.withValues(alpha: 0.55);
 
-    return AnimatedContainer(
+    return AnimatedOpacity(
       duration: const Duration(milliseconds: 300),
-      decoration: BoxDecoration(
-        color: _done
-            ? primary.withValues(alpha: 0.1)
-            : theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(24),
+      opacity: _done ? 0.6 : 1,
+      child: GlassCard(
+        radius: 24,
         onTap: _done
             ? null
             : () {
                 HapticFeedback.lightImpact();
                 onTap();
               },
-        child: Padding(
-          padding: const EdgeInsets.all(20),
+        child: SizedBox(
+          width: double.infinity,
           child: Column(
             children: [
               Text(
@@ -49,19 +45,13 @@ class DhikrCounterCard extends StatelessWidget {
                 textDirection: TextDirection.rtl,
                 style: const TextStyle(fontSize: 24, height: 1.9),
               ),
-              if (dhikr.translation.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  dhikr.translation,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: secondary),
-                ),
-              ],
               if (dhikr.reference.isNotEmpty) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Text(
-                  dhikr.reference,
-                  style: theme.textTheme.labelSmall?.copyWith(color: secondary),
+                  'رواه ${arabicReference(dhikr.reference)}',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: secondary,
+                  ),
                 ),
               ],
               const SizedBox(height: 16),
@@ -118,7 +108,7 @@ class _CounterBadge extends StatelessWidget {
                     color: primary,
                   )
                 : Text(
-                    '$current/$target',
+                    '${arNum(current)}/${arNum(target)}',
                     key: ValueKey(current),
                     style: const TextStyle(
                       fontSize: 16,
@@ -130,4 +120,21 @@ class _CounterBadge extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Arabic names for the hadith sources used in the adhkar data.
+String arabicReference(String reference) {
+  const names = {
+    'Al-Bukhari': 'البخاري',
+    'Muslim': 'مسلم',
+    'Abu Dawud': 'أبو داود',
+    'At-Tirmidhi': 'الترمذي',
+    'An-Nasa\'i': 'النسائي',
+    'Ibn Majah': 'ابن ماجه',
+    'Ahmad': 'أحمد',
+  };
+  return reference
+      .split(',')
+      .map((part) => names[part.trim()] ?? part.trim())
+      .join('، ');
 }

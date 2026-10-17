@@ -17,23 +17,23 @@ class ErrorInfo {
   factory ErrorInfo.from(Object error) => switch (error) {
     NetworkFailure() => const ErrorInfo(
       icon: Icons.wifi_off_rounded,
-      title: "You're offline",
-      message: 'Check your internet connection and try again.',
+      title: 'لا يوجد اتصال بالإنترنت',
+      message: 'تحقق من اتصالك بالإنترنت ثم حاول مرة أخرى.',
     ),
     ServerFailure() => const ErrorInfo(
       icon: Icons.cloud_off_rounded,
-      title: 'Service unavailable',
-      message: 'We could not reach the server. Please try again shortly.',
+      title: 'الخدمة غير متاحة',
+      message: 'تعذّر الوصول إلى الخادم. حاول مرة أخرى بعد قليل.',
     ),
     CacheFailure() => const ErrorInfo(
       icon: Icons.storage_rounded,
-      title: 'Data unavailable',
-      message: 'We could not read data stored on this device.',
+      title: 'البيانات غير متاحة',
+      message: 'تعذّرت قراءة البيانات المخزّنة على هذا الجهاز.',
     ),
     _ => const ErrorInfo(
       icon: Icons.error_outline_rounded,
-      title: 'Something went wrong',
-      message: 'An unexpected error occurred. Please try again.',
+      title: 'حدث خطأ ما',
+      message: 'حدث خطأ غير متوقع. حاول مرة أخرى.',
     ),
   };
 }
@@ -90,7 +90,7 @@ class ErrorView extends StatelessWidget {
               FilledButton.tonalIcon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Try again'),
+                label: const Text('إعادة المحاولة'),
               ),
             ],
           ],

@@ -1,16 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/arabic_format.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/glass_card.dart';
 import '../../domain/entities/prayer_times.dart';
 import '../providers/prayer_times_providers.dart';
-
-const _gradient = LinearGradient(
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-  colors: [Color(0xFF0A7C66), Color(0xFF064E40)],
-);
 
 class PrayerTimesCard extends ConsumerWidget {
   const PrayerTimesCard({super.key});
@@ -23,23 +21,12 @@ class PrayerTimesCard extends ConsumerWidget {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOutCubic,
       alignment: Alignment.topCenter,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: _gradient,
-          borderRadius: BorderRadius.circular(28),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0A7C66).withValues(alpha: 0.28),
-              blurRadius: 24,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
+      child: GlassCard(
+        tint: AppColors.primary,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 250),
           child: state.when(
+            skipLoadingOnReload: true,
             loading: () => const _Loading(key: ValueKey('loading')),
             error: (error, _) => _Error(
               key: const ValueKey('error'),
@@ -55,15 +42,53 @@ class PrayerTimesCard extends ConsumerWidget {
   }
 }
 
-class _Content extends StatelessWidget {
+class _Content extends ConsumerStatefulWidget {
   const _Content({super.key, required this.times});
 
   final PrayerTimes times;
 
   @override
+  ConsumerState<_Content> createState() => _ContentState();
+}
+
+class _ContentState extends ConsumerState<_Content> {
+  Timer? _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      final now = widget.times.wallClockNow;
+      final today = DateTime(now.year, now.month, now.day);
+      if (today != widget.times.date) {
+        // A new day started: recompute the schedule.
+        ref.invalidate(prayerTimesProvider);
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  String _countdown(Duration d) {
+    final h = d.inHours;
+    final m = d.inMinutes.remainder(60);
+    final s = d.inSeconds.remainder(60);
+    return '${arTwo(h)}:${arTwo(m)}:${arTwo(s)}';
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final next = times.nextPrayer(DateTime.now());
-    final dateLabel = DateFormat('EEEE, d MMM').format(times.date);
+    final times = widget.times;
+    final now = times.wallClockNow;
+    final next = times.nextPrayer(now);
+    final dateLabel = arDate('EEEE، d MMMM', times.date);
+    final remaining = next == null ? null : times.times[next]!.difference(now);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,22 +109,43 @@ class _Content extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white70,
                   fontSize: 13,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            if (times.isCached) const _OfflineBadge(),
+            const _MethodBadge(),
           ],
         ),
         const SizedBox(height: 14),
-        Text(
-          next == null ? 'Prayers completed' : 'Next: ${next.label}',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 26,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.5,
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Text(
+                next == null
+                    ? 'انتهت صلوات اليوم'
+                    : 'الصلاة القادمة: ${next.label}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            if (remaining != null)
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Text(
+                  _countdown(remaining),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    fontFeatures: [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: 2),
         Text(
@@ -117,6 +163,29 @@ class _Content extends StatelessWidget {
   }
 }
 
+class _MethodBadge extends StatelessWidget {
+  const _MethodBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: const Text(
+        'أم القرى',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
 class _Row extends StatelessWidget {
   const _Row({required this.prayers, required this.times, required this.next});
 
@@ -126,7 +195,6 @@ class _Row extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final format = DateFormat('h:mm a');
     return Row(
       children: [
         for (var i = 0; i < prayers.length; i++) ...[
@@ -134,7 +202,7 @@ class _Row extends StatelessWidget {
           Expanded(
             child: _Tile(
               label: prayers[i].label,
-              time: format.format(times.times[prayers[i]]!),
+              time: arTime(times.times[prayers[i]]!),
               highlighted: prayers[i] == next,
             ),
           ),
@@ -162,9 +230,10 @@ class _Tile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         color: highlighted
-            ? Colors.white
-            : Colors.white.withValues(alpha: 0.12),
+            ? Colors.white.withValues(alpha: 0.95)
+            : Colors.white.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
       ),
       child: Column(
         children: [
@@ -173,7 +242,7 @@ class _Tile extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: highlighted ? const Color(0xFF0A7C66) : Colors.white70,
+              color: highlighted ? AppColors.primary : Colors.white70,
             ),
           ),
           const SizedBox(height: 4),
@@ -182,9 +251,9 @@ class _Tile extends StatelessWidget {
             child: Text(
               time,
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: highlighted ? const Color(0xFF064E40) : Colors.white,
+                color: highlighted ? AppColors.primaryDeep : Colors.white,
               ),
             ),
           ),
@@ -210,36 +279,6 @@ class _Loading extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _OfflineBadge extends StatelessWidget {
-  const _OfflineBadge();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.wifi_off_rounded, size: 12, color: Colors.white),
-          SizedBox(width: 4),
-          Text(
-            'Offline',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -280,7 +319,7 @@ class _Error extends StatelessWidget {
             onPressed: onRetry,
             style: TextButton.styleFrom(foregroundColor: Colors.white),
             icon: const Icon(Icons.refresh_rounded, size: 18),
-            label: const Text('Try again'),
+            label: const Text('إعادة المحاولة'),
           ),
         ],
       ),

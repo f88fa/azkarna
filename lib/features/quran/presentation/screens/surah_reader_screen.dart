@@ -7,6 +7,8 @@ import '../../../khatmah/presentation/providers/khatmah_providers.dart';
 import '../../domain/entities/surah.dart';
 import '../providers/quran_providers.dart';
 import '../../../../core/layout/layout.dart';
+import '../../../../core/utils/arabic_format.dart';
+import '../widgets/surah_tile.dart' show revelationTypeAr;
 import '../../../../core/widgets/error_view.dart';
 
 class SurahReaderScreen extends ConsumerStatefulWidget {
@@ -57,7 +59,7 @@ class _SurahReaderScreenState extends ConsumerState<SurahReaderScreen> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('Reading position saved · Ayah $ayah'),
+          content: Text('تم حفظ موضع القراءة · الآية ${arNum(ayah)}'),
           duration: const Duration(seconds: 1),
           behavior: SnackBarBehavior.floating,
         ),
@@ -75,7 +77,7 @@ class _SurahReaderScreenState extends ConsumerState<SurahReaderScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          surah.asData?.value.englishName ?? 'Surah ${widget.surahNumber}',
+          surah.asData?.value.name ?? 'سورة ${arNum(widget.surahNumber)}',
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
         centerTitle: true,
@@ -149,7 +151,7 @@ class _Reader extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${surah.revelationType} · ${surah.ayahCount} ayahs',
+                  '${revelationTypeAr(surah.revelationType)} · ${arNum(surah.ayahCount)} آيات',
                   style: theme.textTheme.bodySmall,
                 ),
               ],
@@ -219,7 +221,7 @@ class _AyahItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        '${ayah.number}',
+                        arNum(ayah.number),
                         style: TextStyle(
                           color: primary,
                           fontSize: 12,
@@ -236,7 +238,7 @@ class _AyahItem extends StatelessWidget {
                 Text(
                   ayah.text,
                   textDirection: TextDirection.rtl,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.justify,
                   style: const TextStyle(fontSize: 26, height: 2),
                 ),
               ],

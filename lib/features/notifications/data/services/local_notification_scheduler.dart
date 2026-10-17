@@ -21,8 +21,8 @@ class LocalNotificationScheduler implements NotificationScheduler {
   static const NotificationDetails _adhanDetails = NotificationDetails(
     android: AndroidNotificationDetails(
       'adhan',
-      'Prayer times',
-      channelDescription: 'Adhan alerts at each prayer time',
+      'مواقيت الصلاة',
+      channelDescription: 'تنبيهات الأذان عند كل صلاة',
       importance: Importance.max,
       priority: Priority.high,
       category: AndroidNotificationCategory.alarm,
@@ -37,8 +37,8 @@ class LocalNotificationScheduler implements NotificationScheduler {
   static const NotificationDetails _khatmahDetails = NotificationDetails(
     android: AndroidNotificationDetails(
       'khatmah',
-      'Khatmah reminder',
-      channelDescription: 'Daily Quran reading reminder',
+      'تذكير الختمة',
+      channelDescription: 'تذكير يومي بقراءة وردك من القرآن',
       importance: Importance.high,
       priority: Priority.defaultPriority,
     ),
@@ -124,8 +124,8 @@ class LocalNotificationScheduler implements NotificationScheduler {
 
         await _schedule(
           id: _adhanIdBase + dayIndex * _idsPerDay + i,
-          title: prayer.label,
-          body: 'It is time for ${prayer.label} prayer · ${day.location}',
+          title: 'حان وقت صلاة ${prayer.label}',
+          body: 'حان الآن موعد أذان ${prayer.label} · ${day.location}',
           when: when,
           details: _adhanDetails,
         );
@@ -156,8 +156,8 @@ class LocalNotificationScheduler implements NotificationScheduler {
 
     await _schedule(
       id: _khatmahId,
-      title: 'Daily Khatmah',
-      body: 'Take a few minutes to read your daily Quran goal.',
+      title: 'الختمة اليومية',
+      body: 'خصّص دقائق لقراءة وردك اليومي من القرآن الكريم.',
       when: when,
       details: _khatmahDetails,
       repeatDaily: true,

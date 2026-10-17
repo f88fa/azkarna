@@ -1,75 +1,70 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class SettingsGroup extends StatelessWidget {
-  const SettingsGroup({super.key, required this.title, required this.children});
+import '../../../../core/utils/arabic_format.dart';
 
-  final String title;
-  final List<Widget> children;
+/// Colorful icon inside a soft rounded square (iOS Settings style).
+class SettingsIcon extends StatelessWidget {
+  const SettingsIcon({super.key, required this.icon, required this.color});
+
+  final IconData icon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 8, bottom: 8),
-          child: Text(
-            title.toUpperCase(),
-            style: theme.textTheme.labelSmall?.copyWith(
-              letterSpacing: 0.8,
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
-            ),
-          ),
+    return Container(
+      width: 30,
+      height: 30,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [color.withValues(alpha: 0.85), color],
         ),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            color: theme.colorScheme.surface,
-            child: Column(
-              children: [
-                for (var i = 0; i < children.length; i++) ...[
-                  if (i > 0)
-                    Divider(
-                      height: 1,
-                      indent: 62,
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.08,
-                      ),
-                    ),
-                  children[i],
-                ],
-              ],
-            ),
-          ),
-        ),
-      ],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(icon, size: 18, color: Colors.white),
     );
   }
 }
 
-class _LeadingIcon extends StatelessWidget {
-  const _LeadingIcon({required this.icon, required this.enabled});
+/// iOS-style inset grouped section.
+class SettingsSection extends StatelessWidget {
+  const SettingsSection({
+    super.key,
+    this.title,
+    this.footer,
+    required this.children,
+  });
 
-  final IconData icon;
-  final bool enabled;
+  final String? title;
+  final String? footer;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
-    return Opacity(
-      opacity: enabled ? 1 : 0.4,
-      child: Container(
-        width: 34,
-        height: 34,
-        decoration: BoxDecoration(
-          color: primary.withValues(alpha: 0.14),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Icon(icon, size: 20, color: primary),
-      ),
+    final muted = Theme.of(
+      context,
+    ).colorScheme.onSurface.withValues(alpha: 0.55);
+
+    return CupertinoListSection.insetGrouped(
+      backgroundColor: Colors.transparent,
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+      header: title == null
+          ? null
+          : Text(
+              title!,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: muted,
+              ),
+            ),
+      footer: footer == null
+          ? null
+          : Text(footer!, style: TextStyle(fontSize: 12.5, color: muted)),
+      children: children,
     );
   }
 }
@@ -78,6 +73,7 @@ class SettingsSwitchTile extends StatelessWidget {
   const SettingsSwitchTile({
     super.key,
     required this.icon,
+    required this.color,
     required this.title,
     required this.subtitle,
     required this.value,
@@ -85,6 +81,7 @@ class SettingsSwitchTile extends StatelessWidget {
   });
 
   final IconData icon;
+  final Color color;
   final String title;
   final String subtitle;
   final bool value;
@@ -92,19 +89,17 @@ class SettingsSwitchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      leading: _LeadingIcon(icon: icon, enabled: true),
+    return CupertinoListTile(
+      leadingSize: 30,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 11, 16, 11),
+      leading: SettingsIcon(icon: icon, color: color),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: Text(
-        subtitle,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.55),
-        ),
+      subtitle: Text(subtitle),
+      trailing: CupertinoSwitch(
+        value: value,
+        activeTrackColor: Theme.of(context).colorScheme.primary,
+        onChanged: onChanged,
       ),
-      trailing: Switch.adaptive(value: value, onChanged: onChanged),
       onTap: () => onChanged(!value),
     );
   }
@@ -114,42 +109,123 @@ class SettingsValueTile extends StatelessWidget {
   const SettingsValueTile({
     super.key,
     required this.icon,
+    required this.color,
     required this.title,
     required this.value,
-    required this.onTap,
+    this.onTap,
     this.enabled = true,
   });
 
   final IconData icon;
+  final Color color;
   final String title;
   final String value;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final bool enabled;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final muted = theme.colorScheme.onSurface.withValues(alpha: 0.5);
+    return Opacity(
+      opacity: enabled ? 1 : 0.4,
+      child: CupertinoListTile(
+        leadingSize: 30,
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 12),
+        leading: SettingsIcon(icon: icon, color: color),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+        additionalInfo: Text(value),
+        trailing: onTap == null ? null : const CupertinoListTileChevron(),
+        onTap: enabled ? onTap : null,
+      ),
+    );
+  }
+}
 
-    return ListTile(
-      enabled: enabled,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      leading: _LeadingIcon(icon: icon, enabled: enabled),
+/// Row with a `- value +` stepper, used for per-prayer minute offsets.
+class SettingsOffsetTile extends StatelessWidget {
+  const SettingsOffsetTile({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.minutes,
+    required this.onChange,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final int minutes;
+  final ValueChanged<int> onChange;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoListTile(
+      leadingSize: 30,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 10, 12, 10),
+      leading: SettingsIcon(icon: icon, color: color),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-      trailing: Row(
+      subtitle: Text(subtitle),
+      trailing: _Stepper(minutes: minutes, onChange: onChange),
+    );
+  }
+}
+
+class _Stepper extends StatelessWidget {
+  const _Stepper({required this.minutes, required this.onChange});
+
+  final int minutes;
+  final ValueChanged<int> onChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final active = minutes != 0;
+
+    Widget button(IconData icon, int delta, String label) => Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onChange(delta);
+        },
+        child: SizedBox(
+          width: 34,
+          height: 34,
+          child: Icon(icon, size: 19, color: theme.colorScheme.primary),
+        ),
+      ),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            value,
-            style: TextStyle(
-              color: enabled ? theme.colorScheme.primary : muted,
-              fontWeight: FontWeight.w600,
+          button(Icons.add_rounded, 1, 'زيادة دقيقة'),
+          SizedBox(
+            width: 52,
+            child: Text(
+              active ? '${arSigned(minutes)} د' : '٠ د',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: active
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurface.withValues(alpha: 0.5),
+              ),
             ),
           ),
-          Icon(Icons.chevron_right_rounded, color: muted),
+          button(Icons.remove_rounded, -1, 'إنقاص دقيقة'),
         ],
       ),
-      onTap: enabled ? onTap : null,
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../constants/app_constants.dart';
 import 'app_colors.dart';
 
 abstract final class AppTheme {
@@ -25,7 +26,13 @@ abstract final class AppTheme {
       brightness: brightness,
     ).copyWith(primary: primary, surface: surface);
 
-    final base = ThemeData(brightness: brightness, useMaterial3: true);
+    // The font family is applied to every text style (and therefore to all
+    // Material widgets) through the text theme.
+    final base = ThemeData(
+      brightness: brightness,
+      useMaterial3: true,
+      fontFamily: AppConstants.fontFamily,
+    );
 
     return base.copyWith(
       colorScheme: scheme,
@@ -38,13 +45,38 @@ abstract final class AppTheme {
           TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         },
       ),
-      textTheme: base.textTheme.apply(bodyColor: label, displayColor: label),
+      textTheme: base.textTheme.apply(
+        bodyColor: label,
+        displayColor: label,
+        fontFamily: AppConstants.fontFamily,
+      ),
+      primaryTextTheme: base.primaryTextTheme.apply(
+        fontFamily: AppConstants.fontFamily,
+      ),
+      cupertinoOverrideTheme: CupertinoThemeData(
+        brightness: brightness,
+        primaryColor: primary,
+        scaffoldBackgroundColor: background,
+        textTheme: CupertinoTextThemeData(
+          textStyle: TextStyle(
+            fontFamily: AppConstants.fontFamily,
+            fontSize: 17,
+            color: label,
+          ),
+        ),
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
+        titleTextStyle: TextStyle(
+          fontFamily: AppConstants.fontFamily,
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: label,
+        ),
         systemOverlayStyle: isDark
             ? SystemUiOverlayStyle.light
             : SystemUiOverlayStyle.dark,

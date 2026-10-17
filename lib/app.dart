@@ -22,12 +22,18 @@ class AzkarnaApp extends ConsumerWidget {
         darkTheme: AppTheme.dark,
         themeMode: ThemeMode.system,
         routerConfig: router,
+        // Arabic-first: a single locale, always right-to-left.
+        locale: AppConstants.locale,
         supportedLocales: AppConstants.supportedLocales,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
+        builder: (context, child) => Directionality(
+          textDirection: TextDirection.rtl,
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
     );
   }

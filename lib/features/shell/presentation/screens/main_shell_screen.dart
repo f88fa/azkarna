@@ -11,22 +11,22 @@ class MainShellScreen extends StatelessWidget {
 
   static const List<AppNavItem> _items = [
     AppNavItem(
-      label: 'Tasks',
+      label: 'المهام',
       icon: Icons.check_circle_outline_rounded,
       activeIcon: Icons.check_circle_rounded,
     ),
     AppNavItem(
-      label: 'Quran',
+      label: 'القرآن',
       icon: Icons.menu_book_outlined,
       activeIcon: Icons.menu_book_rounded,
     ),
     AppNavItem(
-      label: 'Adhkar',
+      label: 'الأذكار',
       icon: Icons.auto_awesome_outlined,
       activeIcon: Icons.auto_awesome_rounded,
     ),
     AppNavItem(
-      label: 'Settings',
+      label: 'الإعدادات',
       icon: Icons.settings_outlined,
       activeIcon: Icons.settings_rounded,
     ),

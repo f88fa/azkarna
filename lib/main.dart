@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
@@ -19,6 +21,9 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  await initializeDateFormatting('ar');
+  Intl.defaultLocale = 'ar';
 
   final prefs = await SharedPreferences.getInstance();
   final scheduler = LocalNotificationScheduler();

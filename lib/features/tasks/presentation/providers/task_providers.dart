@@ -34,15 +34,19 @@ class TasksNotifier extends AsyncNotifier<List<Task>> {
     return repository.getTasks();
   }
 
-  Future<void> add(String title) async {
+  /// Adds a task to [dueDate] (defaults to the selected day). Throws if the
+  /// task could not be saved so callers can show an error.
+  Future<void> add(String title, {DateTime? dueDate}) async {
     final trimmed = title.trim();
     if (trimmed.isEmpty) return;
     final repository = await _repository;
+    final now = DateTime.now();
     await repository.saveTask(
       Task(
-        id: DateTime.now().microsecondsSinceEpoch.toString(),
+        id: now.microsecondsSinceEpoch.toString(),
         title: trimmed,
-        createdAt: DateTime.now(),
+        createdAt: now,
+        dueDate: dateOnly(dueDate ?? ref.read(selectedTaskDateProvider)),
       ),
     );
     state = AsyncData(await repository.getTasks());
@@ -60,3 +64,33 @@ class TasksNotifier extends AsyncNotifier<List<Task>> {
     state = AsyncData(await repository.getTasks());
   }
 }
+
+/// Day currently shown in the weekly calendar strip.
+final selectedTaskDateProvider =
+    NotifierProvider<SelectedTaskDateNotifier, DateTime>(
+      SelectedTaskDateNotifier.new,
+    );
+
+class SelectedTaskDateNotifier extends Notifier<DateTime> {
+  @override
+  DateTime build() => dateOnly(DateTime.now());
+
+  void select(DateTime day) => state = dateOnly(day);
+}
+
+/// Tasks of the selected day.
+final selectedDayTasksProvider = Provider<AsyncValue<List<Task>>>((ref) {
+  final day = ref.watch(selectedTaskDateProvider);
+  return ref
+      .watch(tasksProvider)
+      .whenData((all) => all.where((t) => isSameDay(t.dueDate, day)).toList());
+});
+
+/// Days that still have unfinished tasks (for the calendar strip dots).
+final pendingTaskDaysProvider = Provider<Set<DateTime>>((ref) {
+  final all = ref.watch(tasksProvider).asData?.value ?? const <Task>[];
+  return {
+    for (final t in all)
+      if (!t.isCompleted) dateOnly(t.dueDate),
+  };
+});

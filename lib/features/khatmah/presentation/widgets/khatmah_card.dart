@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_routes.dart';
+import '../../../../core/utils/arabic_format.dart';
+import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/widgets/gradient_progress_bar.dart';
 import '../../../quran/presentation/providers/quran_providers.dart';
 import '../../domain/entities/khatmah_progress.dart';
 import '../providers/khatmah_providers.dart';
@@ -23,72 +26,80 @@ class KhatmahCard extends ConsumerWidget {
         final bookmark = data.bookmark;
         String? surahName;
         if (bookmark != null) {
-          surahName = 'Surah ${bookmark.surahNumber}';
+          surahName = 'سورة ${arNum(bookmark.surahNumber)}';
           for (final s in surahs ?? const []) {
-            if (s.number == bookmark.surahNumber) surahName = s.englishName;
+            if (s.number == bookmark.surahNumber) surahName = 'سورة ${s.name}';
           }
         }
+        final percent = (data.todayFraction * 100).round();
+        final secondary = theme.colorScheme.onSurface.withValues(alpha: 0.6);
 
-        return Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(28),
-          ),
+        return GlassCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Icon(
-                    Icons.bookmark_rounded,
-                    color: theme.colorScheme.primary,
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.bookmark_rounded,
+                      size: 20,
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 10),
                   Text(
-                    'Khatmah',
+                    'الختمة',
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                   const Spacer(),
                   TextButton(
                     onPressed: () => _editTarget(context, ref, data),
-                    child: Text('Goal: ${data.dailyTarget}/day'),
+                    child: Text('الهدف: ${arNum(data.dailyTarget)} آية يوميًا'),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
               Text(
                 bookmark == null
-                    ? 'Start reading to save your place'
-                    : '$surahName · Ayah ${bookmark.ayahNumber}',
+                    ? 'ابدأ القراءة لحفظ موضعك'
+                    : '$surahName · الآية ${arNum(bookmark.ayahNumber)}',
                 style: theme.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 14),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0, end: data.todayFraction),
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeOutCubic,
-                  builder: (context, value, _) => LinearProgressIndicator(
-                    value: value,
-                    minHeight: 8,
-                    backgroundColor: theme.colorScheme.primary.withValues(
-                      alpha: 0.12,
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Text(
+                    'ورد اليوم',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: secondary,
                     ),
                   ),
-                ),
+                  const Spacer(),
+                  Text(
+                    '${arNum(percent)}٪',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 6),
+              GradientProgressBar(value: data.todayFraction),
+              const SizedBox(height: 6),
               Text(
-                'Today: ${data.todayRead} / ${data.dailyTarget} ayahs',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.55),
-                ),
+                'قرأت ${arNum(data.todayRead)} من ${arNum(data.dailyTarget)} آية',
+                style: theme.textTheme.bodySmall?.copyWith(color: secondary),
               ),
               const SizedBox(height: 14),
               SizedBox(
@@ -109,7 +120,9 @@ class KhatmahCard extends ConsumerWidget {
                     ),
                   ),
                   icon: const Icon(Icons.menu_book_rounded),
-                  label: Text(bookmark == null ? 'Start reading' : 'Resume'),
+                  label: Text(
+                    bookmark == null ? 'ابدأ القراءة' : 'متابعة القراءة',
+                  ),
                 ),
               ),
             ],
@@ -126,6 +139,7 @@ class KhatmahCard extends ConsumerWidget {
   ) async {
     final result = await showModalBottomSheet<int>(
       context: context,
+      useRootNavigator: true,
       showDragHandle: true,
       builder: (_) => _TargetSheet(initial: progress.dailyTarget),
     );
@@ -161,7 +175,7 @@ class _TargetSheetState extends State<_TargetSheet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Daily reading goal',
+              'الهدف اليومي للقراءة',
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
               ),
@@ -171,26 +185,26 @@ class _TargetSheetState extends State<_TargetSheet> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton.filledTonal(
-                  onPressed: () => _change(-5),
-                  icon: const Icon(Icons.remove_rounded),
+                  onPressed: () => _change(5),
+                  icon: const Icon(Icons.add_rounded),
                 ),
                 SizedBox(
                   width: 120,
                   child: Column(
                     children: [
                       Text(
-                        '$_value',
+                        arNum(_value),
                         style: theme.textTheme.displaySmall?.copyWith(
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const Text('ayahs / day'),
+                      const Text('آية / يوم'),
                     ],
                   ),
                 ),
                 IconButton.filledTonal(
-                  onPressed: () => _change(5),
-                  icon: const Icon(Icons.add_rounded),
+                  onPressed: () => _change(-5),
+                  icon: const Icon(Icons.remove_rounded),
                 ),
               ],
             ),
@@ -199,7 +213,7 @@ class _TargetSheetState extends State<_TargetSheet> {
               width: double.infinity,
               child: FilledButton(
                 onPressed: () => Navigator.of(context).pop(_value),
-                child: const Text('Save'),
+                child: const Text('حفظ'),
               ),
             ),
           ],
