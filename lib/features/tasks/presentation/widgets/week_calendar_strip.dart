@@ -5,26 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/arabic_format.dart';
 import '../../domain/entities/task.dart';
 import '../providers/task_providers.dart';
+import 'calendar_utils.dart';
 
-const _weekdayNames = {
-  DateTime.saturday: 'السبت',
-  DateTime.sunday: 'الأحد',
-  DateTime.monday: 'الاثنين',
-  DateTime.tuesday: 'الثلاثاء',
-  DateTime.wednesday: 'الأربعاء',
-  DateTime.thursday: 'الخميس',
-  DateTime.friday: 'الجمعة',
-};
-
-/// First day (Saturday) of the week containing [day].
-DateTime startOfWeek(DateTime day) {
-  final d = dateOnly(day);
-  return DateTime(d.year, d.month, d.day - ((d.weekday + 1) % 7));
-}
-
-/// Swipeable weekly calendar strip used to switch the task day.
+/// Swipeable one-week strip used to switch the task day.
 class WeekCalendarStrip extends ConsumerStatefulWidget {
-  const WeekCalendarStrip({super.key});
+  const WeekCalendarStrip({super.key, required this.tasks});
+
+  final List<Task> tasks;
 
   @override
   ConsumerState<WeekCalendarStrip> createState() => _WeekCalendarStripState();
@@ -68,9 +55,7 @@ class _WeekCalendarStripState extends ConsumerState<WeekCalendarStrip> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final selected = ref.watch(selectedTaskDateProvider);
-    final pending = ref.watch(pendingTaskDaysProvider);
     final today = dateOnly(DateTime.now());
 
     // Keep the strip in sync when the day is changed from elsewhere.
@@ -85,68 +70,37 @@ class _WeekCalendarStripState extends ConsumerState<WeekCalendarStrip> {
       }
     });
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            children: [
-              Text(
-                arDate('MMMM yyyy', selected),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const Spacer(),
-              AnimatedOpacity(
-                opacity: isSameDay(selected, today) ? 0 : 1,
-                duration: const Duration(milliseconds: 200),
-                child: TextButton(
-                  onPressed: isSameDay(selected, today)
-                      ? null
-                      : () => ref
-                            .read(selectedTaskDateProvider.notifier)
-                            .select(today),
-                  child: const Text('اليوم'),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 84,
-          child: PageView.builder(
-            controller: _controller,
-            itemBuilder: (context, page) {
-              final start = _weekForPage(page);
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  children: [
-                    for (var i = 0; i < 7; i++)
-                      Expanded(
-                        child: _DayCell(
-                          day: DateTime(start.year, start.month, start.day + i),
-                          selected: selected,
-                          today: today,
-                          hasPending: pending.contains(
-                            DateTime(start.year, start.month, start.day + i),
-                          ),
-                          onTap: (d) {
-                            HapticFeedback.selectionClick();
-                            ref
-                                .read(selectedTaskDateProvider.notifier)
-                                .select(d);
-                          },
-                        ),
+    return SizedBox(
+      height: 84,
+      child: PageView.builder(
+        controller: _controller,
+        itemBuilder: (context, page) {
+          final start = _weekForPage(page);
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              children: [
+                for (var i = 0; i < 7; i++)
+                  Expanded(
+                    child: _DayCell(
+                      day: DateTime(start.year, start.month, start.day + i),
+                      selected: selected,
+                      today: today,
+                      hasPending: dayHasPending(
+                        widget.tasks,
+                        DateTime(start.year, start.month, start.day + i),
                       ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+                      onTap: (d) {
+                        HapticFeedback.selectionClick();
+                        ref.read(selectedTaskDateProvider.notifier).select(d);
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -183,7 +137,7 @@ class _DayCell extends StatelessWidget {
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              _weekdayNames[day.weekday]!,
+              weekdayNamesAr[day.weekday]!,
               style: TextStyle(
                 fontSize: 11.5,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,

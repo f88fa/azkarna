@@ -15,6 +15,10 @@ IconData adhkarCategoryIcon(String id) => switch (id) {
   'evening' => Icons.nights_stay_rounded,
   'after_prayer' => Icons.mosque_rounded,
   'sleep' => Icons.bedtime_rounded,
+  'wake_up' => Icons.alarm_rounded,
+  'daily' => Icons.home_rounded,
+  'quran_duas' => Icons.menu_book_rounded,
+  customAdhkarCategoryId => Icons.favorite_rounded,
   _ => Icons.auto_awesome_rounded,
 };
 
@@ -23,6 +27,10 @@ Color adhkarCategoryColor(String id) => switch (id) {
   'evening' => AppColors.indigo,
   'after_prayer' => AppColors.teal,
   'sleep' => AppColors.purple,
+  'wake_up' => AppColors.amber,
+  'daily' => AppColors.primary,
+  'quran_duas' => AppColors.blue,
+  customAdhkarCategoryId => AppColors.pink,
   _ => AppColors.blue,
 };
 
@@ -113,7 +121,10 @@ class _CategoryTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${arNum(category.adhkar.length)} أذكار',
+                  category.id == customAdhkarCategoryId &&
+                          category.adhkar.isEmpty
+                      ? 'أضف أذكارك الخاصة'
+                      : '${arNum(category.adhkar.length)} أذكار',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.55),
                   ),

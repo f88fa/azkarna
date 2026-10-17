@@ -1,18 +1,26 @@
 import '../../domain/entities/surah.dart';
 
 class AyahModel extends Ayah {
-  const AyahModel({required super.number, required super.text});
+  const AyahModel({
+    required super.number,
+    required super.text,
+    required super.page,
+    required super.juz,
+  });
 
+  /// Compact asset format: `{n: number, t: text, p: page, j: juz}`.
   factory AyahModel.fromJson(Object? json) {
     if (json is! Map<String, dynamic>) {
       throw const FormatException('Invalid ayah');
     }
-    final number = json['number'];
-    final text = json['text'];
-    if (number is! int || text is! String) {
+    final number = json['n'];
+    final text = json['t'];
+    final page = json['p'];
+    final juz = json['j'];
+    if (number is! int || text is! String || page is! int || juz is! int) {
       throw const FormatException('Invalid ayah fields');
     }
-    return AyahModel(number: number, text: text);
+    return AyahModel(number: number, text: text, page: page, juz: juz);
   }
 }
 

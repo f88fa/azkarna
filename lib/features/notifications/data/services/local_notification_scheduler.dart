@@ -5,6 +5,7 @@ import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
 import '../../../prayer_times/domain/entities/prayer_times.dart';
+import '../../../tasks/domain/entities/task.dart';
 import '../../domain/entities/notification_settings.dart';
 import '../../domain/services/notification_scheduler.dart';
 
@@ -15,8 +16,12 @@ class LocalNotificationScheduler implements NotificationScheduler {
   final FlutterLocalNotificationsPlugin _plugin;
 
   static const int _khatmahId = 1;
+  // Adhkar reminders: 2 ids per day, in [_adhkarIdBase, _adhanIdBase).
+  static const int _adhkarIdBase = 500;
   static const int _adhanIdBase = 1000;
   static const int _idsPerDay = 10;
+  // Task reminder ids live above every Adhan id.
+  static const int _taskIdBase = 1000000;
 
   static const NotificationDetails _adhanDetails = NotificationDetails(
     android: AndroidNotificationDetails(
@@ -26,6 +31,36 @@ class LocalNotificationScheduler implements NotificationScheduler {
       importance: Importance.max,
       priority: Priority.high,
       category: AndroidNotificationCategory.alarm,
+    ),
+    iOS: DarwinNotificationDetails(
+      presentAlert: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    ),
+  );
+
+  static const NotificationDetails _adhkarDetails = NotificationDetails(
+    android: AndroidNotificationDetails(
+      'adhkar',
+      'تذكير الأذكار',
+      channelDescription: 'تذكير بأذكار الصباح والمساء',
+      importance: Importance.high,
+      priority: Priority.high,
+    ),
+    iOS: DarwinNotificationDetails(
+      presentAlert: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    ),
+  );
+
+  static const NotificationDetails _taskDetails = NotificationDetails(
+    android: AndroidNotificationDetails(
+      'tasks',
+      'تذكير المهام',
+      channelDescription: 'تنبيه عند وقت المهمة',
+      importance: Importance.high,
+      priority: Priority.high,
     ),
     iOS: DarwinNotificationDetails(
       presentAlert: true,
@@ -137,8 +172,153 @@ class LocalNotificationScheduler implements NotificationScheduler {
   Future<void> cancelAdhan() async {
     final pending = await _plugin.pendingNotificationRequests();
     for (final request in pending) {
-      if (request.id >= _adhanIdBase) await _plugin.cancel(id: request.id);
+      if (request.id >= _adhanIdBase && request.id < _taskIdBase) {
+        await _plugin.cancel(id: request.id);
+      }
     }
+  }
+
+  @override
+  Future<void> scheduleAdhkarReminders(
+    List<PrayerTimes> days, {
+    required bool morning,
+    required bool evening,
+  }) async {
+    await cancelAdhkarReminders();
+
+    for (var dayIndex = 0; dayIndex < days.length; dayIndex++) {
+      final day = days[dayIndex];
+      final location = _locationFor(day.timeZone);
+      final now = tz.TZDateTime.now(location);
+
+      final slots = [
+        if (morning)
+          (
+            slot: 0,
+            prayer: Prayer.fajr,
+            delay: AdhkarReminderDelays.morningAfterFajr,
+            title: 'أذكار الصباح',
+            body: 'ابدأ يومك بذكر الله · أذكار الصباح',
+          ),
+        if (evening)
+          (
+            slot: 1,
+            prayer: Prayer.asr,
+            delay: AdhkarReminderDelays.eveningAfterAsr,
+            title: 'أذكار المساء',
+            body: 'حان وقت أذكار المساء، لا تنسَ وردك',
+          ),
+      ];
+
+      for (final item in slots) {
+        final time = day.times[item.prayer];
+        if (time == null) continue;
+        final when = tz.TZDateTime(
+          location,
+          time.year,
+          time.month,
+          time.day,
+          time.hour,
+          time.minute,
+        ).add(item.delay);
+        if (!when.isAfter(now)) continue;
+
+        await _schedule(
+          id: _adhkarIdBase + dayIndex * 2 + item.slot,
+          title: item.title,
+          body: item.body,
+          when: when,
+          details: _adhkarDetails,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<void> cancelAdhkarReminders() async {
+    final pending = await _plugin.pendingNotificationRequests();
+    for (final request in pending) {
+      if (request.id >= _adhkarIdBase && request.id < _adhanIdBase) {
+        await _plugin.cancel(id: request.id);
+      }
+    }
+  }
+
+  @override
+  Future<void> replaceTaskReminders(List<Task> tasks) async {
+    final pending = await _plugin.pendingNotificationRequests();
+    for (final request in pending) {
+      if (request.id >= _taskIdBase) await _plugin.cancel(id: request.id);
+    }
+
+    final now = tz.TZDateTime.now(tz.local);
+    for (final task in tasks) {
+      final minutes = task.timeMinutes;
+      if (!task.remind || minutes == null) continue;
+      final hour = minutes ~/ 60;
+      final minute = minutes % 60;
+      final idBase = _taskIdBase + (_stableHash(task.id) % 100000) * 10;
+      final due = task.dueDate;
+
+      if (!task.isRepeating) {
+        if (task.isCompleted) continue;
+        final when = tz.TZDateTime(
+          tz.local,
+          due.year,
+          due.month,
+          due.day,
+          hour,
+          minute,
+        );
+        if (!when.isAfter(now)) continue;
+        await _schedule(
+          id: idBase,
+          title: task.title,
+          body: 'حان موعد مهمتك',
+          when: when,
+          details: _taskDetails,
+        );
+        continue;
+      }
+
+      // Repeating: one weekly notification per chosen weekday, starting no
+      // earlier than the task's first day.
+      final startDay = due.isAfter(now) ? due : now;
+      for (final weekday in task.repeatDays) {
+        tz.TZDateTime? when;
+        for (var offset = 0; offset < 8 && when == null; offset++) {
+          final candidate = tz.TZDateTime(
+            tz.local,
+            startDay.year,
+            startDay.month,
+            startDay.day + offset,
+            hour,
+            minute,
+          );
+          if (candidate.weekday == weekday && candidate.isAfter(now)) {
+            when = candidate;
+          }
+        }
+        if (when == null) continue;
+        await _schedule(
+          id: idBase + weekday,
+          title: task.title,
+          body: 'حان موعد مهمتك',
+          when: when,
+          details: _taskDetails,
+          match: DateTimeComponents.dayOfWeekAndTime,
+        );
+      }
+    }
+  }
+
+  /// Deterministic string hash (String.hashCode is not guaranteed stable).
+  static int _stableHash(String value) {
+    var hash = 17;
+    for (final unit in value.codeUnits) {
+      hash = (hash * 31 + unit) & 0x7fffffff;
+    }
+    return hash;
   }
 
   @override
@@ -160,7 +340,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
       body: 'خصّص دقائق لقراءة وردك اليومي من القرآن الكريم.',
       when: when,
       details: _khatmahDetails,
-      repeatDaily: true,
+      match: DateTimeComponents.time,
     );
   }
 
@@ -181,7 +361,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
     required String body,
     required tz.TZDateTime when,
     required NotificationDetails details,
-    bool repeatDaily = false,
+    DateTimeComponents? match,
   }) async {
     Future<void> run(AndroidScheduleMode mode) => _plugin.zonedSchedule(
       id: id,
@@ -190,7 +370,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
       scheduledDate: when,
       notificationDetails: details,
       androidScheduleMode: mode,
-      matchDateTimeComponents: repeatDaily ? DateTimeComponents.time : null,
+      matchDateTimeComponents: match,
     );
 
     try {

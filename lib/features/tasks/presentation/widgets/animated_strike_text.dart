@@ -52,11 +52,15 @@ class _AnimatedStrikeTextState extends State<AnimatedStrikeText>
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final painter = TextPainter(
-          text: TextSpan(text: widget.text, style: widget.style),
-          textDirection: direction,
-          textScaler: scaler,
-        )..layout(maxWidth: constraints.maxWidth);
+        final painter =
+            TextPainter(
+              text: TextSpan(text: widget.text, style: widget.style),
+              textDirection: direction,
+              textScaler: scaler,
+            )..layout(
+              minWidth: constraints.maxWidth,
+              maxWidth: constraints.maxWidth,
+            );
         final lines = painter.computeLineMetrics();
         final size = painter.size;
         painter.dispose();

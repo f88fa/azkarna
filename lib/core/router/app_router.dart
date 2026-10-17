@@ -4,57 +4,38 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/adhkar/presentation/screens/adhkar_category_screen.dart';
 import '../../features/adhkar/presentation/screens/adhkar_screen.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/quran/presentation/screens/mushaf_reader_screen.dart';
 import '../../features/quran/presentation/screens/quran_screen.dart';
-import '../../features/quran/presentation/screens/surah_reader_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
-import '../../features/shell/presentation/screens/main_shell_screen.dart';
 import '../../features/tasks/presentation/screens/tasks_screen.dart';
+import '../widgets/app_sheet_page.dart';
 import 'app_routes.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-
+/// The home screen is the single base page. Tasks, Quran, Adhkar and
+/// Settings open as pop-up sheets over it; closing a sheet returns home.
 final appRouterProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
-    navigatorKey: _rootNavigatorKey,
-    initialLocation: AppRoutes.tasks,
+    initialLocation: AppRoutes.home,
     routes: [
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) =>
-            MainShellScreen(navigationShell: navigationShell),
-        branches: [
-          _branch(AppRoutes.tasks, const TasksScreen()),
-          _branch(
-            AppRoutes.quran,
-            const QuranScreen(),
-            routes: [
-              GoRoute(
-                path: AppRoutes.surahPattern,
-                parentNavigatorKey: _rootNavigatorKey,
-                builder: (context, state) => SurahReaderScreen(
-                  surahNumber:
-                      int.tryParse(state.pathParameters['number'] ?? '') ?? 1,
-                  initialAyah: int.tryParse(
-                    state.uri.queryParameters['ayah'] ?? '',
-                  ),
-                ),
-              ),
-            ],
-          ),
-          _branch(
-            AppRoutes.adhkar,
-            const AdhkarScreen(),
-            routes: [
-              GoRoute(
-                path: AppRoutes.adhkarCategoryPattern,
-                parentNavigatorKey: _rootNavigatorKey,
-                builder: (context, state) => AdhkarCategoryScreen(
-                  categoryId: state.pathParameters['id'] ?? '',
-                ),
-              ),
-            ],
-          ),
-          _branch(AppRoutes.settings, const SettingsScreen()),
-        ],
+      GoRoute(
+        path: AppRoutes.home,
+        builder: (context, state) => const HomeScreen(),
+      ),
+      _sheet(AppRoutes.tasks, const TasksScreen()),
+      _sheet(AppRoutes.quran, const QuranScreen()),
+      _sheet(AppRoutes.adhkar, const AdhkarScreen()),
+      _sheet(AppRoutes.settings, const SettingsScreen()),
+      GoRoute(
+        path: AppRoutes.mushafPagePattern,
+        builder: (context, state) => MushafReaderScreen(
+          initialPage: int.tryParse(state.pathParameters['page'] ?? '') ?? 1,
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.adhkarCategoryPattern,
+        builder: (context, state) =>
+            AdhkarCategoryScreen(categoryId: state.pathParameters['id'] ?? ''),
       ),
     ],
   );
@@ -62,26 +43,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   return router;
 });
 
-StatefulShellBranch _branch(
-  String path,
-  Widget child, {
-  List<RouteBase> routes = const [],
-}) {
-  return StatefulShellBranch(
-    routes: [
-      GoRoute(
-        path: path,
-        pageBuilder: (context, state) => CustomTransitionPage<void>(
-          key: state.pageKey,
-          child: child,
-          transitionDuration: const Duration(milliseconds: 250),
-          transitionsBuilder: (context, animation, _, child) => FadeTransition(
-            opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
-            child: child,
-          ),
-        ),
-        routes: routes,
-      ),
-    ],
-  );
-}
+GoRoute _sheet(String path, Widget child) => GoRoute(
+  path: path,
+  pageBuilder: (context, state) => appSheetPage(state: state, child: child),
+);

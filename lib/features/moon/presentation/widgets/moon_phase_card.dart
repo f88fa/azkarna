@@ -3,12 +3,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/arabic_format.dart';
-import '../../../../core/widgets/glass_card.dart';
 import '../../domain/moon_phase.dart';
 
-/// Glass card showing today's moon phase with a painted moon.
-class MoonPhaseCard extends StatelessWidget {
-  const MoonPhaseCard({super.key, this.date});
+/// Compact pill: a small painted moon, the phase name and its illumination.
+class MoonPhasePill extends StatelessWidget {
+  const MoonPhasePill({super.key, this.date});
 
   final DateTime? date;
 
@@ -17,60 +16,24 @@ class MoonPhaseCard extends StatelessWidget {
     final theme = Theme.of(context);
     final phase = MoonPhase.at(date ?? DateTime.now());
     final percent = (phase.illumination * 100).round();
-    final secondary = theme.colorScheme.onSurface.withValues(alpha: 0.6);
 
-    return GlassCard(
-      radius: 24,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(6, 5, 12, 5),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          MoonPhaseView(phase: phase, size: 62),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'طور القمر',
-                  style: theme.textTheme.bodySmall?.copyWith(color: secondary),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  phase.nameAr,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: LinearProgressIndicator(
-                    value: phase.illumination,
-                    minHeight: 5,
-                    backgroundColor: theme.colorScheme.onSurface.withValues(
-                      alpha: 0.08,
-                    ),
-                    valueColor: const AlwaysStoppedAnimation(Color(0xFFF5B301)),
-                  ),
-                ),
-              ],
+          MoonPhaseView(phase: phase, size: 24),
+          const SizedBox(width: 8),
+          Text(
+            '${phase.nameAr} · ${arNum(percent)}٪',
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
             ),
-          ),
-          const SizedBox(width: 16),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '${arNum(percent)}٪',
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              Text(
-                'إضاءة',
-                style: theme.textTheme.bodySmall?.copyWith(color: secondary),
-              ),
-            ],
           ),
         ],
       ),

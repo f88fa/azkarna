@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/layout/layout.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/arabic_format.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/popup_scaffold.dart';
 import '../../../notifications/domain/entities/notification_settings.dart';
 import '../../../notifications/presentation/providers/notification_providers.dart';
 import '../../../prayer_times/domain/entities/prayer_times.dart';
@@ -16,50 +18,37 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final settings = ref.watch(notificationSettingsProvider);
     final location = ref.watch(prayerLocationProvider);
 
-    return Scaffold(
-      body: CustomScrollView(
+    return PopupScaffold(
+      title: 'الإعدادات',
+      child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
-        slivers: [
-          SliverAppBar.large(
-            backgroundColor: theme.scaffoldBackgroundColor,
-            title: const Text(
-              'الإعدادات',
-              style: TextStyle(fontWeight: FontWeight.w800),
-            ),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.only(bottom: floatingNavBarInset(context)),
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  settings.when(
-                    loading: () => const Padding(
-                      padding: EdgeInsets.all(32),
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                    error: (error, _) => ErrorView(
-                      error: error,
-                      onRetry: () =>
-                          ref.invalidate(notificationSettingsProvider),
-                    ),
-                    data: (data) => _NotificationsSection(
-                      settings: data,
-                      cityLabel: location.city,
-                    ),
-                  ),
-                  _PrayerSection(cityLabel: location.displayName),
-                  const _OffsetsSection(),
-                ],
+        padding: EdgeInsets.only(bottom: floatingNavBarInset(context)),
+        child: Column(
+          children: [
+            const _BrandHeader(),
+            settings.when(
+              loading: () => const Padding(
+                padding: EdgeInsets.all(32),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+              error: (error, _) => ErrorView(
+                error: error,
+                onRetry: () => ref.invalidate(notificationSettingsProvider),
+              ),
+              data: (data) => _NotificationsSection(
+                settings: data,
+                cityLabel: location.city,
               ),
             ),
-          ),
-        ],
+            _PrayerSection(cityLabel: location.displayName),
+            const _OffsetsSection(),
+          ],
+        ),
       ),
     );
   }
@@ -123,6 +112,26 @@ class _NotificationsSection extends ConsumerWidget {
           subtitle: 'تنبيه عند كل صلاة من الصلوات الخمس · $cityLabel',
           value: settings.adhanEnabled,
           onChanged: (v) => _toggle(context, () => notifier.setAdhanEnabled(v)),
+        ),
+        SettingsSwitchTile(
+          icon: Icons.wb_sunny_rounded,
+          color: AppColors.amber,
+          title: 'أذكار الصباح',
+          subtitle:
+              'بعد أذان الفجر بـ ${arNum(AdhkarReminderDelays.morningAfterFajr.inMinutes)} دقيقة',
+          value: settings.morningAdhkarEnabled,
+          onChanged: (v) =>
+              _toggle(context, () => notifier.setMorningAdhkarEnabled(v)),
+        ),
+        SettingsSwitchTile(
+          icon: Icons.nights_stay_rounded,
+          color: AppColors.indigo,
+          title: 'أذكار المساء',
+          subtitle:
+              'بعد أذان العصر بـ ${arNum(AdhkarReminderDelays.eveningAfterAsr.inMinutes)} دقيقة',
+          value: settings.eveningAdhkarEnabled,
+          onChanged: (v) =>
+              _toggle(context, () => notifier.setEveningAdhkarEnabled(v)),
         ),
         SettingsSwitchTile(
           icon: Icons.menu_book_rounded,
@@ -209,6 +218,53 @@ class _OffsetsSection extends ConsumerWidget {
                 ref.read(prayerOffsetsProvider.notifier).change(prayer, delta),
           ),
       ],
+    );
+  }
+}
+
+/// App identity: name and tagline.
+class _BrandHeader extends StatelessWidget {
+  const _BrandHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 22),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              'assets/images/app_icon.png',
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppConstants.appName,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                Text(
+                  AppConstants.appTagline,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

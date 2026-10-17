@@ -17,19 +17,22 @@ class KhatmahCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final progress = ref.watch(khatmahProvider);
-    final surahs = ref.watch(surahsProvider).asData?.value;
+    final index = ref.watch(quranIndexProvider).asData?.value;
 
     return progress.when(
       loading: () => const SizedBox(height: 150),
       error: (_, _) => const SizedBox.shrink(),
       data: (data) {
         final bookmark = data.bookmark;
-        String? surahName;
+        String? positionLabel;
+        int? bookmarkPage;
         if (bookmark != null) {
-          surahName = 'سورة ${arNum(bookmark.surahNumber)}';
-          for (final s in surahs ?? const []) {
-            if (s.number == bookmark.surahNumber) surahName = 'سورة ${s.name}';
-          }
+          final surah = index?.surah(bookmark.surahNumber);
+          bookmarkPage = surah?.pageOf(bookmark.ayahNumber);
+          positionLabel =
+              '${surah == null ? 'سورة ${arNum(bookmark.surahNumber)}' : 'سورة ${surah.name}'}'
+              ' · الآية ${arNum(bookmark.ayahNumber)}'
+              '${bookmarkPage == null ? '' : ' · صفحة ${arNum(bookmarkPage)}'}';
         }
         final percent = (data.todayFraction * 100).round();
         final secondary = theme.colorScheme.onSurface.withValues(alpha: 0.6);
@@ -70,7 +73,7 @@ class KhatmahCard extends ConsumerWidget {
               Text(
                 bookmark == null
                     ? 'ابدأ القراءة لحفظ موضعك'
-                    : '$surahName · الآية ${arNum(bookmark.ayahNumber)}',
+                    : 'وقفتَ عند: $positionLabel',
                 style: theme.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -105,14 +108,8 @@ class KhatmahCard extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
-                  onPressed: () => context.push(
-                    bookmark == null
-                        ? AppRoutes.surah(1)
-                        : AppRoutes.surah(
-                            bookmark.surahNumber,
-                            ayah: bookmark.ayahNumber,
-                          ),
-                  ),
+                  onPressed: () =>
+                      context.push(AppRoutes.mushafPage(bookmarkPage ?? 1)),
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(

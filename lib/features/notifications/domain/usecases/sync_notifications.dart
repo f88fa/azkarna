@@ -25,17 +25,26 @@ class SyncNotifications {
       await _scheduler.cancelKhatmahReminder();
     }
 
-    if (!settings.adhanEnabled) {
-      await _scheduler.cancelAdhan();
-      return;
-    }
+    final adhkar =
+        settings.morningAdhkarEnabled || settings.eveningAdhkarEnabled;
+    if (!settings.adhanEnabled) await _scheduler.cancelAdhan();
+    if (!adhkar) await _scheduler.cancelAdhkarReminders();
+    if (!settings.adhanEnabled && !adhkar) return;
 
     try {
       final days = await _prayerTimes.getUpcomingPrayerTimes(
         location,
         days: adhanDaysAhead,
       );
-      if (days.isNotEmpty) await _scheduler.scheduleAdhan(days);
+      if (days.isEmpty) return;
+      if (settings.adhanEnabled) await _scheduler.scheduleAdhan(days);
+      if (adhkar) {
+        await _scheduler.scheduleAdhkarReminders(
+          days,
+          morning: settings.morningAdhkarEnabled,
+          evening: settings.eveningAdhkarEnabled,
+        );
+      }
     } on Failure {
       // Offline or API error: keep the previously scheduled notifications.
     }

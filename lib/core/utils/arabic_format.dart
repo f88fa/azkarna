@@ -50,3 +50,18 @@ const List<String> hijriMonthsAr = [
   'ذو القعدة',
   'ذو الحجة',
 ];
+
+/// Parses an integer typed with Western or Arabic-Indic digits.
+int? parseArabicInt(String input) {
+  final buffer = StringBuffer();
+  for (final unit in input.trim().codeUnits) {
+    if (unit >= 0x660 && unit <= 0x669) {
+      buffer.writeCharCode(0x30 + unit - 0x660);
+    } else if (unit >= 0x6F0 && unit <= 0x6F9) {
+      buffer.writeCharCode(0x30 + unit - 0x6F0);
+    } else {
+      buffer.writeCharCode(unit);
+    }
+  }
+  return int.tryParse(buffer.toString());
+}

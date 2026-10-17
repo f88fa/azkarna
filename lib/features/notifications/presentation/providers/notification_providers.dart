@@ -66,6 +66,20 @@ class NotificationSettingsNotifier extends AsyncNotifier<NotificationSettings> {
   }
 
   /// Returns false when the OS denied notification permission.
+  Future<bool> setMorningAdhkarEnabled(bool enabled) async {
+    if (enabled && !await _ensurePermission()) return false;
+    await _update((s) => s.copyWith(morningAdhkarEnabled: enabled));
+    return true;
+  }
+
+  /// Returns false when the OS denied notification permission.
+  Future<bool> setEveningAdhkarEnabled(bool enabled) async {
+    if (enabled && !await _ensurePermission()) return false;
+    await _update((s) => s.copyWith(eveningAdhkarEnabled: enabled));
+    return true;
+  }
+
+  /// Returns false when the OS denied notification permission.
   Future<bool> setKhatmahReminderEnabled(bool enabled) async {
     if (enabled && !await _ensurePermission()) return false;
     await _update((s) => s.copyWith(khatmahReminderEnabled: enabled));

@@ -63,14 +63,13 @@ void main() {
         prefs,
         const Scaffold(
           body: SingleChildScrollView(
-            child: Column(children: [PrayerTimesCard(), MoonPhaseCard()]),
+            child: Column(children: [PrayerTimesCard(), MoonPhasePill()]),
           ),
         ),
       ),
     );
     await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('طور القمر'), findsOneWidget);
-    expect(find.text('العصر'), findsOneWidget);
+    expect(find.text('العصر'), findsWidgets);
     expect(find.text('أم القرى'), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
   });

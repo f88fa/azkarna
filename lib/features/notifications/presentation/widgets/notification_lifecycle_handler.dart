@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../prayer_times/presentation/providers/prayer_times_providers.dart';
+import '../../../tasks/domain/entities/task.dart';
+import '../../../tasks/presentation/providers/task_providers.dart';
 import '../providers/notification_providers.dart';
 
 /// Requests permission on first launch and keeps the scheduled Adhan
@@ -41,6 +43,8 @@ class _NotificationLifecycleHandlerState
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state != AppLifecycleState.resumed) return;
     _refreshPrayerTimesIfStale();
+    final tasks = ref.read(tasksProvider).asData?.value;
+    if (tasks != null) _syncTaskReminders(tasks);
     final last = _lastSync;
     if (last == null || DateTime.now().difference(last) > _minSyncInterval) {
       _sync();
@@ -68,6 +72,22 @@ class _NotificationLifecycleHandlerState
     }
   }
 
+  Future<void> _taskSync = Future<void>.value();
+
+  /// Re-schedules task reminders; calls are serialized so rapid edits cannot
+  /// interleave.
+  void _syncTaskReminders(List<Task> tasks) {
+    _taskSync = _taskSync.then((_) async {
+      try {
+        await ref
+            .read(notificationSchedulerProvider)
+            .replaceTaskReminders(tasks);
+      } catch (_) {
+        // Best-effort.
+      }
+    });
+  }
+
   Future<void> _sync() async {
     _lastSync = DateTime.now();
     try {
@@ -84,6 +104,11 @@ class _NotificationLifecycleHandlerState
     // Re-schedule the Adhan notifications whenever a manual offset changes.
     ref.listen(prayerOffsetsProvider, (previous, next) {
       if (previous != next) _sync();
+    });
+    // Keep task reminders in line with the task list.
+    ref.listen(tasksProvider, (previous, next) {
+      final tasks = next.asData?.value;
+      if (tasks != null) _syncTaskReminders(tasks);
     });
     return widget.child;
   }

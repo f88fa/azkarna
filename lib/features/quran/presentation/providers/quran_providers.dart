@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/services/json_asset_service.dart';
 import '../../data/datasources/quran_local_data_source.dart';
 import '../../data/repositories/quran_repository_impl.dart';
+import '../../domain/entities/quran_index.dart';
 import '../../domain/entities/surah.dart';
 import '../../domain/repositories/quran_repository.dart';
 
@@ -20,4 +21,9 @@ final surahsProvider = FutureProvider<List<Surah>>(
 
 final surahProvider = FutureProvider.family<Surah, int>(
   (ref, number) => ref.watch(quranRepositoryProvider).getSurah(number),
+);
+
+/// Page/juz lookup over the whole Quran.
+final quranIndexProvider = FutureProvider<QuranIndex>(
+  (ref) async => QuranIndex(await ref.watch(surahsProvider.future)),
 );

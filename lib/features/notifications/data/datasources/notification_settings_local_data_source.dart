@@ -14,6 +14,8 @@ class SharedPrefsNotificationSettingsDataSource
   const SharedPrefsNotificationSettingsDataSource(this._prefs);
 
   static const String _adhanKey = 'notif_adhan_enabled';
+  static const String _morningKey = 'notif_adhkar_morning_enabled';
+  static const String _eveningKey = 'notif_adhkar_evening_enabled';
   static const String _khatmahKey = 'notif_khatmah_enabled';
   static const String _hourKey = 'notif_khatmah_hour';
   static const String _minuteKey = 'notif_khatmah_minute';
@@ -36,6 +38,10 @@ class SharedPrefsNotificationSettingsDataSource
 
     return NotificationSettings(
       adhanEnabled: _prefs.getBool(_adhanKey) ?? defaults.adhanEnabled,
+      morningAdhkarEnabled:
+          _prefs.getBool(_morningKey) ?? defaults.morningAdhkarEnabled,
+      eveningAdhkarEnabled:
+          _prefs.getBool(_eveningKey) ?? defaults.eveningAdhkarEnabled,
       khatmahReminderEnabled:
           _prefs.getBool(_khatmahKey) ?? defaults.khatmahReminderEnabled,
       khatmahReminderTime: validTime
@@ -47,6 +53,8 @@ class SharedPrefsNotificationSettingsDataSource
   @override
   Future<void> saveSettings(NotificationSettings settings) async {
     await _prefs.setBool(_adhanKey, settings.adhanEnabled);
+    await _prefs.setBool(_morningKey, settings.morningAdhkarEnabled);
+    await _prefs.setBool(_eveningKey, settings.eveningAdhkarEnabled);
     await _prefs.setBool(_khatmahKey, settings.khatmahReminderEnabled);
     await _prefs.setInt(_hourKey, settings.khatmahReminderTime.hour);
     await _prefs.setInt(_minuteKey, settings.khatmahReminderTime.minute);

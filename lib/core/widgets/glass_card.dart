@@ -1,9 +1,12 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
-/// Frosted-glass surface: background blur, a soft diagonal gradient, a thin
-/// translucent border and a soft drop shadow.
+/// Frosted-glass look: a soft translucent diagonal gradient, a thin light
+/// border and a soft drop shadow.
+///
+/// There is deliberately no live background blur (`BackdropFilter`): the
+/// backdrop is a smooth pastel gradient, so a blur is invisible, yet it forces
+/// an off-screen layer per card and made long lists (surahs, adhkar) janky.
+/// Every card is its own repaint boundary so scrolling stays cheap.
 class GlassCard extends StatelessWidget {
   const GlassCard({
     super.key,
@@ -11,7 +14,6 @@ class GlassCard extends StatelessWidget {
     this.padding = const EdgeInsets.all(20),
     this.radius = 28,
     this.tint,
-    this.blur = 22,
     this.onTap,
   });
 
@@ -21,7 +23,6 @@ class GlassCard extends StatelessWidget {
 
   /// Optional color mixed into the glass (e.g. brand green).
   final Color? tint;
-  final double blur;
   final VoidCallback? onTap;
 
   @override
@@ -44,40 +45,36 @@ class GlassCard extends StatelessWidget {
             ],
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        boxShadow: [
-          BoxShadow(
-            color: (tint ?? Colors.black).withValues(
-              alpha: isDark ? 0.35 : 0.14,
-            ),
-            blurRadius: 28,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: borderRadius,
-              child: Ink(
-                padding: padding,
-                decoration: BoxDecoration(
-                  gradient: gradient,
-                  borderRadius: borderRadius,
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: isDark ? 0.14 : 0.7),
-                    width: 1,
-                  ),
-                ),
-                child: child,
+    return RepaintBoundary(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          boxShadow: [
+            BoxShadow(
+              color: (tint ?? Colors.black).withValues(
+                alpha: isDark ? 0.28 : 0.10,
               ),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: borderRadius,
+            child: Ink(
+              padding: padding,
+              decoration: BoxDecoration(
+                gradient: gradient,
+                borderRadius: borderRadius,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: isDark ? 0.14 : 0.7),
+                  width: 1,
+                ),
+              ),
+              child: child,
             ),
           ),
         ),

@@ -11,11 +11,15 @@ class DhikrCounterCard extends StatelessWidget {
     required this.dhikr,
     required this.current,
     required this.onTap,
+    this.menu,
   });
 
   final Dhikr dhikr;
   final int current;
   final VoidCallback onTap;
+
+  /// Optional action menu shown at the card's start corner.
+  final Widget? menu;
 
   bool get _done => current >= dhikr.count;
 
@@ -35,29 +39,39 @@ class DhikrCounterCard extends StatelessWidget {
                 HapticFeedback.lightImpact();
                 onTap();
               },
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            children: [
-              Text(
-                dhikr.text,
-                textAlign: TextAlign.center,
-                textDirection: TextDirection.rtl,
-                style: const TextStyle(fontSize: 24, height: 1.9),
-              ),
-              if (dhikr.reference.isNotEmpty) ...[
-                const SizedBox(height: 10),
-                Text(
-                  'رواه ${arabicReference(dhikr.reference)}',
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: secondary,
+        child: Stack(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Column(
+                children: [
+                  Text(
+                    dhikr.text,
+                    textAlign: TextAlign.center,
+                    textDirection: TextDirection.rtl,
+                    style: const TextStyle(fontSize: 24, height: 1.9),
                   ),
-                ),
-              ],
-              const SizedBox(height: 16),
-              _CounterBadge(current: current, target: dhikr.count, done: _done),
-            ],
-          ),
+                  if (dhikr.reference.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      'رواه ${arabicReference(dhikr.reference)}',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: secondary,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  _CounterBadge(
+                    current: current,
+                    target: dhikr.count,
+                    done: _done,
+                  ),
+                ],
+              ),
+            ),
+            if (menu != null)
+              PositionedDirectional(top: -8, start: -8, child: menu!),
+          ],
         ),
       ),
     );
@@ -87,7 +101,7 @@ class _CounterBadge extends StatelessWidget {
         children: [
           SizedBox.expand(
             child: TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0, end: current / target),
+              tween: Tween(begin: 0, end: (current / target).clamp(0.0, 1.0)),
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeOut,
               builder: (context, value, _) => CircularProgressIndicator(
@@ -132,6 +146,7 @@ String arabicReference(String reference) {
     'An-Nasa\'i': 'النسائي',
     'Ibn Majah': 'ابن ماجه',
     'Ahmad': 'أحمد',
+    'Al-Hakim': 'الحاكم',
   };
   return reference
       .split(',')

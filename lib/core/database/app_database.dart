@@ -10,7 +10,7 @@ class AppDatabase {
   AppDatabase._();
 
   static const String _name = 'azkarna.db';
-  static const int _version = 2;
+  static const int _version = 3;
 
   static Future<Database> open() async {
     final path = p.join(await getDatabasesPath(), _name);
@@ -24,7 +24,11 @@ class AppDatabase {
             title TEXT NOT NULL,
             is_completed INTEGER NOT NULL DEFAULT 0,
             created_at TEXT NOT NULL,
-            due_date TEXT
+            due_date TEXT,
+            time_minutes INTEGER,
+            repeat_days TEXT,
+            remind INTEGER NOT NULL DEFAULT 0,
+            completed_dates TEXT
           )
         ''');
       },
@@ -37,6 +41,22 @@ class AppDatabase {
           );
           await db.execute(
             'UPDATE ${DbTables.tasks} SET due_date = created_at WHERE due_date IS NULL',
+          );
+        }
+        if (oldVersion < 3) {
+          // Optional time, weekly repeat days and per-day completion.
+          await db.execute(
+            'ALTER TABLE ${DbTables.tasks} ADD COLUMN time_minutes INTEGER',
+          );
+          await db.execute(
+            'ALTER TABLE ${DbTables.tasks} ADD COLUMN repeat_days TEXT',
+          );
+          await db.execute(
+            'ALTER TABLE ${DbTables.tasks} '
+            'ADD COLUMN remind INTEGER NOT NULL DEFAULT 0',
+          );
+          await db.execute(
+            'ALTER TABLE ${DbTables.tasks} ADD COLUMN completed_dates TEXT',
           );
         }
       },
