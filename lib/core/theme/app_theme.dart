@@ -1,3 +1,7 @@
+// Explicit Cupertino import: not every Flutter version re-exports
+// CupertinoPageTransitionsBuilder from material.dart.
+// ignore: unnecessary_import
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
