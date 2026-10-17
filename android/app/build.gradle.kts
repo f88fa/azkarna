@@ -16,7 +16,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.azkarna.app"
+    namespace = "com.alray.azkarna"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -31,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.azkarna.app"
+        applicationId = "com.alray.azkarna"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         // Version comes from pubspec.yaml (1.0.0+1).
