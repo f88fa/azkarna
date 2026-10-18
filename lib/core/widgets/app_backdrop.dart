@@ -23,7 +23,7 @@ class AppBackdrop extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: isDark
-                  ? [const Color(0xFF06241E), bg]
+                  ? [const Color(0xFF0B2E2C), bg]
                   : [const Color(0xFFDDF3EC), bg],
             ),
           ),

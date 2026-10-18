@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+
+import '../../../../core/theme/app_colors.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
@@ -58,7 +60,7 @@ class HomeDock extends StatelessWidget {
                 height: height,
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 decoration: BoxDecoration(
-                  color: (isDark ? const Color(0xFF1C1C1E) : Colors.white)
+                  color: (isDark ? AppColors.darkSurface : Colors.white)
                       .withValues(alpha: isDark ? 0.72 : 0.78),
                   borderRadius: BorderRadius.circular(_radius),
                   border: Border.all(

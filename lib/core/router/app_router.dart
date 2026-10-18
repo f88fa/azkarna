@@ -8,6 +8,10 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/quran/presentation/screens/kahf_reader_screen.dart';
 import '../../features/quran/presentation/screens/mushaf_reader_screen.dart';
 import '../../features/quran/presentation/screens/quran_screen.dart';
+import '../../features/settings/presentation/screens/adhkar_reminders_screen.dart';
+import '../../features/settings/presentation/screens/dhikr_settings_screen.dart';
+import '../../features/settings/presentation/screens/location_settings_screen.dart';
+import '../../features/settings/presentation/screens/muadhin_picker_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/tasbeeh/presentation/screens/tasbeeh_screen.dart';
 import '../../features/tasks/presentation/screens/tasks_screen.dart';
@@ -28,6 +32,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       _sheet(AppRoutes.quran, const QuranScreen()),
       _sheet(AppRoutes.adhkar, const AdhkarScreen()),
       _sheet(AppRoutes.settings, const SettingsScreen()),
+      _sheet(AppRoutes.settingsLocation, const LocationSettingsScreen()),
+      _sheet(AppRoutes.settingsMuadhin, const MuadhinPickerScreen()),
+      _sheet(AppRoutes.settingsDhikr, const DhikrSettingsScreen()),
+      _sheet(AppRoutes.settingsReminders, const AdhkarRemindersScreen()),
       _sheet(AppRoutes.tasbeeh, const TasbeehScreen()),
       GoRoute(
         path: AppRoutes.kahf,

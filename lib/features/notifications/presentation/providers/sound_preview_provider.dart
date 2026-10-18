@@ -55,7 +55,7 @@ class SoundPreviewNotifier extends Notifier<AdhanSound?> {
   }
 
   Future<void> stop() async {
-    state = null;
+    if (ref.mounted) state = null;
     try {
       await _player?.stop();
     } catch (_) {}

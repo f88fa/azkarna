@@ -10,10 +10,12 @@ abstract final class AppColors {
   static const Color lightLabel = Color(0xFF1C1C1E);
   static const Color lightSecondaryLabel = Color(0xFF8E8E93);
 
-  static const Color darkBackground = Color(0xFF000000);
-  static const Color darkSurface = Color(0xFF1C1C1E);
-  static const Color darkLabel = Color(0xFFFFFFFF);
-  static const Color darkSecondaryLabel = Color(0xFF8E8E93);
+  // Deep navy-emerald night palette (easy on the eyes, matches the brand).
+  static const Color darkBackground = Color(0xFF07181D);
+  static const Color darkSurface = Color(0xFF0F2A2F);
+  static const Color darkCard = Color(0xFF12333A);
+  static const Color darkLabel = Color(0xFFEAF4F1);
+  static const Color darkSecondaryLabel = Color(0xFF93AAAA);
 
   /// Clean, TickTick-style canvas used by the tasks screen.
   static const Color tasksLightBackground = Color(0xFFF6F7F9);

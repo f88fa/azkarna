@@ -1,20 +1,26 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/layout/layout.dart';
+import '../../../../core/router/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/theme_mode_provider.dart';
 import '../../../../core/utils/arabic_format.dart';
+import '../../../../core/widgets/app_snack.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/popup_scaffold.dart';
 import '../../../notifications/domain/entities/notification_settings.dart';
 import '../../../notifications/presentation/providers/notification_providers.dart';
-import '../../../prayer_times/domain/entities/prayer_times.dart';
+import '../../../notifications/presentation/providers/sound_preview_provider.dart';
 import '../../../prayer_times/presentation/providers/prayer_times_providers.dart';
-import '../widgets/adhan_sound_section.dart';
-import '../widgets/dhikr_reminders_section.dart';
 import '../widgets/settings_group.dart';
 
+/// Settings home: a few grouped glass cards. Each detail (location, muezzin
+/// voice, dhikr reminders, …) opens in its own sheet.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -29,10 +35,29 @@ class SettingsScreen extends ConsumerWidget {
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
-        padding: EdgeInsets.only(bottom: floatingNavBarInset(context)),
+        padding: EdgeInsets.only(top: 4, bottom: floatingNavBarInset(context)),
         child: Column(
           children: [
-            const _BrandHeader(),
+            const _AppearanceSection(),
+            SettingsSection(
+              title: 'الموقع وطريقة الحساب',
+              children: [
+                SettingsNavTile(
+                  icon: Icons.location_on_rounded,
+                  color: AppColors.red,
+                  title: 'الموقع',
+                  subtitle: location.displayName,
+                  onTap: () => context.push(AppRoutes.settingsLocation),
+                ),
+                SettingsNavTile(
+                  icon: Icons.calculate_rounded,
+                  color: AppColors.purple,
+                  title: 'طريقة الحساب',
+                  subtitle: 'أم القرى (مكة المكرمة) · تعديل الدقائق يدويًا',
+                  onTap: () => context.push(AppRoutes.settingsLocation),
+                ),
+              ],
+            ),
             settings.when(
               loading: () => const Padding(
                 padding: EdgeInsets.all(32),
@@ -44,235 +69,229 @@ class SettingsScreen extends ConsumerWidget {
               ),
               data: (data) => Column(
                 children: [
-                  _NotificationsSection(
-                    settings: data,
-                    cityLabel: location.city,
+                  _AdhanSection(settings: data),
+                  SettingsSection(
+                    title: 'تذكيرات الذكر الدورية',
+                    children: [
+                      SettingsNavTile(
+                        icon: Icons.favorite_rounded,
+                        color: AppColors.pink,
+                        title: data.dhikr.enabled ? 'مفعّل' : 'متوقف',
+                        subtitle: data.dhikr.enabled
+                            ? '${data.dhikr.interval.label}'
+                                  '${data.dhikr.quietHoursEnabled ? ' · هدوء أثناء النوم' : ''}'
+                            : 'اضغط لتفعيل التذكير وضبط التكرار',
+                        onTap: () => context.push(AppRoutes.settingsDhikr),
+                      ),
+                    ],
                   ),
-                  AdhanSoundSection(selected: data.adhanSound),
-                  DhikrRemindersSection(settings: data.dhikr),
+                  SettingsSection(
+                    title: 'الأذكار والختمة',
+                    children: [
+                      SettingsNavTile(
+                        icon: Icons.menu_book_rounded,
+                        color: AppColors.orange,
+                        title: 'تذكيرات الصباح والمساء والختمة',
+                        subtitle: _remindersSummary(data),
+                        onTap: () => context.push(AppRoutes.settingsReminders),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
-            _PrayerSection(cityLabel: location.displayName),
-            const _OffsetsSection(),
+            const _AboutSection(),
           ],
         ),
       ),
     );
   }
-}
 
-class _NotificationsSection extends ConsumerWidget {
-  const _NotificationsSection({
-    required this.settings,
-    required this.cityLabel,
-  });
-
-  final NotificationSettings settings;
-  final String cityLabel;
-
-  Future<void> _toggle(
-    BuildContext context,
-    Future<bool> Function() action,
-  ) async {
-    final granted = await action();
-    if (granted || !context.mounted) return;
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text('الإشعارات محظورة. فعّلها من إعدادات النظام.'),
-        ),
-      );
-  }
-
-  Future<void> _pickTime(BuildContext context, WidgetRef ref) async {
-    final current = settings.khatmahReminderTime;
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay(hour: current.hour, minute: current.minute),
-      helpText: 'وقت تذكير الختمة',
-      cancelText: 'إلغاء',
-      confirmText: 'حفظ',
-    );
-    if (picked == null) return;
-    await ref
-        .read(notificationSettingsProvider.notifier)
-        .setKhatmahReminderTime(
-          ReminderTime(hour: picked.hour, minute: picked.minute),
-        );
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final notifier = ref.read(notificationSettingsProvider.notifier);
-    final time = settings.khatmahReminderTime;
-    final timeLabel = arTime(DateTime(2000, 1, 1, time.hour, time.minute));
-
-    return SettingsSection(
-      title: 'الإشعارات',
-      children: [
-        SettingsSwitchTile(
-          icon: Icons.mosque_rounded,
-          color: AppColors.primary,
-          title: 'الأذان',
-          subtitle: 'تنبيه عند كل صلاة من الصلوات الخمس · $cityLabel',
-          value: settings.adhanEnabled,
-          onChanged: (v) => _toggle(context, () => notifier.setAdhanEnabled(v)),
-        ),
-        SettingsSwitchTile(
-          icon: Icons.wb_sunny_rounded,
-          color: AppColors.amber,
-          title: 'أذكار الصباح',
-          subtitle:
-              'بعد أذان الفجر بـ ${arNum(AdhkarReminderDelays.morningAfterFajr.inMinutes)} دقيقة',
-          value: settings.morningAdhkarEnabled,
-          onChanged: (v) =>
-              _toggle(context, () => notifier.setMorningAdhkarEnabled(v)),
-        ),
-        SettingsSwitchTile(
-          icon: Icons.nights_stay_rounded,
-          color: AppColors.indigo,
-          title: 'أذكار المساء',
-          subtitle:
-              'بعد أذان العصر بـ ${arNum(AdhkarReminderDelays.eveningAfterAsr.inMinutes)} دقيقة',
-          value: settings.eveningAdhkarEnabled,
-          onChanged: (v) =>
-              _toggle(context, () => notifier.setEveningAdhkarEnabled(v)),
-        ),
-        SettingsSwitchTile(
-          icon: Icons.menu_book_rounded,
-          color: AppColors.orange,
-          title: 'تذكير الختمة',
-          subtitle: 'تذكير يومي بقراءة وردك من القرآن',
-          value: settings.khatmahReminderEnabled,
-          onChanged: (v) =>
-              _toggle(context, () => notifier.setKhatmahReminderEnabled(v)),
-        ),
-        SettingsValueTile(
-          icon: Icons.schedule_rounded,
-          color: AppColors.blue,
-          title: 'وقت التذكير',
-          value: timeLabel,
-          enabled: settings.khatmahReminderEnabled,
-          onTap: () => _pickTime(context, ref),
-        ),
-      ],
-    );
+  static String _remindersSummary(NotificationSettings s) {
+    final on = [
+      s.morningAdhkarEnabled,
+      s.eveningAdhkarEnabled,
+      s.khatmahReminderEnabled,
+    ].where((v) => v).length;
+    return on == 0 ? 'كلها متوقفة' : '${arNum(on)} من ٣ مفعّلة';
   }
 }
 
-class _PrayerSection extends StatelessWidget {
-  const _PrayerSection({required this.cityLabel});
+/// Light / dark / system, applied to the whole app at once.
+class _AppearanceSection extends ConsumerWidget {
+  const _AppearanceSection();
 
-  final String cityLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return SettingsSection(
-      title: 'مواقيت الصلاة',
-      children: [
-        SettingsValueTile(
-          icon: Icons.location_on_rounded,
-          color: AppColors.red,
-          title: 'الموقع',
-          value: cityLabel,
-        ),
-        const SettingsValueTile(
-          icon: Icons.calculate_rounded,
-          color: AppColors.purple,
-          title: 'طريقة الحساب',
-          value: 'أم القرى (مكة المكرمة)',
-        ),
-      ],
-    );
-  }
-}
-
-class _OffsetsSection extends ConsumerWidget {
-  const _OffsetsSection();
-
-  static const _style = <Prayer, (IconData, Color)>{
-    Prayer.fajr: (Icons.nights_stay_rounded, AppColors.indigo),
-    Prayer.sunrise: (Icons.wb_twilight_rounded, AppColors.amber),
-    Prayer.dhuhr: (Icons.wb_sunny_rounded, AppColors.orange),
-    Prayer.asr: (Icons.sunny_snowing, AppColors.teal),
-    Prayer.maghrib: (Icons.wb_twilight_rounded, AppColors.pink),
-    Prayer.isha: (Icons.bedtime_rounded, AppColors.purple),
+  static const _labels = {
+    ThemeMode.light: 'نهاري',
+    ThemeMode.dark: 'ليلي',
+    ThemeMode.system: 'تلقائي',
   };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final offsets = ref.watch(prayerOffsetsProvider);
-    final times = ref.watch(prayerTimesProvider).asData?.value;
+    final mode = ref.watch(themeModeProvider);
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
 
     return SettingsSection(
-      title: 'تعديل المواقيت يدويًا',
-      footer:
-          'أضف أو أنقص دقيقة من وقت كل صلاة على حدة. '
-          'يُطبَّق التعديل على المواقيت وعلى تنبيهات الأذان.',
+      title: 'المظهر والعرض',
+      footer: 'التلقائي يتبع وضع الجهاز (نهاري أو ليلي).',
       children: [
-        for (final prayer in Prayer.values)
-          SettingsOffsetTile(
-            icon: _style[prayer]!.$1,
-            color: _style[prayer]!.$2,
-            title: prayer.label,
-            subtitle: times == null
-                ? ' '
-                : 'الوقت الحالي ${arTime(times.times[prayer]!)}',
-            minutes: offsets.of(prayer),
-            onChange: (delta) =>
-                ref.read(prayerOffsetsProvider.notifier).change(prayer, delta),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+          child: Row(
+            children: [
+              SettingsIcon(
+                icon: theme.brightness == Brightness.dark
+                    ? Icons.dark_mode_rounded
+                    : Icons.light_mode_rounded,
+                color: AppColors.indigo,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: CupertinoSlidingSegmentedControl<ThemeMode>(
+                  groupValue: mode,
+                  thumbColor: primary,
+                  backgroundColor: primary.withValues(alpha: 0.12),
+                  onValueChanged: (v) {
+                    if (v == null) return;
+                    HapticFeedback.selectionClick();
+                    ref.read(themeModeProvider.notifier).set(v);
+                  },
+                  children: {
+                    for (final e in _labels.entries)
+                      e.key: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Text(
+                          e.value,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: mode == e.key
+                                ? (theme.brightness == Brightness.dark
+                                      ? const Color(0xFF05201B)
+                                      : Colors.white)
+                                : theme.colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                  },
+                ),
+              ),
+            ],
           ),
+        ),
       ],
     );
   }
 }
 
-/// App identity: name and tagline.
-class _BrandHeader extends StatelessWidget {
-  const _BrandHeader();
+/// Adhan on/off, the chosen muezzin (opens the picker) and a test button.
+class _AdhanSection extends ConsumerWidget {
+  const _AdhanSection({required this.settings});
+
+  final NotificationSettings settings;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(notificationSettingsProvider.notifier);
+
+    return SettingsSection(
+      title: 'إعدادات الأذان والمؤذنين',
+      footer:
+          'اضغط «تجربة إشعار الأذان» ثم اقفل شاشة الجوال لتسمع الصوت المختار. '
+          'تأكد أن الجوال ليس على الوضع الصامت.',
+      children: [
+        SettingsSwitchTile(
+          icon: Icons.mosque_rounded,
+          color: AppColors.primary,
+          title: 'إشعارات الصلوات الخمس',
+          subtitle: 'تنبيه بالأذان عند دخول كل صلاة',
+          value: settings.adhanEnabled,
+          onChanged: (v) async {
+            final ok = await notifier.setAdhanEnabled(v);
+            if (!ok && context.mounted) {
+              showAppSnack(
+                context,
+                'الإشعارات محظورة. فعّلها من إعدادات النظام.',
+              );
+            }
+          },
+        ),
+        SettingsNavTile(
+          icon: Icons.record_voice_over_rounded,
+          color: AppColors.teal,
+          title: 'صوت المؤذن',
+          subtitle: settings.adhanSound.label,
+          onTap: () => context.push(AppRoutes.settingsMuadhin),
+        ),
+        SettingsActionTile(
+          icon: Icons.notifications_active_rounded,
+          color: AppColors.red,
+          title: 'تجربة إشعار الأذان الآن (بعد ٥ ثوانٍ)',
+          subtitle: 'ثم اقفل الشاشة لتسمعه',
+          onTap: () async {
+            await ref.read(soundPreviewProvider.notifier).stop();
+            final ok = await notifier.testAdhan();
+            if (!context.mounted) return;
+            showAppSnack(
+              context,
+              ok
+                  ? 'سيصلك إشعار الأذان بعد ٥ ثوانٍ، اقفل الشاشة الآن.'
+                  : 'الإشعارات محظورة. فعّلها من إعدادات النظام.',
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+/// App identity and version at the bottom.
+class _AboutSection extends StatelessWidget {
+  const _AboutSection();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 22),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              'assets/images/app_icon.png',
-              width: 60,
-              height: 60,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppConstants.appName,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: theme.colorScheme.primary,
-                  ),
+    final muted = theme.colorScheme.onSurface.withValues(alpha: 0.6);
+
+    return SettingsSection(
+      title: 'عن التطبيق',
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  'assets/images/app_icon.png',
+                  width: 72,
+                  height: 72,
+                  fit: BoxFit.cover,
                 ),
-                Text(
-                  AppConstants.appTagline,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '${AppConstants.appName} - ${AppConstants.appTagline}',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  color: theme.colorScheme.primary,
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'الإصدار ${AppConstants.appVersion} +${AppConstants.buildNumber}',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: muted,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

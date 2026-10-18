@@ -62,7 +62,7 @@ class _MushafPageViewState extends State<MushafPageView> {
     final isDark = theme.brightness == Brightness.dark;
     final primary = theme.colorScheme.primary;
     final gold = isDark ? const Color(0xFFC9A961) : const Color(0xFF9A7B2F);
-    final paper = isDark ? const Color(0xFF15171A) : const Color(0xFFFFFBF0);
+    final paper = isDark ? const Color(0xFF0E2328) : const Color(0xFFFFFBF0);
     final ink = isDark ? const Color(0xFFEDEAE0) : const Color(0xFF1B1A17);
     final page = widget.page;
 

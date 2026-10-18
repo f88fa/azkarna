@@ -81,6 +81,13 @@ abstract final class AppTheme {
             ? SystemUiOverlayStyle.light
             : SystemUiOverlayStyle.dark,
       ),
+      chipTheme: ChipThemeData(
+        backgroundColor: isDark
+            ? AppColors.darkCard
+            : Colors.white.withValues(alpha: 0.9),
+        side: BorderSide(color: label.withValues(alpha: isDark ? 0.14 : 0.1)),
+        shape: const StadiumBorder(),
+      ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: surface,
         surfaceTintColor: Colors.transparent,

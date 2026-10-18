@@ -2,7 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/arabic_format.dart';
+
+/// Glass-like card color for settings rows, tuned for both themes.
+Color settingsTileColor(BuildContext context) =>
+    Theme.of(context).brightness == Brightness.dark
+    ? AppColors.darkCard.withValues(alpha: 0.92)
+    : Colors.white.withValues(alpha: 0.9);
 
 /// Colorful icon inside a soft rounded square (iOS Settings style).
 class SettingsIcon extends StatelessWidget {
@@ -50,6 +57,22 @@ class SettingsSection extends StatelessWidget {
 
     return CupertinoListSection.insetGrouped(
       backgroundColor: Colors.transparent,
+      decoration: BoxDecoration(
+        color: settingsTileColor(context),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withValues(
+            alpha: Theme.of(context).brightness == Brightness.dark ? 0.08 : 0.7,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 18),
       header: title == null
           ? null
@@ -90,6 +113,7 @@ class SettingsSwitchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile(
+      backgroundColor: settingsTileColor(context),
       leadingSize: 30,
       padding: const EdgeInsetsDirectional.fromSTEB(16, 11, 16, 11),
       leading: SettingsIcon(icon: icon, color: color),
@@ -128,6 +152,7 @@ class SettingsValueTile extends StatelessWidget {
     return Opacity(
       opacity: enabled ? 1 : 0.4,
       child: CupertinoListTile(
+        backgroundColor: settingsTileColor(context),
         leadingSize: 30,
         padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 12),
         leading: SettingsIcon(icon: icon, color: color),
@@ -162,6 +187,7 @@ class SettingsOffsetTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoListTile(
+      backgroundColor: settingsTileColor(context),
       leadingSize: 30,
       padding: const EdgeInsetsDirectional.fromSTEB(16, 10, 12, 10),
       leading: SettingsIcon(icon: icon, color: color),
@@ -251,6 +277,7 @@ class SettingsActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
     return CupertinoListTile(
+      backgroundColor: settingsTileColor(context),
       leadingSize: 30,
       padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 12),
       leading: SettingsIcon(icon: icon, color: color),
@@ -344,6 +371,43 @@ class SettingsChoiceTile<T> extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Row that opens a sub-page: icon, title, a one-line summary and a chevron.
+class SettingsNavTile extends StatelessWidget {
+  const SettingsNavTile({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.title,
+    this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String? subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoListTile(
+      backgroundColor: settingsTileColor(context),
+      leadingSize: 30,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 12),
+      leading: SettingsIcon(icon: icon, color: color),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+      subtitle: subtitle == null
+          ? null
+          : Text(subtitle!, maxLines: 2, overflow: TextOverflow.ellipsis),
+      trailing: const CupertinoListTileChevron(),
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
     );
   }
 }

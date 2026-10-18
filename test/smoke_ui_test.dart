@@ -2,7 +2,7 @@ import 'package:azkarna/core/storage/shared_preferences_provider.dart';
 import 'package:azkarna/core/theme/app_theme.dart';
 import 'package:azkarna/features/moon/presentation/widgets/moon_phase_card.dart';
 import 'package:azkarna/features/prayer_times/presentation/widgets/prayer_times_card.dart';
-import 'package:azkarna/features/settings/presentation/screens/settings_screen.dart';
+import 'package:azkarna/features/settings/presentation/screens/location_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,7 +35,7 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
-    await tester.pumpWidget(_app(prefs, const SettingsScreen()));
+    await tester.pumpWidget(_app(prefs, const LocationSettingsScreen()));
     await tester.pumpAndSettle();
 
     expect(find.text('تعديل المواقيت يدويًا'), findsOneWidget);

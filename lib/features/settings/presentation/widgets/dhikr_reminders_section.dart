@@ -40,7 +40,6 @@ class DhikrRemindersSection extends ConsumerWidget {
     final on = settings.enabled;
 
     return SettingsSection(
-      title: 'تذكيرات الذكر الدورية',
       footer:
           'استغفار وتسبيح وحوقلة وصلاة على النبي ﷺ بأذكار مختلفة في كل مرة، '
           'حتى والتطبيق مغلق. يجدّد التطبيق الجدولة كلما فتحته.',
