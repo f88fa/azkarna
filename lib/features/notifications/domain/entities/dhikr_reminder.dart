@@ -23,6 +23,7 @@ class DhikrReminderSettings {
   const DhikrReminderSettings({
     this.enabled = false,
     this.interval = DhikrInterval.hour,
+    this.soundEnabled = true,
     this.quietHoursEnabled = true,
     this.quietStart = const ReminderTime(hour: 23, minute: 0),
     this.quietEnd = const ReminderTime(hour: 5, minute: 0),
@@ -30,6 +31,9 @@ class DhikrReminderSettings {
 
   final bool enabled;
   final DhikrInterval interval;
+
+  /// Spoken dhikr with each reminder; off = a silent notification.
+  final bool soundEnabled;
 
   /// No reminders while the user sleeps.
   final bool quietHoursEnabled;
@@ -50,12 +54,14 @@ class DhikrReminderSettings {
   DhikrReminderSettings copyWith({
     bool? enabled,
     DhikrInterval? interval,
+    bool? soundEnabled,
     bool? quietHoursEnabled,
     ReminderTime? quietStart,
     ReminderTime? quietEnd,
   }) => DhikrReminderSettings(
     enabled: enabled ?? this.enabled,
     interval: interval ?? this.interval,
+    soundEnabled: soundEnabled ?? this.soundEnabled,
     quietHoursEnabled: quietHoursEnabled ?? this.quietHoursEnabled,
     quietStart: quietStart ?? this.quietStart,
     quietEnd: quietEnd ?? this.quietEnd,
@@ -64,53 +70,44 @@ class DhikrReminderSettings {
 
 /// One rotating dhikr shown by a periodic reminder.
 class DhikrMessage {
-  const DhikrMessage(this.title, this.body);
+  const DhikrMessage(this.title, this.body, this.sound);
 
   final String title;
   final String body;
+
+  /// Base name of the spoken recording (`dhikr_<id>`): `ios/Runner/<sound>.caf`
+  /// and `android/app/src/main/res/raw/<sound>.wav`.
+  final String sound;
+
+  String get iosFile => '$sound.caf';
 }
 
-/// Messages cycle through istighfar, tasbeeh, hawqala and salawat so every
-/// reminder differs from the previous one.
+/// The eight voiced adhkar, in rotation order, so every reminder differs from
+/// the previous one. Each text matches its recording.
 abstract final class DhikrMessages {
-  static const List<List<DhikrMessage>> _groups = [
-    [
-      DhikrMessage('استغفار', 'أستغفر الله العظيم وأتوب إليه'),
-      DhikrMessage(
-        'استغفار',
-        'أستغفر الله الذي لا إله إلا هو الحي القيوم وأتوب إليه',
-      ),
-      DhikrMessage('استغفار', 'رب اغفر لي وتب عليّ إنك أنت التواب الرحيم'),
-    ],
-    [
-      DhikrMessage('تسبيح', 'سبحان الله وبحمده، سبحان الله العظيم'),
-      DhikrMessage(
-        'تسبيح',
-        'سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر',
-      ),
-      DhikrMessage('تسبيح', 'سبحان الله وبحمده عدد خلقه ورضا نفسه'),
-    ],
-    [
-      DhikrMessage('حوقلة', 'لا حول ولا قوة إلا بالله'),
-      DhikrMessage(
-        'حوقلة',
-        'لا حول ولا قوة إلا بالله العلي العظيم · كنز من كنوز الجنة',
-      ),
-    ],
-    [
-      DhikrMessage('صلاة على النبي ﷺ', 'اللهم صلِّ وسلم على نبينا محمد'),
-      DhikrMessage('صلاة على النبي ﷺ', 'صلى الله عليه وسلم'),
-      DhikrMessage(
-        'صلاة على النبي ﷺ',
-        'اللهم صلِّ على محمد وعلى آل محمد كما صليت على إبراهيم',
-      ),
-    ],
+  static const List<DhikrMessage> all = [
+    DhikrMessage('تسبيح', 'سبحان الله', 'dhikr_subhan_allah'),
+    DhikrMessage('تهليل', 'لا إله إلا الله', 'dhikr_la_ilaha_illa_allah'),
+    DhikrMessage('استغفار', 'أستغفر الله', 'dhikr_astaghfirullah'),
+    DhikrMessage(
+      'صلاة على النبي ﷺ',
+      'اللهم صلِّ على محمد',
+      'dhikr_allahumma_salli',
+    ),
+    DhikrMessage('تكبير', 'الله أكبر', 'dhikr_allahu_akbar'),
+    DhikrMessage(
+      'اذكر الله',
+      'اذكر الله · ألا بذكر الله تطمئن القلوب',
+      'dhikr_uthkur_allah',
+    ),
+    DhikrMessage(
+      'تسبيح',
+      'سبحان الله وبحمده، سبحان الله العظيم',
+      'dhikr_subhan_allah_wa_bihamdihi',
+    ),
+    DhikrMessage('حمد', 'الحمد لله', 'dhikr_alhamdulillah'),
   ];
 
   /// Deterministic message for the n-th reminder.
-  static DhikrMessage at(int sequence) {
-    final n = sequence.abs();
-    final group = _groups[n % _groups.length];
-    return group[(n ~/ _groups.length) % group.length];
-  }
+  static DhikrMessage at(int sequence) => all[sequence.abs() % all.length];
 }

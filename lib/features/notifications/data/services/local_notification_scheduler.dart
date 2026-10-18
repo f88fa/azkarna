@@ -58,16 +58,36 @@ class LocalNotificationScheduler implements NotificationScheduler {
         ),
       );
 
-  static const NotificationDetails _dhikrDetails = NotificationDetails(
-    android: AndroidNotificationDetails(
-      'dhikr',
-      'تذكيرات الذكر',
-      channelDescription: 'تذكير دوري بالاستغفار والتسبيح والصلاة على النبي',
-      importance: Importance.defaultImportance,
-      priority: Priority.defaultPriority,
-    ),
-    iOS: DarwinNotificationDetails(presentAlert: true, presentSound: true),
-  );
+  /// Periodic dhikr: the spoken recording of [message], or a silent
+  /// notification when [sound] is off. Android needs one channel per sound
+  /// (a channel's sound is fixed once created) plus one silent channel.
+  static NotificationDetails _dhikrDetails(DhikrMessage message, bool sound) =>
+      NotificationDetails(
+        android: sound
+            ? AndroidNotificationDetails(
+                'dhikr_${message.sound}',
+                'ذكر دوري · ${message.body.split(' · ').first}',
+                channelDescription: 'تذكير دوري بالأذكار بصوت مسموع',
+                importance: Importance.high,
+                priority: Priority.high,
+                playSound: true,
+                sound: RawResourceAndroidNotificationSound(message.sound),
+              )
+            : const AndroidNotificationDetails(
+                'dhikr_silent',
+                'ذكر دوري · بدون صوت',
+                channelDescription: 'تذكير دوري بالأذكار بإشعار صامت',
+                importance: Importance.defaultImportance,
+                priority: Priority.defaultPriority,
+                playSound: false,
+                enableVibration: false,
+              ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentSound: sound,
+          sound: sound ? message.iosFile : null,
+        ),
+      );
 
   static const NotificationDetails _adhkarDetails = NotificationDetails(
     android: AndroidNotificationDetails(
@@ -307,7 +327,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
           title: message.title,
           body: message.body,
           when: next,
-          details: _dhikrDetails,
+          details: _dhikrDetails(message, settings.soundEnabled),
         );
         scheduled++;
       }
@@ -340,6 +360,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
   @override
   Future<void> scheduleTestDhikr({
     Duration delay = const Duration(seconds: 5),
+    bool sound = true,
   }) {
     final message = DhikrMessages.at(
       DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -349,7 +370,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
       title: message.title,
       body: message.body,
       when: tz.TZDateTime.now(tz.local).add(delay),
-      details: _dhikrDetails,
+      details: _dhikrDetails(message, sound),
     );
   }
 

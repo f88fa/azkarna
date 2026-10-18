@@ -31,7 +31,7 @@ class HomeFeatureCards extends ConsumerWidget {
               title: 'المسبحة',
               subtitle: today > 0
                   ? 'اليوم: ${arNum(today)} تسبيحة'
-                  : 'استغفار وتسبيح',
+                  : 'عدّاد التسبيح',
               colors: const [Color(0xFF0E9F6E), Color(0xFF0B7A55)],
               onTap: () => context.push(AppRoutes.tasbeeh),
             ),

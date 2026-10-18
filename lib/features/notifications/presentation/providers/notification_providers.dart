@@ -104,6 +104,10 @@ class NotificationSettingsNotifier extends AsyncNotifier<NotificationSettings> {
   Future<void> setDhikrInterval(DhikrInterval interval) =>
       _update((s) => s.copyWith(dhikr: s.dhikr.copyWith(interval: interval)));
 
+  Future<void> setDhikrSound(bool enabled) => _update(
+    (s) => s.copyWith(dhikr: s.dhikr.copyWith(soundEnabled: enabled)),
+  );
+
   Future<void> setDhikrQuietHours(bool enabled) => _update(
     (s) => s.copyWith(dhikr: s.dhikr.copyWith(quietHoursEnabled: enabled)),
   );
@@ -127,7 +131,11 @@ class NotificationSettingsNotifier extends AsyncNotifier<NotificationSettings> {
   /// Schedules a test dhikr notification after 5 s.
   Future<bool> testDhikr() async {
     if (!await _ensurePermission()) return false;
-    await ref.read(notificationSchedulerProvider).scheduleTestDhikr();
+    final dhikr =
+        (state.asData?.value ?? await _repository.getSettings()).dhikr;
+    await ref
+        .read(notificationSchedulerProvider)
+        .scheduleTestDhikr(sound: dhikr.soundEnabled);
     return true;
   }
 

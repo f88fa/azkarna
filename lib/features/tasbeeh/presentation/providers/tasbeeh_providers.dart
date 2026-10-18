@@ -2,37 +2,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/storage/shared_preferences_provider.dart';
 
-/// The four adhkar offered by the tasbeeh counter.
-const List<String> tasbeehAdhkar = [
-  'أستغفر الله',
-  'سبحان الله وبحمده',
-  'لا حول ولا قوة إلا بالله',
-  'اللهم صل على محمد',
-];
-
 /// Session targets; 0 means "no target" (open counting).
 const List<int> tasbeehTargets = [33, 99, 100, 0];
 
 class TasbeehState {
   const TasbeehState({
-    this.dhikrIndex = 0,
     this.target = 33,
     this.count = 0,
     this.today = 0,
     this.total = 0,
+    this.haptics = true,
   });
 
-  final int dhikrIndex;
   final int target;
 
-  /// Current round (reset by the reset button or when changing dhikr).
+  /// Current count (zeroed by the reset button).
   final int count;
 
-  /// Taps recorded today / ever, across every dhikr.
+  /// Taps recorded today / ever (kept for statistics; not shown).
   final int today;
   final int total;
 
-  String get dhikr => tasbeehAdhkar[dhikrIndex];
+  /// Vibrate on each tap.
+  final bool haptics;
 
   /// Progress inside the current round (0 – 1); a finished round shows full.
   double get progress {
@@ -41,21 +33,24 @@ class TasbeehState {
     return r == 0 ? 1 : r / target;
   }
 
+  /// Rounds completed so far (0 when there is no target).
+  int get rounds => target > 0 ? count ~/ target : 0;
+
   /// True right after the tap that completes a round.
   bool get justCompleted => target > 0 && count > 0 && count % target == 0;
 
   TasbeehState copyWith({
-    int? dhikrIndex,
     int? target,
     int? count,
     int? today,
     int? total,
+    bool? haptics,
   }) => TasbeehState(
-    dhikrIndex: dhikrIndex ?? this.dhikrIndex,
     target: target ?? this.target,
     count: count ?? this.count,
     today: today ?? this.today,
     total: total ?? this.total,
+    haptics: haptics ?? this.haptics,
   );
 }
 
@@ -64,7 +59,7 @@ final tasbeehProvider = NotifierProvider<TasbeehNotifier, TasbeehState>(
 );
 
 class TasbeehNotifier extends Notifier<TasbeehState> {
-  static const _kDhikr = 'tasbeeh_dhikr';
+  static const _kHaptics = 'tasbeeh_haptics';
   static const _kTarget = 'tasbeeh_target';
   static const _kCount = 'tasbeeh_count';
   static const _kTotal = 'tasbeeh_total';
@@ -83,21 +78,20 @@ class TasbeehNotifier extends Notifier<TasbeehState> {
   TasbeehState build() {
     final prefs = ref.watch(sharedPreferencesProvider);
     final sameDay = prefs.getString(_kDay) == _dayKey();
-    final index = prefs.getInt(_kDhikr) ?? 0;
     final target = prefs.getInt(_kTarget) ?? 33;
     return TasbeehState(
-      dhikrIndex: index.clamp(0, tasbeehAdhkar.length - 1),
       target: tasbeehTargets.contains(target) ? target : 33,
       count: prefs.getInt(_kCount) ?? 0,
       today: sameDay ? (prefs.getInt(_kToday) ?? 0) : 0,
       total: prefs.getInt(_kTotal) ?? 0,
+      haptics: prefs.getBool(_kHaptics) ?? true,
     );
   }
 
   Future<void> _save() async {
     final prefs = ref.read(sharedPreferencesProvider);
     await Future.wait([
-      prefs.setInt(_kDhikr, state.dhikrIndex),
+      prefs.setBool(_kHaptics, state.haptics),
       prefs.setInt(_kTarget, state.target),
       prefs.setInt(_kCount, state.count),
       prefs.setInt(_kTotal, state.total),
@@ -124,9 +118,8 @@ class TasbeehNotifier extends Notifier<TasbeehState> {
     return _save();
   }
 
-  Future<void> selectDhikr(int index) {
-    if (index == state.dhikrIndex) return Future.value();
-    state = state.copyWith(dhikrIndex: index, count: 0);
+  Future<void> setHaptics(bool on) {
+    state = state.copyWith(haptics: on);
     return _save();
   }
 

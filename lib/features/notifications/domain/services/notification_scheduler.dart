@@ -48,7 +48,10 @@ abstract interface class NotificationScheduler {
   });
 
   /// Fires a test dhikr notification after [delay].
-  Future<void> scheduleTestDhikr({Duration delay = const Duration(seconds: 5)});
+  Future<void> scheduleTestDhikr({
+    Duration delay = const Duration(seconds: 5),
+    bool sound = true,
+  });
 
   /// Schedules a notification repeating every day at [time].
   Future<void> scheduleDailyKhatmahReminder(ReminderTime time);

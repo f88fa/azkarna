@@ -24,6 +24,7 @@ class SharedPrefsNotificationSettingsDataSource
   static const String _soundKey = 'notif_adhan_sound';
   static const String _dhikrOnKey = 'notif_dhikr_enabled';
   static const String _dhikrIntervalKey = 'notif_dhikr_interval_min';
+  static const String _dhikrSoundKey = 'notif_dhikr_sound';
   static const String _quietOnKey = 'notif_dhikr_quiet_enabled';
   static const String _quietStartKey = 'notif_dhikr_quiet_start';
   static const String _quietEndKey = 'notif_dhikr_quiet_end';
@@ -59,6 +60,8 @@ class SharedPrefsNotificationSettingsDataSource
       dhikr: DhikrReminderSettings(
         enabled: _prefs.getBool(_dhikrOnKey) ?? defaults.dhikr.enabled,
         interval: DhikrInterval.fromMinutes(_prefs.getInt(_dhikrIntervalKey)),
+        soundEnabled:
+            _prefs.getBool(_dhikrSoundKey) ?? defaults.dhikr.soundEnabled,
         quietHoursEnabled:
             _prefs.getBool(_quietOnKey) ?? defaults.dhikr.quietHoursEnabled,
         quietStart: _minutesToTime(
@@ -90,6 +93,7 @@ class SharedPrefsNotificationSettingsDataSource
     final d = settings.dhikr;
     await _prefs.setBool(_dhikrOnKey, d.enabled);
     await _prefs.setInt(_dhikrIntervalKey, d.interval.minutes);
+    await _prefs.setBool(_dhikrSoundKey, d.soundEnabled);
     await _prefs.setBool(_quietOnKey, d.quietHoursEnabled);
     await _prefs.setInt(
       _quietStartKey,

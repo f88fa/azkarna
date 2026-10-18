@@ -2,4 +2,4 @@
 <!-- Sounds and the status-bar icon are looked up by name at runtime, so keep
      them when resource shrinking is enabled. -->
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:keep="@raw/adhan_*,@drawable/ic_stat_awwab" />
+    tools:keep="@raw/adhan_*,@raw/dhikr_*,@drawable/ic_stat_awwab" />

@@ -65,16 +65,10 @@ class _MuadhinPickerScreenState extends ConsumerState<MuadhinPickerScreen> {
     final theme = Theme.of(context);
     final primary = theme.colorScheme.primary;
 
-    final groups = [
-      for (final category in AdhanCategory.values)
-        (
-          category,
-          [
-            for (final s in AdhanSound.inCategory(category))
-              if (s.matches(_query)) s,
-          ],
-        ),
-    ].where((g) => g.$2.isNotEmpty).toList();
+    final sounds = [
+      for (final s in AdhanSound.values)
+        if (s.matches(_query)) s,
+    ];
 
     return PopupScaffold(
       title: 'صوت المؤذن',
@@ -84,7 +78,7 @@ class _MuadhinPickerScreenState extends ConsumerState<MuadhinPickerScreen> {
             padding: const EdgeInsets.fromLTRB(16, 2, 16, 10),
             child: CupertinoSearchTextField(
               controller: _search,
-              placeholder: 'ابحث عن مؤذن أو قارئ',
+              placeholder: 'ابحث عن مؤذن',
               style: TextStyle(
                 fontFamily: theme.textTheme.bodyLarge?.fontFamily,
                 color: theme.colorScheme.onSurface,
@@ -98,7 +92,7 @@ class _MuadhinPickerScreenState extends ConsumerState<MuadhinPickerScreen> {
             ),
           ),
           Expanded(
-            child: groups.isEmpty
+            child: sounds.isEmpty
                 ? Center(
                     child: Text(
                       'لا توجد نتائج مطابقة',
@@ -117,27 +111,24 @@ class _MuadhinPickerScreenState extends ConsumerState<MuadhinPickerScreen> {
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     padding: const EdgeInsets.only(top: 4, bottom: 12),
                     children: [
-                      for (final (category, sounds) in groups)
-                        SettingsSection(
-                          title: category.label,
-                          children: [
-                            for (final sound in sounds)
-                              _SoundTile(
-                                sound: sound,
-                                selected: sound == selected,
-                                playing: playing == sound,
-                                onSelect: () {
-                                  HapticFeedback.selectionClick();
-                                  ref
-                                      .read(
-                                        notificationSettingsProvider.notifier,
-                                      )
-                                      .setAdhanSound(sound);
-                                },
-                                onPreview: () => _preview.toggle(sound),
-                              ),
-                          ],
-                        ),
+                      SettingsSection(
+                        title: 'المؤذنون',
+                        children: [
+                          for (final sound in sounds)
+                            _SoundTile(
+                              sound: sound,
+                              selected: sound == selected,
+                              playing: playing == sound,
+                              onSelect: () {
+                                HapticFeedback.selectionClick();
+                                ref
+                                    .read(notificationSettingsProvider.notifier)
+                                    .setAdhanSound(sound);
+                              },
+                              onPreview: () => _preview.toggle(sound),
+                            ),
+                        ],
+                      ),
                     ],
                   ),
           ),
@@ -177,15 +168,14 @@ class _SoundTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final isCalm = sound.category == AdhanCategory.calm;
 
     return CupertinoListTile(
       backgroundColor: settingsTileColor(context),
       leadingSize: 30,
       padding: const EdgeInsetsDirectional.fromSTEB(16, 10, 10, 10),
       leading: SettingsIcon(
-        icon: isCalm ? Icons.notifications_rounded : Icons.mosque_rounded,
-        color: isCalm ? AppColors.teal : AppColors.primary,
+        icon: Icons.mosque_rounded,
+        color: AppColors.primary,
       ),
       title: Text(
         sound.label,

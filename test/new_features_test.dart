@@ -4,6 +4,7 @@ import 'package:azkarna/core/storage/shared_preferences_provider.dart';
 import 'package:azkarna/core/theme/app_theme.dart';
 import 'package:azkarna/features/notifications/domain/entities/adhan_sound.dart';
 import 'package:azkarna/features/notifications/domain/entities/dhikr_reminder.dart';
+import 'package:azkarna/features/notifications/presentation/providers/notification_providers.dart';
 import 'package:azkarna/features/quran/presentation/screens/kahf_reader_screen.dart';
 import 'package:azkarna/core/constants/app_constants.dart';
 import 'package:azkarna/core/theme/theme_mode_provider.dart';
@@ -71,30 +72,26 @@ void main() {
       },
     );
 
-    test('the library has 15 real recordings (plus a chime)', () {
-      expect(AdhanSound.values, hasLength(15));
-      expect(AdhanSound.values.map((s) => s.id).toSet(), hasLength(15));
-      expect(AdhanSound.inCategory(AdhanCategory.haramain), hasLength(5));
-      expect(AdhanSound.inCategory(AdhanCategory.famous), hasLength(4));
-      expect(AdhanSound.inCategory(AdhanCategory.muezzins), hasLength(4));
-      expect(AdhanSound.inCategory(AdhanCategory.calm), hasLength(2));
-      expect(AdhanSound.nabawi.label, 'أذان المسجد النبوي');
-      expect(AdhanSound.takbeer.label, 'تكبيرات الأذان فقط (مختصر)');
-      expect(AdhanSound.calm.label, 'نغمة تنبيه إسلامية هادئة');
+    test('the library is the 14 supplied muezzin recordings', () {
+      expect(AdhanSound.values, hasLength(14));
+      expect(AdhanSound.values.map((s) => s.id).toSet(), hasLength(14));
+      expect(AdhanSound.defaultSound, AdhanSound.aliMulla);
+      expect(AdhanSound.aliMulla.label, 'أذان علي بن أحمد ملا');
+      expect(AdhanSound.dosari.label, 'أذان ياسر الدوسري');
     });
 
-    test('every recording is credited and is real audio, not a short tone', () {
-      final credits = File('assets/audio/CREDITS.md').readAsStringSync();
-      for (final s in AdhanSound.values) {
-        expect(credits, contains(s.file), reason: s.file);
-        if (s != AdhanSound.calm) {
-          expect(s.credit, isNotNull, reason: s.id);
-          // Voice recordings are 9 s – 26 s of speech-rate audio.
+    test(
+      'every recording is listed in CREDITS and is real, not a short tone',
+      () {
+        final credits = File('assets/audio/CREDITS.md').readAsStringSync();
+        for (final s in AdhanSound.values) {
+          expect(credits, contains(s.file), reason: s.file);
+          // Voice recordings are 15 s – 28 s of audio.
           final kb = File('assets/audio/${s.file}.wav').lengthSync() / 1000;
           expect(kb, greaterThan(250), reason: s.file);
         }
-      }
-    });
+      },
+    );
 
     test('every sound is under 29 s and registered in the Xcode project', () {
       final pbx = File(
@@ -118,19 +115,16 @@ void main() {
     });
 
     test('search and unknown ids', () {
-      expect(AdhanSound.values.where((s) => s.matches('فخري')), [
-        AdhanSound.sabahFakhri,
+      expect(AdhanSound.values.where((s) => s.matches('الدوسري')), [
+        AdhanSound.dosari,
       ]);
-      expect(AdhanSound.values.where((s) => s.matches('العفاسي')), [
-        AdhanSound.afasy,
+      expect(AdhanSound.values.where((s) => s.matches('ملا')), [
+        AdhanSound.aliMulla,
+        AdhanSound.aliMulla2,
       ]);
-      expect(AdhanSound.values.where((s) => s.matches('المسجد النبوي')), [
-        AdhanSound.nabawi,
-        AdhanSound.takbeer,
-      ]);
-      expect(AdhanSound.values.where((s) => s.matches('  ')), hasLength(15));
+      expect(AdhanSound.values.where((s) => s.matches('  ')), hasLength(14));
       // Ids saved by earlier builds fall back to the default.
-      expect(AdhanSound.fromId('makkah_old'), AdhanSound.defaultSound);
+      expect(AdhanSound.fromId('nabawi'), AdhanSound.defaultSound);
       expect(AdhanSound.fromId(null), AdhanSound.defaultSound);
     });
   });
@@ -146,10 +140,49 @@ void main() {
       expect(s.copyWith(quietHoursEnabled: false).isQuiet(2, 0), isFalse);
     });
 
-    test('messages rotate through all four kinds', () {
-      final titles = {for (var i = 0; i < 4; i++) DhikrMessages.at(i).title};
-      expect(titles, hasLength(4));
-      expect(DhikrMessages.at(0).body, isNot(DhikrMessages.at(4).body));
+    test('eight voiced adhkar rotate, each with its bundled sound files', () {
+      expect(DhikrMessages.all, hasLength(8));
+      final bodies = {for (var i = 0; i < 8; i++) DhikrMessages.at(i).body};
+      expect(bodies, hasLength(8));
+      expect(DhikrMessages.at(0).body, DhikrMessages.at(8).body);
+      final pbx = File(
+        'ios/Runner.xcodeproj/project.pbxproj',
+      ).readAsStringSync();
+      for (final m in DhikrMessages.all) {
+        expect(
+          File('ios/Runner/${m.iosFile}').existsSync(),
+          isTrue,
+          reason: m.sound,
+        );
+        expect(
+          File('android/app/src/main/res/raw/${m.sound}.wav').existsSync(),
+          isTrue,
+          reason: m.sound,
+        );
+        expect(pbx, contains('${m.iosFile} in Resources'), reason: m.sound);
+      }
+    });
+
+    test('sound can be switched off and the choice is saved', () async {
+      expect(const DhikrReminderSettings().soundEnabled, isTrue);
+      final prefs = await _prefs();
+      final c = ProviderContainer(
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+      );
+      addTearDown(c.dispose);
+      await c.read(notificationSettingsProvider.future);
+      await c.read(notificationSettingsProvider.notifier).setDhikrSound(false);
+      expect(prefs.getBool('notif_dhikr_sound'), isFalse);
+      final again = ProviderContainer(
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+      );
+      addTearDown(again.dispose);
+      expect(
+        (await again.read(
+          notificationSettingsProvider.future,
+        )).dhikr.soundEnabled,
+        isFalse,
+      );
     });
 
     test('intervals', () {
@@ -171,23 +204,22 @@ void main() {
         final notifier = container.read(tasbeehProvider.notifier)
           ..clock = () => now;
 
-        await notifier.selectDhikr(2);
         for (var i = 0; i < 33; i++) {
           await notifier.tap();
         }
         var s = container.read(tasbeehProvider);
-        expect(s.dhikr, 'لا حول ولا قوة إلا بالله');
         expect((s.count, s.today, s.total), (33, 33, 33));
         expect(s.justCompleted, isTrue);
         expect(s.progress, 1);
+        expect(s.rounds, 1);
 
         await notifier.reset();
         s = container.read(tasbeehProvider);
         expect((s.count, s.today, s.total), (0, 33, 33));
 
-        // Changing dhikr starts a fresh round, totals untouched.
+        // Reset never touches the daily / overall totals.
         await notifier.tap();
-        await notifier.selectDhikr(0);
+        await notifier.reset();
         s = container.read(tasbeehProvider);
         expect((s.count, s.today, s.total), (0, 34, 34));
 
@@ -216,19 +248,9 @@ void main() {
       await tester.pumpWidget(_app(prefs, const TasbeehScreen()));
       await tester.pumpAndSettle();
 
-      expect(find.text('أستغفر الله'), findsWidgets);
-      // The chip row is a horizontal list: scroll to reach the last dhikr.
-      await tester.scrollUntilVisible(
-        find.text('اللهم صل على محمد'),
-        200,
-        scrollable: find.descendant(
-          of: find.byWidgetPredicate(
-            (w) => w is ListView && w.scrollDirection == Axis.horizontal,
-          ),
-          matching: find.byType(Scrollable),
-        ),
-      );
-      expect(find.text('اللهم صل على محمد'), findsOneWidget);
+      // No dhikr picker any more: just the dial, targets and the buttons.
+      expect(find.text('أستغفر الله'), findsNothing);
+      expect(find.byType(ChoiceChip), findsNWidgets(tasbeehTargets.length));
 
       await tester.tap(find.bySemanticsLabel(RegExp('اضغط للتسبيح')));
       await tester.pump();
@@ -241,6 +263,12 @@ void main() {
       await tester.pumpAndSettle();
       expect(prefs.getInt('tasbeeh_count'), 0);
       expect(prefs.getInt('tasbeeh_total'), 2);
+
+      // Vibration can be switched off and the choice is saved.
+      await tester.tap(find.byTooltip('إيقاف الاهتزاز'));
+      await tester.pumpAndSettle();
+      expect(prefs.getBool('tasbeeh_haptics'), isFalse);
+      expect(find.byTooltip('تشغيل الاهتزاز'), findsOneWidget);
     });
   });
 
@@ -294,20 +322,20 @@ void main() {
         'إعدادات الأذان والمؤذنين',
         'إشعارات الصلوات الخمس',
         'صوت المؤذن',
-        'أذان المسجد النبوي',
+        'أذان علي بن أحمد ملا',
         'تجربة إشعار الأذان الآن (بعد ٥ ثوانٍ)',
         'تذكيرات الذكر الدورية',
         'متوقف',
         'عن التطبيق',
         'أواب - صلاتي أذكاري ومهامي اليومية',
-        'الإصدار 1.0.0 +7',
+        'الإصدار 1.0.0 +8',
       ]) {
         expect(find.text(text), findsWidgets, reason: text);
       }
       // The long lists are NOT dumped on the main page any more.
       expect(find.byIcon(Icons.play_arrow_rounded), findsNothing);
       expect(find.text('كل ١٥ دقيقة'), findsNothing);
-      expect(find.text('أذان صباح فخري'), findsNothing);
+      expect(find.text('أذان ياسر الدوسري'), findsNothing);
     });
 
     testWidgets('theme switch changes the whole app and is saved', (
@@ -368,7 +396,7 @@ void main() {
       expect(container.read(themeModeProvider), ThemeMode.dark);
     });
 
-    testWidgets('muezzin library: categories, search, preview, check mark', (
+    testWidgets('muezzin library: list, search, preview, check mark', (
       tester,
     ) async {
       tester.view.physicalSize = const Size(2400, 8000);
@@ -378,27 +406,24 @@ void main() {
       await tester.pumpWidget(_app(prefs, const MuadhinPickerScreen()));
       await tester.pumpAndSettle();
 
-      for (final c in AdhanCategory.values) {
-        expect(find.text(c.label), findsOneWidget, reason: c.label);
-      }
       for (final s in AdhanSound.values) {
         expect(find.text(s.label), findsOneWidget, reason: s.label);
       }
-      expect(find.byIcon(Icons.play_arrow_rounded), findsNWidgets(15));
+      expect(find.byIcon(Icons.play_arrow_rounded), findsNWidgets(14));
       expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
 
       // Choose another muezzin: the check mark follows and it is saved.
-      await tester.tap(find.text('أذان صباح فخري'));
+      await tester.tap(find.text('أذان حمد الدغريري'));
       await tester.pumpAndSettle();
-      expect(prefs.getString('notif_adhan_sound'), 'sabah_fakhri');
+      expect(prefs.getString('notif_adhan_sound'), 'dagriri');
       expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
 
       // Search narrows the list.
-      await tester.enterText(find.byType(EditableText), 'ماهور');
+      await tester.enterText(find.byType(EditableText), 'القطامي');
       await tester.pumpAndSettle();
-      expect(find.text('أذان بمقام الماهور'), findsOneWidget);
-      expect(find.text('أذان صباح فخري'), findsNothing);
-      expect(find.text('أذان المسجد النبوي'), findsNothing);
+      expect(find.text('أذان ناصر القطامي'), findsOneWidget);
+      expect(find.text('أذان حمد الدغريري'), findsNothing);
+      expect(find.text('أذان علي بن أحمد ملا'), findsNothing);
 
       await tester.enterText(find.byType(EditableText), 'xyz');
       await tester.pumpAndSettle();
@@ -417,6 +442,7 @@ void main() {
 
       for (final text in [
         'تفعيل التذكير',
+        'صوت الأذكار',
         'كل ١٥ دقيقة',
         'كل نصف ساعة',
         'كل ساعة',

@@ -50,6 +50,7 @@ class NoopNotificationScheduler implements NotificationScheduler {
   @override
   Future<void> scheduleTestDhikr({
     Duration delay = const Duration(seconds: 5),
+    bool sound = true,
   }) async {}
 
   @override

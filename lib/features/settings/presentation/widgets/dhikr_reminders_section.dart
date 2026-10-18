@@ -41,8 +41,9 @@ class DhikrRemindersSection extends ConsumerWidget {
 
     return SettingsSection(
       footer:
-          'استغفار وتسبيح وحوقلة وصلاة على النبي ﷺ بأذكار مختلفة في كل مرة، '
-          'حتى والتطبيق مغلق. يجدّد التطبيق الجدولة كلما فتحته.',
+          'ثمانية أذكار بأصوات مسموعة تتبدّل في كل مرة، حتى والتطبيق مغلق. '
+          'أغلق «صوت الأذكار» لتصلك إشعارات صامتة. يجدّد التطبيق الجدولة '
+          'كلما فتحته.',
       children: [
         SettingsSwitchTile(
           icon: Icons.favorite_rounded,
@@ -69,6 +70,18 @@ class DhikrRemindersSection extends ConsumerWidget {
           labelOf: (i) => i.label,
           enabled: on,
           onSelected: notifier.setDhikrInterval,
+        ),
+        SettingsSwitchTile(
+          icon: settings.soundEnabled
+              ? Icons.volume_up_rounded
+              : Icons.volume_off_rounded,
+          color: AppColors.teal,
+          title: 'صوت الأذكار',
+          subtitle: settings.soundEnabled
+              ? 'يُنطق الذكر بصوت مسموع'
+              : 'إشعار صامت بدون صوت',
+          value: settings.soundEnabled,
+          onChanged: notifier.setDhikrSound,
         ),
         SettingsSwitchTile(
           icon: Icons.bedtime_rounded,
