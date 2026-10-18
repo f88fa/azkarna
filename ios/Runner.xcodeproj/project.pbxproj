@@ -7,26 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8C1805175973231E8967FC00 /* adhan_abdulbasit.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3507C978F8AB10330367DC6C /* adhan_abdulbasit.caf */; };
-		4646F179A4EBB8C1918487B8 /* adhan_abkar.caf in Resources */ = {isa = PBXBuildFile; fileRef = E89D4E1F69CC3BF6998B2FD0 /* adhan_abkar.caf */; };
+		3AB7C42162A6EE0C7E2B3C7E /* adhan_voice_2.caf in Resources */ = {isa = PBXBuildFile; fileRef = ACD5FEEC8CAD34E717DACEAB /* adhan_voice_2.caf */; };
+		79527522B2E4FFC8F6F92870 /* adhan_zayed.caf in Resources */ = {isa = PBXBuildFile; fileRef = 387391FDA460554E505294F0 /* adhan_zayed.caf */; };
+		DD95DD921D67FE5A4847593E /* adhan_sobhi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 416B2CA643A4C94C589AB21E /* adhan_sobhi.caf */; };
+		874ADE1C94AE211D7769603B /* adhan_zahrani.caf in Resources */ = {isa = PBXBuildFile; fileRef = 234ED9C11DEB278ACC4A0BC4 /* adhan_zahrani.caf */; };
+		18A0E82AA009F1D3BA52BE6E /* adhan_qatami.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153D887E38BF818CF3B45CBF /* adhan_qatami.caf */; };
 		0F6C3501B5268FFF5AF11629 /* adhan_afasy.caf in Resources */ = {isa = PBXBuildFile; fileRef = A6B1DE37260F4A4775E4D942 /* adhan_afasy.caf */; };
 		AC3A31B137EBC306B226D6B8 /* adhan_aqsa.caf in Resources */ = {isa = PBXBuildFile; fileRef = 58492212DE1E65C17682056C /* adhan_aqsa.caf */; };
-		D9FAE0D31460A7FC79DF06F0 /* adhan_arkani.caf in Resources */ = {isa = PBXBuildFile; fileRef = F9028A49A1F73F71E1CA08DE /* adhan_arkani.caf */; };
-		F9E4022C476BE3E8CBC8038E /* adhan_calm.caf in Resources */ = {isa = PBXBuildFile; fileRef = 002627864AE3290017725931 /* adhan_calm.caf */; };
-		F0668C70FF169F19CF8AB55E /* adhan_dosari.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9BF26EAD1FA25D36377A1F3A /* adhan_dosari.caf */; };
-		16E0B5B0DBAC0B321C05DBEA /* adhan_islam_sobhi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 182A8C5380AE2A083B818369 /* adhan_islam_sobhi.caf */; };
-		8F9FF89A1DF3A200410A8731 /* adhan_madinah_bukhari.caf in Resources */ = {isa = PBXBuildFile; fileRef = A54B88AE64996B171A69AFD1 /* adhan_madinah_bukhari.caf */; };
-		87A9A6278C9D26771F57B985 /* adhan_madinah_surayhi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 99CBB820B2BAA9F5C9933D53 /* adhan_madinah_surayhi.caf */; };
-		22F0AB6DE359D9E741D76EF0 /* adhan_makkah_daghriri.caf in Resources */ = {isa = PBXBuildFile; fileRef = 02FD99F993E20F12FEAC6D04 /* adhan_makkah_daghriri.caf */; };
-		66A9A09B1410F35B29E40786 /* adhan_makkah_faida.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9185C7D51553C8357EBD936A /* adhan_makkah_faida.caf */; };
-		F14FD5CC675AFBDC6762B981 /* adhan_makkah_hadrawi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 144B0A849A814E78BB5E3B87 /* adhan_makkah_hadrawi.caf */; };
+		886D6A68C02B013F84B665E1 /* adhan_madinah.caf in Resources */ = {isa = PBXBuildFile; fileRef = B99D1BA2C1CFB6CFDB4E5C69 /* adhan_madinah.caf */; };
 		59A3B8DB113D423BDE66AAE4 /* adhan_makkah_mulla.caf in Resources */ = {isa = PBXBuildFile; fileRef = 1E5FB4A075231ECD69C4B0A1 /* adhan_makkah_mulla.caf */; };
-		2DCA154423B05B576BF47DC0 /* adhan_minshawi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 387103872375EDAC3173197D /* adhan_minshawi.caf */; };
-		87F8210669A3337159D7BA1B /* adhan_muaiqly.caf in Resources */ = {isa = PBXBuildFile; fileRef = 4B22A97649B0526D324E403F /* adhan_muaiqly.caf */; };
-		18A0E82AA009F1D3BA52BE6E /* adhan_qatami.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153D887E38BF818CF3B45CBF /* adhan_qatami.caf */; };
+		F9E4022C476BE3E8CBC8038E /* adhan_calm.caf in Resources */ = {isa = PBXBuildFile; fileRef = 002627864AE3290017725931 /* adhan_calm.caf */; };
 		2CECE66FE6C29C56252C0F31 /* adhan_takbeer.caf in Resources */ = {isa = PBXBuildFile; fileRef = 2F92EF3D6D3DBFE0557453EA /* adhan_takbeer.caf */; };
-		874ADE1C94AE211D7769603B /* adhan_zahrani.caf in Resources */ = {isa = PBXBuildFile; fileRef = 234ED9C11DEB278ACC4A0BC4 /* adhan_zahrani.caf */; };
-		79527522B2E4FFC8F6F92870 /* adhan_zayed.caf in Resources */ = {isa = PBXBuildFile; fileRef = 387391FDA460554E505294F0 /* adhan_zayed.caf */; };
+		791F66069A0062DA88901732 /* adhan_voice_1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8786357DC10970E5F8B5F155 /* adhan_voice_1.caf */; };
+		FB46A199D7116F14C5200615 /* adhan_maahur.caf in Resources */ = {isa = PBXBuildFile; fileRef = 76C18E5E9FFD676210063A4D /* adhan_maahur.caf */; };
+		F382D8A70EA9CF5CB6D74C3E /* adhan_sabah_fakhri.caf in Resources */ = {isa = PBXBuildFile; fileRef = 585DB66860D260E7EB1B1F04 /* adhan_sabah_fakhri.caf */; };
+		34F05837BA2824E60E0501F0 /* adhan_nabawi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 1882F8816F2E8DCCCC39BCAC /* adhan_nabawi.caf */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -61,26 +56,21 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3507C978F8AB10330367DC6C /* adhan_abdulbasit.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_abdulbasit.caf; sourceTree = "<group>"; };
-		E89D4E1F69CC3BF6998B2FD0 /* adhan_abkar.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_abkar.caf; sourceTree = "<group>"; };
+		ACD5FEEC8CAD34E717DACEAB /* adhan_voice_2.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_voice_2.caf; sourceTree = "<group>"; };
+		387391FDA460554E505294F0 /* adhan_zayed.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_zayed.caf; sourceTree = "<group>"; };
+		416B2CA643A4C94C589AB21E /* adhan_sobhi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_sobhi.caf; sourceTree = "<group>"; };
+		234ED9C11DEB278ACC4A0BC4 /* adhan_zahrani.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_zahrani.caf; sourceTree = "<group>"; };
+		153D887E38BF818CF3B45CBF /* adhan_qatami.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_qatami.caf; sourceTree = "<group>"; };
 		A6B1DE37260F4A4775E4D942 /* adhan_afasy.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_afasy.caf; sourceTree = "<group>"; };
 		58492212DE1E65C17682056C /* adhan_aqsa.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_aqsa.caf; sourceTree = "<group>"; };
-		F9028A49A1F73F71E1CA08DE /* adhan_arkani.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_arkani.caf; sourceTree = "<group>"; };
-		002627864AE3290017725931 /* adhan_calm.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_calm.caf; sourceTree = "<group>"; };
-		9BF26EAD1FA25D36377A1F3A /* adhan_dosari.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dosari.caf; sourceTree = "<group>"; };
-		182A8C5380AE2A083B818369 /* adhan_islam_sobhi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_islam_sobhi.caf; sourceTree = "<group>"; };
-		A54B88AE64996B171A69AFD1 /* adhan_madinah_bukhari.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_madinah_bukhari.caf; sourceTree = "<group>"; };
-		99CBB820B2BAA9F5C9933D53 /* adhan_madinah_surayhi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_madinah_surayhi.caf; sourceTree = "<group>"; };
-		02FD99F993E20F12FEAC6D04 /* adhan_makkah_daghriri.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_makkah_daghriri.caf; sourceTree = "<group>"; };
-		9185C7D51553C8357EBD936A /* adhan_makkah_faida.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_makkah_faida.caf; sourceTree = "<group>"; };
-		144B0A849A814E78BB5E3B87 /* adhan_makkah_hadrawi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_makkah_hadrawi.caf; sourceTree = "<group>"; };
+		B99D1BA2C1CFB6CFDB4E5C69 /* adhan_madinah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_madinah.caf; sourceTree = "<group>"; };
 		1E5FB4A075231ECD69C4B0A1 /* adhan_makkah_mulla.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_makkah_mulla.caf; sourceTree = "<group>"; };
-		387103872375EDAC3173197D /* adhan_minshawi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_minshawi.caf; sourceTree = "<group>"; };
-		4B22A97649B0526D324E403F /* adhan_muaiqly.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_muaiqly.caf; sourceTree = "<group>"; };
-		153D887E38BF818CF3B45CBF /* adhan_qatami.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_qatami.caf; sourceTree = "<group>"; };
+		002627864AE3290017725931 /* adhan_calm.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_calm.caf; sourceTree = "<group>"; };
 		2F92EF3D6D3DBFE0557453EA /* adhan_takbeer.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_takbeer.caf; sourceTree = "<group>"; };
-		234ED9C11DEB278ACC4A0BC4 /* adhan_zahrani.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_zahrani.caf; sourceTree = "<group>"; };
-		387391FDA460554E505294F0 /* adhan_zayed.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_zayed.caf; sourceTree = "<group>"; };
+		8786357DC10970E5F8B5F155 /* adhan_voice_1.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_voice_1.caf; sourceTree = "<group>"; };
+		76C18E5E9FFD676210063A4D /* adhan_maahur.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_maahur.caf; sourceTree = "<group>"; };
+		585DB66860D260E7EB1B1F04 /* adhan_sabah_fakhri.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_sabah_fakhri.caf; sourceTree = "<group>"; };
+		1882F8816F2E8DCCCC39BCAC /* adhan_nabawi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_nabawi.caf; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
@@ -151,26 +141,21 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
-				3507C978F8AB10330367DC6C /* adhan_abdulbasit.caf */,
-				E89D4E1F69CC3BF6998B2FD0 /* adhan_abkar.caf */,
+				ACD5FEEC8CAD34E717DACEAB /* adhan_voice_2.caf */,
+				387391FDA460554E505294F0 /* adhan_zayed.caf */,
+				416B2CA643A4C94C589AB21E /* adhan_sobhi.caf */,
+				234ED9C11DEB278ACC4A0BC4 /* adhan_zahrani.caf */,
+				153D887E38BF818CF3B45CBF /* adhan_qatami.caf */,
 				A6B1DE37260F4A4775E4D942 /* adhan_afasy.caf */,
 				58492212DE1E65C17682056C /* adhan_aqsa.caf */,
-				F9028A49A1F73F71E1CA08DE /* adhan_arkani.caf */,
-				002627864AE3290017725931 /* adhan_calm.caf */,
-				9BF26EAD1FA25D36377A1F3A /* adhan_dosari.caf */,
-				182A8C5380AE2A083B818369 /* adhan_islam_sobhi.caf */,
-				A54B88AE64996B171A69AFD1 /* adhan_madinah_bukhari.caf */,
-				99CBB820B2BAA9F5C9933D53 /* adhan_madinah_surayhi.caf */,
-				02FD99F993E20F12FEAC6D04 /* adhan_makkah_daghriri.caf */,
-				9185C7D51553C8357EBD936A /* adhan_makkah_faida.caf */,
-				144B0A849A814E78BB5E3B87 /* adhan_makkah_hadrawi.caf */,
+				B99D1BA2C1CFB6CFDB4E5C69 /* adhan_madinah.caf */,
 				1E5FB4A075231ECD69C4B0A1 /* adhan_makkah_mulla.caf */,
-				387103872375EDAC3173197D /* adhan_minshawi.caf */,
-				4B22A97649B0526D324E403F /* adhan_muaiqly.caf */,
-				153D887E38BF818CF3B45CBF /* adhan_qatami.caf */,
+				002627864AE3290017725931 /* adhan_calm.caf */,
 				2F92EF3D6D3DBFE0557453EA /* adhan_takbeer.caf */,
-				234ED9C11DEB278ACC4A0BC4 /* adhan_zahrani.caf */,
-				387391FDA460554E505294F0 /* adhan_zayed.caf */,
+				8786357DC10970E5F8B5F155 /* adhan_voice_1.caf */,
+				76C18E5E9FFD676210063A4D /* adhan_maahur.caf */,
+				585DB66860D260E7EB1B1F04 /* adhan_sabah_fakhri.caf */,
+				1882F8816F2E8DCCCC39BCAC /* adhan_nabawi.caf */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -275,26 +260,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C1805175973231E8967FC00 /* adhan_abdulbasit.caf in Resources */,
-				4646F179A4EBB8C1918487B8 /* adhan_abkar.caf in Resources */,
+				3AB7C42162A6EE0C7E2B3C7E /* adhan_voice_2.caf in Resources */,
+				79527522B2E4FFC8F6F92870 /* adhan_zayed.caf in Resources */,
+				DD95DD921D67FE5A4847593E /* adhan_sobhi.caf in Resources */,
+				874ADE1C94AE211D7769603B /* adhan_zahrani.caf in Resources */,
+				18A0E82AA009F1D3BA52BE6E /* adhan_qatami.caf in Resources */,
 				0F6C3501B5268FFF5AF11629 /* adhan_afasy.caf in Resources */,
 				AC3A31B137EBC306B226D6B8 /* adhan_aqsa.caf in Resources */,
-				D9FAE0D31460A7FC79DF06F0 /* adhan_arkani.caf in Resources */,
-				F9E4022C476BE3E8CBC8038E /* adhan_calm.caf in Resources */,
-				F0668C70FF169F19CF8AB55E /* adhan_dosari.caf in Resources */,
-				16E0B5B0DBAC0B321C05DBEA /* adhan_islam_sobhi.caf in Resources */,
-				8F9FF89A1DF3A200410A8731 /* adhan_madinah_bukhari.caf in Resources */,
-				87A9A6278C9D26771F57B985 /* adhan_madinah_surayhi.caf in Resources */,
-				22F0AB6DE359D9E741D76EF0 /* adhan_makkah_daghriri.caf in Resources */,
-				66A9A09B1410F35B29E40786 /* adhan_makkah_faida.caf in Resources */,
-				F14FD5CC675AFBDC6762B981 /* adhan_makkah_hadrawi.caf in Resources */,
+				886D6A68C02B013F84B665E1 /* adhan_madinah.caf in Resources */,
 				59A3B8DB113D423BDE66AAE4 /* adhan_makkah_mulla.caf in Resources */,
-				2DCA154423B05B576BF47DC0 /* adhan_minshawi.caf in Resources */,
-				87F8210669A3337159D7BA1B /* adhan_muaiqly.caf in Resources */,
-				18A0E82AA009F1D3BA52BE6E /* adhan_qatami.caf in Resources */,
+				F9E4022C476BE3E8CBC8038E /* adhan_calm.caf in Resources */,
 				2CECE66FE6C29C56252C0F31 /* adhan_takbeer.caf in Resources */,
-				874ADE1C94AE211D7769603B /* adhan_zahrani.caf in Resources */,
-				79527522B2E4FFC8F6F92870 /* adhan_zayed.caf in Resources */,
+				791F66069A0062DA88901732 /* adhan_voice_1.caf in Resources */,
+				FB46A199D7116F14C5200615 /* adhan_maahur.caf in Resources */,
+				F382D8A70EA9CF5CB6D74C3E /* adhan_sabah_fakhri.caf in Resources */,
+				34F05837BA2824E60E0501F0 /* adhan_nabawi.caf in Resources */,
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
@@ -443,7 +423,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconV2;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -622,7 +602,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconV2;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
@@ -644,7 +624,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconV2;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;

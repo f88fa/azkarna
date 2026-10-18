@@ -13,6 +13,7 @@ import '../../../../core/utils/arabic_format.dart';
 import '../../../../core/widgets/app_snack.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/popup_scaffold.dart';
+import '../../../notifications/domain/entities/adhan_sound.dart';
 import '../../../notifications/domain/entities/notification_settings.dart';
 import '../../../notifications/presentation/providers/notification_providers.dart';
 import '../../../notifications/presentation/providers/sound_preview_provider.dart';
@@ -291,7 +292,61 @@ class _AboutSection extends StatelessWidget {
             ],
           ),
         ),
+        SettingsNavTile(
+          icon: Icons.copyright_rounded,
+          color: AppColors.blue,
+          title: 'حقوق الأصوات',
+          subtitle: 'مصادر تسجيلات الأذان',
+          onTap: () => _showCredits(context),
+        ),
       ],
     );
   }
+}
+
+void _showCredits(BuildContext context) {
+  showDialog<void>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('حقوق الأصوات'),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            const Text(
+              'تسجيلات الأذان حقيقية، اقتُطعت وعُدّل مستوى صوتها. مصادرها من '
+              'ويكيميديا كومنز (برخص حرة) وأرشيف الإنترنت.',
+            ),
+            const SizedBox(height: 12),
+            for (final s in AdhanSound.values)
+              if (s.credit != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '${s.label}\n',
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                        TextSpan(
+                          text: s.credit,
+                          style: const TextStyle(fontSize: 12.5),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('حسنًا'),
+        ),
+      ],
+    ),
+  );
 }

@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/arabic_format.dart';
-import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/popup_scaffold.dart';
 import '../providers/tasbeeh_providers.dart';
 
-/// Interactive tasbeeh / istighfar counter.
+/// Interactive tasbeeh / istighfar counter: one big dial, nothing else to
+/// distract from it.
 class TasbeehScreen extends ConsumerWidget {
   const TasbeehScreen({super.key});
 
@@ -23,125 +23,126 @@ class TasbeehScreen extends ConsumerWidget {
 
     return PopupScaffold(
       title: 'المسبحة',
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
-        child: Column(
-          children: [
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
-              children: [
-                for (var i = 0; i < tasbeehAdhkar.length; i++)
-                  ChoiceChip(
-                    label: Text(tasbeehAdhkar[i]),
-                    selected: i == s.dhikrIndex,
-                    showCheckmark: false,
-                    selectedColor: primary.withValues(alpha: 0.16),
-                    labelStyle: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: i == s.dhikrIndex
-                          ? primary
-                          : theme.colorScheme.onSurface,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final dial = math.min(constraints.maxWidth - 48, 340.0);
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(20, 6, 20, 16),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: math.max(0, constraints.maxHeight - 22),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Dhikr picker: one swipeable row.
+                  SizedBox(
+                    height: 44,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: tasbeehAdhkar.length,
+                      separatorBuilder: (_, _) => const SizedBox(width: 8),
+                      itemBuilder: (context, i) => ChoiceChip(
+                        label: Text(tasbeehAdhkar[i]),
+                        selected: i == s.dhikrIndex,
+                        showCheckmark: false,
+                        selectedColor: primary.withValues(alpha: 0.18),
+                        labelStyle: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: i == s.dhikrIndex
+                              ? primary
+                              : theme.colorScheme.onSurface,
+                        ),
+                        onSelected: (_) {
+                          HapticFeedback.selectionClick();
+                          notifier.selectDhikr(i);
+                        },
+                      ),
                     ),
-                    onSelected: (_) {
-                      HapticFeedback.selectionClick();
-                      notifier.selectDhikr(i);
+                  ),
+                  const SizedBox(height: 22),
+                  _CounterDial(
+                    size: dial,
+                    state: s,
+                    onTap: () {
+                      notifier.tap();
+                      // Light tick per tasbeeh, a stronger one when a round ends.
+                      final done = ref.read(tasbeehProvider).justCompleted;
+                      done
+                          ? HapticFeedback.heavyImpact()
+                          : HapticFeedback.lightImpact();
                     },
                   ),
-              ],
-            ),
-            const SizedBox(height: 22),
-            Text(
-              s.dhikr,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-                color: primary,
+                  const SizedBox(height: 22),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            for (final t in tasbeehTargets)
+                              ChoiceChip(
+                                label: Text(t == 0 ? 'مفتوح' : arNum(t)),
+                                selected: s.target == t,
+                                showCheckmark: false,
+                                selectedColor: primary.withValues(alpha: 0.18),
+                                labelStyle: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: s.target == t
+                                      ? primary
+                                      : theme.colorScheme.onSurface,
+                                ),
+                                onSelected: (_) {
+                                  HapticFeedback.selectionClick();
+                                  notifier.setTarget(t);
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Tooltip(
+                        message: 'تصفير العدّاد',
+                        child: IconButton.filledTonal(
+                          onPressed: s.count == 0
+                              ? null
+                              : () {
+                                  HapticFeedback.mediumImpact();
+                                  notifier.reset();
+                                },
+                          style: IconButton.styleFrom(
+                            minimumSize: const Size(52, 52),
+                            backgroundColor: AppColors.red.withValues(
+                              alpha: 0.14,
+                            ),
+                            foregroundColor: AppColors.red,
+                          ),
+                          icon: const Icon(Icons.restart_alt_rounded, size: 28),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
-            _CounterDial(
-              state: s,
-              onTap: () {
-                notifier.tap();
-                // Light tick per tasbeeh, a stronger one when a round ends.
-                final done = ref.read(tasbeehProvider).justCompleted;
-                done
-                    ? HapticFeedback.heavyImpact()
-                    : HapticFeedback.lightImpact();
-              },
-            ),
-            const SizedBox(height: 22),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              alignment: WrapAlignment.center,
-              children: [
-                for (final t in tasbeehTargets)
-                  ChoiceChip(
-                    label: Text(t == 0 ? 'بدون هدف' : arNum(t)),
-                    selected: s.target == t,
-                    showCheckmark: false,
-                    selectedColor: primary.withValues(alpha: 0.16),
-                    labelStyle: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: s.target == t
-                          ? primary
-                          : theme.colorScheme.onSurface,
-                    ),
-                    onSelected: (_) {
-                      HapticFeedback.selectionClick();
-                      notifier.setTarget(t);
-                    },
-                  ),
-              ],
-            ),
-            const SizedBox(height: 18),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    label: 'تسبيحات اليوم',
-                    value: arNum(s.today),
-                    color: AppColors.primary,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _StatCard(
-                    label: 'المجموع الكلي',
-                    value: arNum(s.total),
-                    color: AppColors.amber,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              onPressed: s.count == 0
-                  ? null
-                  : () {
-                      HapticFeedback.mediumImpact();
-                      notifier.reset();
-                    },
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-              icon: const Icon(Icons.restart_alt_rounded),
-              label: const Text('تصفير العدّاد'),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 }
 
 class _CounterDial extends StatefulWidget {
-  const _CounterDial({required this.state, required this.onTap});
+  const _CounterDial({
+    required this.size,
+    required this.state,
+    required this.onTap,
+  });
 
+  final double size;
   final TasbeehState state;
   final VoidCallback onTap;
 
@@ -158,11 +159,11 @@ class _CounterDialState extends State<_CounterDial> {
     final primary = theme.colorScheme.primary;
     final isDark = theme.brightness == Brightness.dark;
     final s = widget.state;
-    final rounds = s.target > 0 ? s.count ~/ s.target : 0;
+    final muted = theme.colorScheme.onSurface.withValues(alpha: 0.6);
 
     return Semantics(
       button: true,
-      label: 'اضغط للتسبيح، العدد ${arNum(s.count)}',
+      label: '${s.dhikr}، اضغط للتسبيح، العدد ${arNum(s.count)}',
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTapDown: (_) => setState(() => _pressed = true),
@@ -174,50 +175,49 @@ class _CounterDialState extends State<_CounterDial> {
           duration: const Duration(milliseconds: 90),
           curve: Curves.easeOut,
           child: SizedBox(
-            width: 270,
-            height: 270,
+            width: widget.size,
+            height: widget.size,
             child: CustomPaint(
               painter: _RingPainter(
                 progress: s.progress,
                 color: primary,
-                track: primary.withValues(alpha: isDark ? 0.18 : 0.12),
-                fill: isDark
-                    ? Colors.white.withValues(alpha: 0.06)
-                    : Colors.white.withValues(alpha: 0.8),
+                track: primary.withValues(alpha: isDark ? 0.2 : 0.12),
+                fill: isDark ? AppColors.darkCard : Colors.white,
               ),
-              child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(widget.size * 0.14),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      arNum(s.count),
-                      style: TextStyle(
-                        fontSize: 76,
-                        height: 1.1,
+                      s.dhikr,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w800,
                         color: primary,
+                      ),
+                    ),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        // Latin digits: the Arabic zero (٠) is drawn as a dot/diamond.
+                        '${s.count}',
+                        style: TextStyle(
+                          fontSize: widget.size * 0.34,
+                          height: 1.15,
+                          fontWeight: FontWeight.w800,
+                          color: theme.colorScheme.onSurface,
+                        ),
                       ),
                     ),
                     Text(
                       s.target > 0 ? 'من ${arNum(s.target)}' : 'اضغط للتسبيح',
                       style: theme.textTheme.titleSmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.6,
-                        ),
+                        color: muted,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    if (rounds > 0)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 6),
-                        child: Text(
-                          'أكملت ${arNum(rounds)} ${rounds == 1 ? 'دورة' : 'دورات'}',
-                          style: TextStyle(
-                            color: AppColors.amber,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
@@ -244,14 +244,15 @@ class _RingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    const stroke = 14.0;
+    const stroke = 16.0;
     final center = size.center(Offset.zero);
-    final radius = size.width / 2 - stroke / 2;
+    final radius = size.width / 2 - stroke / 2 - 4;
+    final rect = Rect.fromCircle(center: center, radius: radius);
 
     canvas.drawShadow(
-      Path()..addOval(Rect.fromCircle(center: center, radius: radius)),
-      color.withValues(alpha: 0.5),
-      12,
+      Path()..addOval(rect),
+      color.withValues(alpha: 0.55),
+      14,
       true,
     );
     canvas.drawCircle(center, radius, Paint()..color = fill);
@@ -265,7 +266,7 @@ class _RingPainter extends CustomPainter {
     );
     if (progress > 0) {
       canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius),
+        rect,
         -math.pi / 2,
         2 * math.pi * progress,
         false,
@@ -284,44 +285,4 @@ class _RingPainter extends CustomPainter {
       old.color != color ||
       old.track != track ||
       old.fill != fill;
-}
-
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return GlassCard(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-      radius: 22,
-      child: Column(
-        children: [
-          Text(
-            value,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

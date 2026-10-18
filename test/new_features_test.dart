@@ -71,41 +71,67 @@ void main() {
       },
     );
 
-    test('the library has the 20 requested voices in 4 categories', () {
-      expect(AdhanSound.values, hasLength(20));
-      expect(AdhanSound.values.map((s) => s.id).toSet(), hasLength(20));
-      expect(AdhanSound.values.map((s) => s.file).toSet(), hasLength(20));
-      expect(AdhanSound.inCategory(AdhanCategory.haramain), hasLength(6));
-      expect(AdhanSound.inCategory(AdhanCategory.reciters), hasLength(10));
-      expect(AdhanSound.inCategory(AdhanCategory.countries), hasLength(2));
+    test('the library has 15 real recordings (plus a chime)', () {
+      expect(AdhanSound.values, hasLength(15));
+      expect(AdhanSound.values.map((s) => s.id).toSet(), hasLength(15));
+      expect(AdhanSound.inCategory(AdhanCategory.haramain), hasLength(5));
+      expect(AdhanSound.inCategory(AdhanCategory.famous), hasLength(4));
+      expect(AdhanSound.inCategory(AdhanCategory.muezzins), hasLength(4));
       expect(AdhanSound.inCategory(AdhanCategory.calm), hasLength(2));
-      expect(AdhanSound.makkahMulla.label, 'أذان الحرم المكي (علي أحمد ملا)');
-      expect(AdhanSound.aqsa.label, 'أذان المسجد الأقصى');
+      expect(AdhanSound.nabawi.label, 'أذان المسجد النبوي');
       expect(AdhanSound.takbeer.label, 'تكبيرات الأذان فقط (مختصر)');
       expect(AdhanSound.calm.label, 'نغمة تنبيه إسلامية هادئة');
     });
 
-    test('search and legacy ids', () {
+    test('every recording is credited and is real audio, not a short tone', () {
+      final credits = File('assets/audio/CREDITS.md').readAsStringSync();
+      for (final s in AdhanSound.values) {
+        expect(credits, contains(s.file), reason: s.file);
+        if (s != AdhanSound.calm) {
+          expect(s.credit, isNotNull, reason: s.id);
+          // Voice recordings are 9 s – 26 s of speech-rate audio.
+          final kb = File('assets/audio/${s.file}.wav').lengthSync() / 1000;
+          expect(kb, greaterThan(250), reason: s.file);
+        }
+      }
+    });
+
+    test('every sound is under 29 s and registered in the Xcode project', () {
+      final pbx = File(
+        'ios/Runner.xcodeproj/project.pbxproj',
+      ).readAsStringSync();
+      for (final s in AdhanSound.values) {
+        // 16 kHz mono 16-bit WAV: 32 000 bytes per second (+44-byte header).
+        final bytes = File('assets/audio/${s.file}.wav').lengthSync();
+        expect((bytes - 44) / 32000, lessThan(29), reason: s.file);
+        expect(File('ios/Runner/${s.iosFile}').existsSync(), isTrue);
+        expect(
+          File('android/app/src/main/res/raw/${s.file}.wav').existsSync(),
+          isTrue,
+        );
+        expect(
+          RegExp('${RegExp.escape(s.iosFile)} in Resources').hasMatch(pbx),
+          isTrue,
+          reason: s.iosFile,
+        );
+      }
+    });
+
+    test('search and unknown ids', () {
+      expect(AdhanSound.values.where((s) => s.matches('فخري')), [
+        AdhanSound.sabahFakhri,
+      ]);
       expect(AdhanSound.values.where((s) => s.matches('العفاسي')), [
         AdhanSound.afasy,
       ]);
-      expect(
-        AdhanSound.values.where((s) => s.matches('الحرم المدني')),
-        hasLength(2),
-      );
-      expect(AdhanSound.values.where((s) => s.matches('  ')), hasLength(20));
-      expect(AdhanSound.fromId('makkah'), AdhanSound.makkahMulla);
-      expect(AdhanSound.fromId('madinah'), AdhanSound.madinahBukhari);
-      expect(AdhanSound.fromId('nope'), AdhanSound.defaultSound);
-    });
-
-    test('the sound generator covers exactly the app sounds', () {
-      final script = File('tool/gen_sounds.py').readAsStringSync();
-      final inScript = RegExp(
-        r"^\s+'(adhan_\w+)':",
-        multiLine: true,
-      ).allMatches(script).map((m) => m.group(1)!).toSet();
-      expect(inScript, AdhanSound.values.map((s) => s.file).toSet());
+      expect(AdhanSound.values.where((s) => s.matches('المسجد النبوي')), [
+        AdhanSound.nabawi,
+        AdhanSound.takbeer,
+      ]);
+      expect(AdhanSound.values.where((s) => s.matches('  ')), hasLength(15));
+      // Ids saved by earlier builds fall back to the default.
+      expect(AdhanSound.fromId('makkah_old'), AdhanSound.defaultSound);
+      expect(AdhanSound.fromId(null), AdhanSound.defaultSound);
     });
   });
 
@@ -191,6 +217,17 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('أستغفر الله'), findsWidgets);
+      // The chip row is a horizontal list: scroll to reach the last dhikr.
+      await tester.scrollUntilVisible(
+        find.text('اللهم صل على محمد'),
+        200,
+        scrollable: find.descendant(
+          of: find.byWidgetPredicate(
+            (w) => w is ListView && w.scrollDirection == Axis.horizontal,
+          ),
+          matching: find.byType(Scrollable),
+        ),
+      );
       expect(find.text('اللهم صل على محمد'), findsOneWidget);
 
       await tester.tap(find.bySemanticsLabel(RegExp('اضغط للتسبيح')));
@@ -200,7 +237,7 @@ void main() {
       expect(prefs.getInt('tasbeeh_count'), 2);
       expect(prefs.getInt('tasbeeh_total'), 2);
 
-      await tester.tap(find.text('تصفير العدّاد'));
+      await tester.tap(find.byTooltip('تصفير العدّاد'));
       await tester.pumpAndSettle();
       expect(prefs.getInt('tasbeeh_count'), 0);
       expect(prefs.getInt('tasbeeh_total'), 2);
@@ -257,20 +294,20 @@ void main() {
         'إعدادات الأذان والمؤذنين',
         'إشعارات الصلوات الخمس',
         'صوت المؤذن',
-        'أذان الحرم المكي (علي أحمد ملا)',
+        'أذان المسجد النبوي',
         'تجربة إشعار الأذان الآن (بعد ٥ ثوانٍ)',
         'تذكيرات الذكر الدورية',
         'متوقف',
         'عن التطبيق',
         'أواب - صلاتي أذكاري ومهامي اليومية',
-        'الإصدار 1.0.0 +6',
+        'الإصدار 1.0.0 +7',
       ]) {
         expect(find.text(text), findsWidgets, reason: text);
       }
       // The long lists are NOT dumped on the main page any more.
       expect(find.byIcon(Icons.play_arrow_rounded), findsNothing);
       expect(find.text('كل ١٥ دقيقة'), findsNothing);
-      expect(find.text('أذان المسجد الأقصى'), findsNothing);
+      expect(find.text('أذان صباح فخري'), findsNothing);
     });
 
     testWidgets('theme switch changes the whole app and is saved', (
@@ -331,10 +368,10 @@ void main() {
       expect(container.read(themeModeProvider), ThemeMode.dark);
     });
 
-    testWidgets('muezzin library: 20 voices, categories, search, check mark', (
+    testWidgets('muezzin library: categories, search, preview, check mark', (
       tester,
     ) async {
-      tester.view.physicalSize = const Size(2400, 12000);
+      tester.view.physicalSize = const Size(2400, 8000);
       tester.view.devicePixelRatio = 2;
       addTearDown(tester.view.reset);
       final prefs = await _prefs();
@@ -347,21 +384,21 @@ void main() {
       for (final s in AdhanSound.values) {
         expect(find.text(s.label), findsOneWidget, reason: s.label);
       }
-      expect(find.byIcon(Icons.play_arrow_rounded), findsNWidgets(20));
+      expect(find.byIcon(Icons.play_arrow_rounded), findsNWidgets(15));
       expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
 
       // Choose another muezzin: the check mark follows and it is saved.
-      await tester.tap(find.text('مشاري راشد العفاسي'));
+      await tester.tap(find.text('أذان صباح فخري'));
       await tester.pumpAndSettle();
-      expect(prefs.getString('notif_adhan_sound'), 'afasy');
+      expect(prefs.getString('notif_adhan_sound'), 'sabah_fakhri');
       expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
 
       // Search narrows the list.
-      await tester.enterText(find.byType(EditableText), 'الأقصى');
+      await tester.enterText(find.byType(EditableText), 'ماهور');
       await tester.pumpAndSettle();
-      expect(find.text('أذان المسجد الأقصى'), findsOneWidget);
-      expect(find.text('مشاري راشد العفاسي'), findsNothing);
-      expect(find.text('أذان الحرم المكي (علي أحمد ملا)'), findsNothing);
+      expect(find.text('أذان بمقام الماهور'), findsOneWidget);
+      expect(find.text('أذان صباح فخري'), findsNothing);
+      expect(find.text('أذان المسجد النبوي'), findsNothing);
 
       await tester.enterText(find.byType(EditableText), 'xyz');
       await tester.pumpAndSettle();
