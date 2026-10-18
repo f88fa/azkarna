@@ -229,3 +229,121 @@ class _Stepper extends StatelessWidget {
     );
   }
 }
+
+/// Tappable row that performs an action (e.g. "send a test notification").
+class SettingsActionTile extends StatelessWidget {
+  const SettingsActionTile({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.title,
+    this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String? subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return CupertinoListTile(
+      leadingSize: 30,
+      padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 12),
+      leading: SettingsIcon(icon: icon, color: color),
+      title: Text(
+        title,
+        style: TextStyle(fontWeight: FontWeight.w700, color: primary),
+      ),
+      subtitle: subtitle == null ? null : Text(subtitle!),
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
+    );
+  }
+}
+
+/// A row of selectable chips (single choice).
+class SettingsChoiceTile<T> extends StatelessWidget {
+  const SettingsChoiceTile({
+    super.key,
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.options,
+    required this.selected,
+    required this.labelOf,
+    required this.onSelected,
+    this.enabled = true,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final List<T> options;
+  final T selected;
+  final String Function(T) labelOf;
+  final ValueChanged<T> onSelected;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Opacity(
+      opacity: enabled ? 1 : 0.4,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 16, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                SettingsIcon(icon: icon, color: color),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final option in options)
+                  ChoiceChip(
+                    label: Text(labelOf(option)),
+                    selected: option == selected,
+                    showCheckmark: false,
+                    selectedColor: theme.colorScheme.primary.withValues(
+                      alpha: 0.16,
+                    ),
+                    labelStyle: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: option == selected
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.onSurface,
+                    ),
+                    onSelected: enabled
+                        ? (_) {
+                            HapticFeedback.selectionClick();
+                            onSelected(option);
+                          }
+                        : null,
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

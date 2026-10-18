@@ -4,6 +4,8 @@ import '../../../../core/storage/shared_preferences_provider.dart';
 import '../../../prayer_times/presentation/providers/prayer_times_providers.dart';
 import '../../data/datasources/notification_settings_local_data_source.dart';
 import '../../data/repositories/notification_settings_repository_impl.dart';
+import '../../domain/entities/adhan_sound.dart';
+import '../../domain/entities/dhikr_reminder.dart';
 import '../../domain/entities/notification_settings.dart';
 import '../../domain/repositories/notification_settings_repository.dart';
 import '../../domain/services/notification_scheduler.dart';
@@ -88,6 +90,46 @@ class NotificationSettingsNotifier extends AsyncNotifier<NotificationSettings> {
 
   Future<void> setKhatmahReminderTime(ReminderTime time) =>
       _update((s) => s.copyWith(khatmahReminderTime: time));
+
+  Future<void> setAdhanSound(AdhanSound sound) =>
+      _update((s) => s.copyWith(adhanSound: sound));
+
+  /// Returns false when the OS denied notification permission.
+  Future<bool> setDhikrEnabled(bool enabled) async {
+    if (enabled && !await _ensurePermission()) return false;
+    await _update((s) => s.copyWith(dhikr: s.dhikr.copyWith(enabled: enabled)));
+    return true;
+  }
+
+  Future<void> setDhikrInterval(DhikrInterval interval) =>
+      _update((s) => s.copyWith(dhikr: s.dhikr.copyWith(interval: interval)));
+
+  Future<void> setDhikrQuietHours(bool enabled) => _update(
+    (s) => s.copyWith(dhikr: s.dhikr.copyWith(quietHoursEnabled: enabled)),
+  );
+
+  Future<void> setDhikrQuietStart(ReminderTime time) =>
+      _update((s) => s.copyWith(dhikr: s.dhikr.copyWith(quietStart: time)));
+
+  Future<void> setDhikrQuietEnd(ReminderTime time) =>
+      _update((s) => s.copyWith(dhikr: s.dhikr.copyWith(quietEnd: time)));
+
+  /// Schedules a test Adhan with the chosen sound after 5 s. Returns false
+  /// when the OS denied notification permission.
+  Future<bool> testAdhan() async {
+    if (!await _ensurePermission()) return false;
+    final sound =
+        (state.asData?.value ?? await _repository.getSettings()).adhanSound;
+    await ref.read(notificationSchedulerProvider).scheduleTestAdhan(sound);
+    return true;
+  }
+
+  /// Schedules a test dhikr notification after 5 s.
+  Future<bool> testDhikr() async {
+    if (!await _ensurePermission()) return false;
+    await ref.read(notificationSchedulerProvider).scheduleTestDhikr();
+    return true;
+  }
 
   Future<bool> _ensurePermission() => ref
       .read(notificationSchedulerProvider)

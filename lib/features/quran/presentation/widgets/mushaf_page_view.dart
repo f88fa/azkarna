@@ -6,8 +6,8 @@ import '../../../khatmah/domain/entities/khatmah_progress.dart';
 import '../../domain/entities/quran_index.dart';
 import '../../domain/entities/surah.dart';
 
-const String _quranFont = 'AmiriQuran';
-const String _bismillah = 'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ';
+const String kQuranFont = 'AmiriQuran';
+const String kBismillah = 'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ';
 
 /// One printed Mushaf page: ayahs in mushaf order with the end-of-ayah
 /// ornament carrying the ayah number, surah headings and the page number.
@@ -101,16 +101,16 @@ class _MushafPageViewState extends State<MushafPageView> {
             const SizedBox(height: 6),
             for (final segment in page.segments) ...[
               if (segment.startsSurah)
-                _SurahBanner(surah: segment.surah, gold: gold),
+                SurahBanner(surah: segment.surah, gold: gold),
               if (segment.startsSurah && segment.surah.hasBismillahHeader)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Text(
-                    _bismillah,
+                    kBismillah,
                     textAlign: TextAlign.center,
                     textDirection: TextDirection.rtl,
                     style: TextStyle(
-                      fontFamily: _quranFont,
+                      fontFamily: kQuranFont,
                       fontSize: 26,
                       height: 2,
                       color: ink,
@@ -134,7 +134,7 @@ class _MushafPageViewState extends State<MushafPageView> {
                       const TextSpan(text: ' '),
                       WidgetSpan(
                         alignment: PlaceholderAlignment.middle,
-                        child: _AyahMarker(
+                        child: AyahMarker(
                           number: ayah.number,
                           color: gold,
                           highlighted: _isMarked(segment.surah, ayah),
@@ -147,7 +147,7 @@ class _MushafPageViewState extends State<MushafPageView> {
                 textAlign: TextAlign.justify,
                 textDirection: TextDirection.rtl,
                 style: TextStyle(
-                  fontFamily: _quranFont,
+                  fontFamily: kQuranFont,
                   fontSize: 24,
                   height: 2.0,
                   color: ink,
@@ -182,8 +182,8 @@ class _MushafPageViewState extends State<MushafPageView> {
   }
 }
 
-class _SurahBanner extends StatelessWidget {
-  const _SurahBanner({required this.surah, required this.gold});
+class SurahBanner extends StatelessWidget {
+  const SurahBanner({super.key, required this.surah, required this.gold});
 
   final Surah surah;
   final Color gold;
@@ -203,7 +203,7 @@ class _SurahBanner extends StatelessWidget {
         textAlign: TextAlign.center,
         textDirection: TextDirection.rtl,
         style: TextStyle(
-          fontFamily: _quranFont,
+          fontFamily: kQuranFont,
           fontSize: 26,
           color: gold,
           height: 1.5,
@@ -214,8 +214,9 @@ class _SurahBanner extends StatelessWidget {
 }
 
 /// The round ornament that closes each ayah and carries its number.
-class _AyahMarker extends StatelessWidget {
-  const _AyahMarker({
+class AyahMarker extends StatelessWidget {
+  const AyahMarker({
+    super.key,
     required this.number,
     required this.color,
     required this.highlighted,

@@ -1,3 +1,6 @@
+import 'adhan_sound.dart';
+import 'dhikr_reminder.dart';
+
 class ReminderTime {
   const ReminderTime({required this.hour, required this.minute});
 
@@ -27,6 +30,8 @@ class NotificationSettings {
     this.eveningAdhkarEnabled = true,
     this.khatmahReminderEnabled = true,
     this.khatmahReminderTime = ReminderTime.defaultKhatmah,
+    this.adhanSound = AdhanSound.defaultSound,
+    this.dhikr = const DhikrReminderSettings(),
   });
 
   final bool adhanEnabled;
@@ -39,12 +44,20 @@ class NotificationSettings {
   final bool khatmahReminderEnabled;
   final ReminderTime khatmahReminderTime;
 
+  /// Sound played by the Adhan notifications.
+  final AdhanSound adhanSound;
+
+  /// Periodic dhikr reminders (every 15 min … 3 h).
+  final DhikrReminderSettings dhikr;
+
   NotificationSettings copyWith({
     bool? adhanEnabled,
     bool? morningAdhkarEnabled,
     bool? eveningAdhkarEnabled,
     bool? khatmahReminderEnabled,
     ReminderTime? khatmahReminderTime,
+    AdhanSound? adhanSound,
+    DhikrReminderSettings? dhikr,
   }) => NotificationSettings(
     adhanEnabled: adhanEnabled ?? this.adhanEnabled,
     morningAdhkarEnabled: morningAdhkarEnabled ?? this.morningAdhkarEnabled,
@@ -52,5 +65,7 @@ class NotificationSettings {
     khatmahReminderEnabled:
         khatmahReminderEnabled ?? this.khatmahReminderEnabled,
     khatmahReminderTime: khatmahReminderTime ?? this.khatmahReminderTime,
+    adhanSound: adhanSound ?? this.adhanSound,
+    dhikr: dhikr ?? this.dhikr,
   );
 }

@@ -1,5 +1,7 @@
 import '../../../prayer_times/domain/entities/prayer_times.dart';
 import '../../../tasks/domain/entities/task.dart';
+import '../../domain/entities/adhan_sound.dart';
+import '../../domain/entities/dhikr_reminder.dart';
 import '../../domain/entities/notification_settings.dart';
 import '../../domain/services/notification_scheduler.dart';
 
@@ -12,7 +14,10 @@ class NoopNotificationScheduler implements NotificationScheduler {
       true;
 
   @override
-  Future<void> scheduleAdhan(List<PrayerTimes> days) async {}
+  Future<void> scheduleAdhan(
+    List<PrayerTimes> days, {
+    required AdhanSound sound,
+  }) async {}
 
   @override
   Future<void> cancelAdhan() async {}
@@ -29,6 +34,23 @@ class NoopNotificationScheduler implements NotificationScheduler {
 
   @override
   Future<void> replaceTaskReminders(List<Task> tasks) async {}
+
+  @override
+  Future<void> replacePeriodicDhikr(DhikrReminderSettings settings) async {}
+
+  @override
+  Future<void> cancelPeriodicDhikr() async {}
+
+  @override
+  Future<void> scheduleTestAdhan(
+    AdhanSound sound, {
+    Duration delay = const Duration(seconds: 5),
+  }) async {}
+
+  @override
+  Future<void> scheduleTestDhikr({
+    Duration delay = const Duration(seconds: 5),
+  }) async {}
 
   @override
   Future<void> scheduleDailyKhatmahReminder(ReminderTime time) async {}

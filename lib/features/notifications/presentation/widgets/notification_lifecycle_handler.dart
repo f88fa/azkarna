@@ -23,6 +23,7 @@ class _NotificationLifecycleHandlerState
     extends ConsumerState<NotificationLifecycleHandler>
     with WidgetsBindingObserver {
   static const Duration _minSyncInterval = Duration(hours: 6);
+  static const Duration _dhikrSyncInterval = Duration(minutes: 10);
 
   DateTime? _lastSync;
 
@@ -45,8 +46,14 @@ class _NotificationLifecycleHandlerState
     _refreshPrayerTimesIfStale();
     final tasks = ref.read(tasksProvider).asData?.value;
     if (tasks != null) _syncTaskReminders(tasks);
+    // Periodic dhikr reminders are scheduled a few hours ahead only (OS cap on
+    // pending notifications), so top them up much more often.
+    final dhikrOn =
+        ref.read(notificationSettingsProvider).asData?.value.dhikr.enabled ??
+        false;
+    final interval = dhikrOn ? _dhikrSyncInterval : _minSyncInterval;
     final last = _lastSync;
-    if (last == null || DateTime.now().difference(last) > _minSyncInterval) {
+    if (last == null || DateTime.now().difference(last) > interval) {
       _sync();
     }
   }

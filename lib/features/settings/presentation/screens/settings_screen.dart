@@ -11,6 +11,8 @@ import '../../../notifications/domain/entities/notification_settings.dart';
 import '../../../notifications/presentation/providers/notification_providers.dart';
 import '../../../prayer_times/domain/entities/prayer_times.dart';
 import '../../../prayer_times/presentation/providers/prayer_times_providers.dart';
+import '../widgets/adhan_sound_section.dart';
+import '../widgets/dhikr_reminders_section.dart';
 import '../widgets/settings_group.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -40,9 +42,15 @@ class SettingsScreen extends ConsumerWidget {
                 error: error,
                 onRetry: () => ref.invalidate(notificationSettingsProvider),
               ),
-              data: (data) => _NotificationsSection(
-                settings: data,
-                cityLabel: location.city,
+              data: (data) => Column(
+                children: [
+                  _NotificationsSection(
+                    settings: data,
+                    cityLabel: location.city,
+                  ),
+                  AdhanSoundSection(selected: data.adhanSound),
+                  DhikrRemindersSection(settings: data.dhikr),
+                ],
               ),
             ),
             _PrayerSection(cityLabel: location.displayName),

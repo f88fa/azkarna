@@ -1,6 +1,7 @@
 import '../../../../core/error/failures.dart';
 import '../../../prayer_times/domain/entities/prayer_location.dart';
 import '../../../prayer_times/domain/repositories/prayer_times_repository.dart';
+import '../entities/notification_settings.dart';
 import '../repositories/notification_settings_repository.dart';
 import '../services/notification_scheduler.dart';
 
@@ -9,6 +10,7 @@ class SyncNotifications {
   const SyncNotifications(this._settings, this._prayerTimes, this._scheduler);
 
   static const int adhanDaysAhead = 7;
+  static const int adhanDaysWithDhikr = 4;
 
   final NotificationSettingsRepository _settings;
   final PrayerTimesRepository _prayerTimes;
@@ -25,6 +27,20 @@ class SyncNotifications {
       await _scheduler.cancelKhatmahReminder();
     }
 
+    await _syncPrayerBased(settings, location);
+
+    // Last, so it only uses the room left under the OS pending limit.
+    if (settings.dhikr.enabled) {
+      await _scheduler.replacePeriodicDhikr(settings.dhikr);
+    } else {
+      await _scheduler.cancelPeriodicDhikr();
+    }
+  }
+
+  Future<void> _syncPrayerBased(
+    NotificationSettings settings,
+    PrayerLocation location,
+  ) async {
     final adhkar =
         settings.morningAdhkarEnabled || settings.eveningAdhkarEnabled;
     if (!settings.adhanEnabled) await _scheduler.cancelAdhan();
@@ -34,10 +50,13 @@ class SyncNotifications {
     try {
       final days = await _prayerTimes.getUpcomingPrayerTimes(
         location,
-        days: adhanDaysAhead,
+        // Fewer days when the periodic reminders also need pending slots.
+        days: settings.dhikr.enabled ? adhanDaysWithDhikr : adhanDaysAhead,
       );
       if (days.isEmpty) return;
-      if (settings.adhanEnabled) await _scheduler.scheduleAdhan(days);
+      if (settings.adhanEnabled) {
+        await _scheduler.scheduleAdhan(days, sound: settings.adhanSound);
+      }
       if (adhkar) {
         await _scheduler.scheduleAdhkarReminders(
           days,

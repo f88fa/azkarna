@@ -8,6 +8,7 @@ import '../../../moon/presentation/widgets/moon_phase_card.dart';
 import '../../../prayer_times/presentation/widgets/prayer_times_card.dart';
 import '../widgets/home_adhkar_section.dart';
 import '../widgets/home_dock.dart';
+import '../widgets/home_feature_cards.dart';
 import '../widgets/home_tasks_section.dart';
 
 /// The app's single base page: prayer times, then adhkar, then today's
@@ -66,10 +67,16 @@ class HomeScreen extends StatelessWidget {
                 child: Reveal(index: 1, child: HomeAdhkarSection()),
               ),
             ),
+            const SliverPadding(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 26),
+              sliver: SliverToBoxAdapter(
+                child: Reveal(index: 2, child: HomeFeatureCards()),
+              ),
+            ),
             SliverPadding(
               padding: EdgeInsets.fromLTRB(20, 0, 20, dockInset),
               sliver: const SliverToBoxAdapter(
-                child: Reveal(index: 2, child: HomeTasksSection()),
+                child: Reveal(index: 3, child: HomeTasksSection()),
               ),
             ),
           ],

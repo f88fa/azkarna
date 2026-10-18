@@ -19,7 +19,11 @@ class PhoneFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    if (media.size.width < width + 40) return child;
+    // `?frame=0` shows the bare app (handy for tall screenshots).
+    if (media.size.width < width + 40 ||
+        Uri.base.queryParameters['frame'] == '0') {
+      return child;
+    }
 
     return ColoredBox(
       color: const Color(0xFFE9EDF2),

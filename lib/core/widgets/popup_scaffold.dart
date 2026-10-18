@@ -127,9 +127,14 @@ class _PopupScaffoldState extends State<PopupScaffold>
                       child: MediaQuery.removePadding(
                         context: context,
                         removeTop: true,
-                        child: NavBarInset(
-                          inset: bottom + 28,
-                          child: widget.child,
+                        // A transparent Scaffold gives SnackBars a home inside
+                        // the sheet (the home Scaffold below is covered).
+                        child: Scaffold(
+                          backgroundColor: Colors.transparent,
+                          body: NavBarInset(
+                            inset: bottom + 28,
+                            child: widget.child,
+                          ),
                         ),
                       ),
                     ),

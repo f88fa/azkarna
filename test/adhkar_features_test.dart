@@ -17,6 +17,7 @@ import 'package:azkarna/features/prayer_times/domain/repositories/prayer_times_r
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:azkarna/features/notifications/domain/entities/adhan_sound.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -42,7 +43,10 @@ class _FakeScheduler extends NoopNotificationScheduler {
   Future<void> cancelAdhkarReminders() async => adhkarCancels++;
 
   @override
-  Future<void> scheduleAdhan(List<PrayerTimes> days) async => adhanSchedules++;
+  Future<void> scheduleAdhan(
+    List<PrayerTimes> days, {
+    required AdhanSound sound,
+  }) async => adhanSchedules++;
 }
 
 class _FakePrayerRepo implements PrayerTimesRepository {

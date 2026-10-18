@@ -6,8 +6,10 @@ abstract final class AppRoutes {
   static const String quran = '/quran';
   static const String adhkar = '/adhkar';
   static const String settings = '/settings';
+  static const String tasbeeh = '/tasbeeh';
 
   // Full-screen pages pushed on top of a sheet or the home screen.
+  static const String kahf = '/kahf';
   static const String mushafPagePattern = '/read/:page';
   static const String adhkarCategoryPattern = '/dhikr/:id';
 

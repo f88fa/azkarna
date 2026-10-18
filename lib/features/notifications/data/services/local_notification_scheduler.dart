@@ -6,6 +6,8 @@ import 'package:timezone/timezone.dart' as tz;
 
 import '../../../prayer_times/domain/entities/prayer_times.dart';
 import '../../../tasks/domain/entities/task.dart';
+import '../../domain/entities/adhan_sound.dart';
+import '../../domain/entities/dhikr_reminder.dart';
 import '../../domain/entities/notification_settings.dart';
 import '../../domain/services/notification_scheduler.dart';
 
@@ -20,23 +22,51 @@ class LocalNotificationScheduler implements NotificationScheduler {
   static const int _adhkarIdBase = 500;
   static const int _adhanIdBase = 1000;
   static const int _idsPerDay = 10;
+  // Periodic dhikr reminders: [_dhikrIdBase, _dhikrIdEnd).
+  static const int _dhikrIdBase = 200000;
+  static const int _dhikrIdEnd = 300000;
+  // Test notifications sit between the dhikr ids and the task ids.
+  static const int _testAdhanId = 300001;
+  static const int _testDhikrId = 300002;
+  // iOS keeps at most 64 pending local notifications.
+  static const int _pendingLimit = 64;
+  static const int _pendingSafety = 8;
+  static const int _maxDhikrReminders = 40;
   // Task reminder ids live above every Adhan id.
   static const int _taskIdBase = 1000000;
 
-  static const NotificationDetails _adhanDetails = NotificationDetails(
+  /// Adhan notification playing [sound]. iOS needs the bundled `.caf` file
+  /// name; Android needs a channel per sound (a channel's sound is fixed once
+  /// created) and the raw resource name.
+  static NotificationDetails _adhanDetails(AdhanSound sound) =>
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'adhan_${sound.file}',
+          'الأذان · ${sound.label}',
+          channelDescription: 'تنبيهات الأذان عند كل صلاة',
+          importance: Importance.max,
+          priority: Priority.high,
+          category: AndroidNotificationCategory.alarm,
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound(sound.file),
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentSound: true,
+          sound: sound.iosFile,
+          interruptionLevel: InterruptionLevel.timeSensitive,
+        ),
+      );
+
+  static const NotificationDetails _dhikrDetails = NotificationDetails(
     android: AndroidNotificationDetails(
-      'adhan',
-      'مواقيت الصلاة',
-      channelDescription: 'تنبيهات الأذان عند كل صلاة',
-      importance: Importance.max,
-      priority: Priority.high,
-      category: AndroidNotificationCategory.alarm,
+      'dhikr',
+      'تذكيرات الذكر',
+      channelDescription: 'تذكير دوري بالاستغفار والتسبيح والصلاة على النبي',
+      importance: Importance.defaultImportance,
+      priority: Priority.defaultPriority,
     ),
-    iOS: DarwinNotificationDetails(
-      presentAlert: true,
-      presentSound: true,
-      interruptionLevel: InterruptionLevel.timeSensitive,
-    ),
+    iOS: DarwinNotificationDetails(presentAlert: true, presentSound: true),
   );
 
   static const NotificationDetails _adhkarDetails = NotificationDetails(
@@ -134,8 +164,12 @@ class LocalNotificationScheduler implements NotificationScheduler {
   }
 
   @override
-  Future<void> scheduleAdhan(List<PrayerTimes> days) async {
+  Future<void> scheduleAdhan(
+    List<PrayerTimes> days, {
+    required AdhanSound sound,
+  }) async {
     await cancelAdhan();
+    final details = _adhanDetails(sound);
 
     for (var dayIndex = 0; dayIndex < days.length; dayIndex++) {
       final day = days[dayIndex];
@@ -162,7 +196,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
           title: 'حان وقت صلاة ${prayer.label}',
           body: 'حان الآن موعد أذان ${prayer.label} · ${day.location}',
           when: when,
-          details: _adhanDetails,
+          details: details,
         );
       }
     }
@@ -172,7 +206,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
   Future<void> cancelAdhan() async {
     final pending = await _plugin.pendingNotificationRequests();
     for (final request in pending) {
-      if (request.id >= _adhanIdBase && request.id < _taskIdBase) {
+      if (request.id >= _adhanIdBase && request.id < _dhikrIdBase) {
         await _plugin.cancel(id: request.id);
       }
     }
@@ -232,6 +266,91 @@ class LocalNotificationScheduler implements NotificationScheduler {
         );
       }
     }
+  }
+
+  @override
+  Future<void> replacePeriodicDhikr(DhikrReminderSettings settings) async {
+    await cancelPeriodicDhikr();
+    if (!settings.enabled) return;
+
+    // Leave room for everything else that is already pending (Adhan, Adhkar,
+    // Khatmah, tasks) under the OS cap.
+    final pending = await _plugin.pendingNotificationRequests();
+    final others = pending
+        .where((r) => r.id < _dhikrIdBase || r.id >= _dhikrIdEnd)
+        .length;
+    final budget = (_pendingLimit - _pendingSafety - others).clamp(
+      0,
+      _maxDhikrReminders,
+    );
+    if (budget == 0) return;
+
+    final step = Duration(minutes: settings.interval.minutes);
+    final now = tz.TZDateTime.now(tz.local);
+    // Align to the interval boundary (e.g. :00 / :30) so reminders feel regular.
+    final epochMinutes = now.millisecondsSinceEpoch ~/ 60000;
+    final stepMinutes = settings.interval.minutes;
+    var next = tz.TZDateTime.fromMillisecondsSinceEpoch(
+      tz.local,
+      ((epochMinutes ~/ stepMinutes) + 1) * stepMinutes * 60000,
+    );
+    final horizon = now.add(const Duration(days: 3));
+
+    var scheduled = 0;
+    while (scheduled < budget && next.isBefore(horizon)) {
+      if (!settings.isQuiet(next.hour, next.minute)) {
+        final message = DhikrMessages.at(
+          next.millisecondsSinceEpoch ~/ 60000 ~/ stepMinutes,
+        );
+        await _schedule(
+          id: _dhikrIdBase + scheduled,
+          title: message.title,
+          body: message.body,
+          when: next,
+          details: _dhikrDetails,
+        );
+        scheduled++;
+      }
+      next = next.add(step);
+    }
+  }
+
+  @override
+  Future<void> cancelPeriodicDhikr() async {
+    final pending = await _plugin.pendingNotificationRequests();
+    for (final request in pending) {
+      if (request.id >= _dhikrIdBase && request.id < _dhikrIdEnd) {
+        await _plugin.cancel(id: request.id);
+      }
+    }
+  }
+
+  @override
+  Future<void> scheduleTestAdhan(
+    AdhanSound sound, {
+    Duration delay = const Duration(seconds: 5),
+  }) => _schedule(
+    id: _testAdhanId,
+    title: 'تجربة إشعار الأذان',
+    body: sound.label,
+    when: tz.TZDateTime.now(tz.local).add(delay),
+    details: _adhanDetails(sound),
+  );
+
+  @override
+  Future<void> scheduleTestDhikr({
+    Duration delay = const Duration(seconds: 5),
+  }) {
+    final message = DhikrMessages.at(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    );
+    return _schedule(
+      id: _testDhikrId,
+      title: message.title,
+      body: message.body,
+      when: tz.TZDateTime.now(tz.local).add(delay),
+      details: _dhikrDetails,
+    );
   }
 
   @override
