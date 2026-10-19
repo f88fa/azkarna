@@ -23,6 +23,24 @@ abstract final class AdhkarReminderDelays {
   static const Duration eveningAfterAsr = Duration(minutes: 20);
 }
 
+/// How long before the Friday Maghrib prayer the Surah Al-Kahf reminder fires.
+enum KahfLead {
+  oneHour(minutes: 60, label: 'قبل المغرب بساعة'),
+  twoHours(minutes: 120, label: 'قبل المغرب بساعتين');
+
+  const KahfLead({required this.minutes, required this.label});
+
+  final int minutes;
+  final String label;
+
+  Duration get duration => Duration(minutes: minutes);
+
+  static KahfLead fromMinutes(int? minutes) => KahfLead.values.firstWhere(
+    (l) => l.minutes == minutes,
+    orElse: () => KahfLead.oneHour,
+  );
+}
+
 class NotificationSettings {
   const NotificationSettings({
     this.adhanEnabled = true,
@@ -32,6 +50,8 @@ class NotificationSettings {
     this.khatmahReminderTime = ReminderTime.defaultKhatmah,
     this.adhanSound = AdhanSound.defaultSound,
     this.dhikr = const DhikrReminderSettings(),
+    this.kahfReminderEnabled = true,
+    this.kahfLead = KahfLead.oneHour,
   });
 
   final bool adhanEnabled;
@@ -50,6 +70,10 @@ class NotificationSettings {
   /// Periodic dhikr reminders (every 15 min … 3 h).
   final DhikrReminderSettings dhikr;
 
+  /// Friday reminder to read Surah Al-Kahf, [kahfLead] before Maghrib.
+  final bool kahfReminderEnabled;
+  final KahfLead kahfLead;
+
   NotificationSettings copyWith({
     bool? adhanEnabled,
     bool? morningAdhkarEnabled,
@@ -58,6 +82,8 @@ class NotificationSettings {
     ReminderTime? khatmahReminderTime,
     AdhanSound? adhanSound,
     DhikrReminderSettings? dhikr,
+    bool? kahfReminderEnabled,
+    KahfLead? kahfLead,
   }) => NotificationSettings(
     adhanEnabled: adhanEnabled ?? this.adhanEnabled,
     morningAdhkarEnabled: morningAdhkarEnabled ?? this.morningAdhkarEnabled,
@@ -67,5 +93,7 @@ class NotificationSettings {
     khatmahReminderTime: khatmahReminderTime ?? this.khatmahReminderTime,
     adhanSound: adhanSound ?? this.adhanSound,
     dhikr: dhikr ?? this.dhikr,
+    kahfReminderEnabled: kahfReminderEnabled ?? this.kahfReminderEnabled,
+    kahfLead: kahfLead ?? this.kahfLead,
   );
 }

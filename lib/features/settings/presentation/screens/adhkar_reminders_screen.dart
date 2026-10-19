@@ -79,6 +79,48 @@ class _Reminders extends ConsumerWidget {
     final time = settings.khatmahReminderTime;
     final timeLabel = arTime(DateTime(2000, 1, 1, time.hour, time.minute));
 
+    return Column(
+      children: [
+        _remindersSection(context, ref, notifier, timeLabel),
+        SettingsSection(
+          title: 'سورة الكهف يوم الجمعة',
+          footer:
+              'يصلك تذكير كل جمعة بقراءة سورة الكهف قبل أذان المغرب حسب موقعك. '
+              'يجدّد التطبيق الجدولة كلما فتحته.',
+          children: [
+            SettingsSwitchTile(
+              icon: Icons.menu_book_rounded,
+              color: AppColors.amber,
+              title: 'تذكير سورة الكهف',
+              subtitle: settings.kahfReminderEnabled
+                  ? settings.kahfLead.label
+                  : 'متوقف',
+              value: settings.kahfReminderEnabled,
+              onChanged: (v) =>
+                  _toggle(context, () => notifier.setKahfReminderEnabled(v)),
+            ),
+            SettingsChoiceTile<KahfLead>(
+              icon: Icons.timer_rounded,
+              color: AppColors.blue,
+              title: 'وقت التذكير',
+              options: KahfLead.values,
+              selected: settings.kahfLead,
+              labelOf: (l) => l.label,
+              enabled: settings.kahfReminderEnabled,
+              onSelected: notifier.setKahfLead,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _remindersSection(
+    BuildContext context,
+    WidgetRef ref,
+    NotificationSettingsNotifier notifier,
+    String timeLabel,
+  ) {
     return SettingsSection(
       title: 'التذكيرات',
       children: [

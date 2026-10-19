@@ -13,7 +13,7 @@ class HomeFeatureCards extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final today = ref.watch(tasbeehProvider.select((s) => s.today));
+    final tasbeeh = ref.watch(tasbeehProvider);
     final progress = ref.watch(kahfProgressProvider);
     final isFriday = DateTime.now().weekday == DateTime.friday;
 
@@ -29,9 +29,11 @@ class HomeFeatureCards extends ConsumerWidget {
             child: _FeatureCard(
               icon: Icons.touch_app_rounded,
               title: 'المسبحة',
-              subtitle: today > 0
-                  ? 'اليوم: ${arNum(today)} تسبيحة'
+              subtitle: tasbeeh.count > 0
+                  ? 'وصلت إلى ${arNum(tasbeeh.count)}'
+                        '${tasbeeh.target > 0 ? ' من ${arNum(tasbeeh.target)}' : ''}'
                   : 'عدّاد التسبيح',
+              progress: tasbeeh.progress,
               colors: const [Color(0xFF0E9F6E), Color(0xFF0B7A55)],
               onTap: () => context.push(AppRoutes.tasbeeh),
             ),
@@ -42,6 +44,7 @@ class HomeFeatureCards extends ConsumerWidget {
               icon: Icons.menu_book_rounded,
               title: 'سورة الكهف',
               subtitle: kahfSubtitle,
+              progress: progress,
               badge: isFriday ? 'الجمعة' : null,
               colors: const [Color(0xFFB8860B), Color(0xFF8A6508)],
               onTap: () => context.push(AppRoutes.kahf),
@@ -60,6 +63,7 @@ class _FeatureCard extends StatelessWidget {
     required this.subtitle,
     required this.colors,
     required this.onTap,
+    required this.progress,
     this.badge,
   });
 
@@ -69,6 +73,9 @@ class _FeatureCard extends StatelessWidget {
   final List<Color> colors;
   final VoidCallback onTap;
   final String? badge;
+
+  /// 0 – 1: a line under the card shows how far along the user is.
+  final double progress;
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +160,17 @@ class _FeatureCard extends StatelessWidget {
                         color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 12.5,
                         fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Progress line: starts at the right (RTL) and grows left.
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: progress.clamp(0.0, 1.0),
+                        minHeight: 5,
+                        backgroundColor: Colors.white.withValues(alpha: 0.25),
+                        valueColor: const AlwaysStoppedAnimation(Colors.white),
                       ),
                     ),
                   ],

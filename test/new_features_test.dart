@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:azkarna/core/storage/shared_preferences_provider.dart';
 import 'package:azkarna/core/theme/app_theme.dart';
+import 'package:azkarna/features/home/presentation/widgets/home_feature_cards.dart';
 import 'package:azkarna/features/notifications/domain/entities/adhan_sound.dart';
 import 'package:azkarna/features/notifications/domain/entities/dhikr_reminder.dart';
 import 'package:azkarna/features/notifications/presentation/providers/notification_providers.dart';
 import 'package:azkarna/features/quran/presentation/screens/kahf_reader_screen.dart';
 import 'package:azkarna/core/constants/app_constants.dart';
 import 'package:azkarna/core/theme/theme_mode_provider.dart';
+import 'package:azkarna/features/settings/presentation/screens/adhkar_reminders_screen.dart';
 import 'package:azkarna/features/settings/presentation/screens/dhikr_settings_screen.dart';
 import 'package:azkarna/features/settings/presentation/screens/muadhin_picker_screen.dart';
 import 'package:azkarna/features/settings/presentation/screens/settings_screen.dart';
@@ -272,6 +274,55 @@ void main() {
     });
   });
 
+  testWidgets('home cards show the tasbeeh count and the Kahf reading line', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 800);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    final prefs = await _prefs({
+      'tasbeeh_count': 25,
+      'tasbeeh_target': 33,
+      'kahf_progress': 0.5,
+    });
+    await tester.pumpWidget(
+      _app(prefs, const Scaffold(body: HomeFeatureCards())),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('وصلت إلى ٢٥ من ٣٣'), findsOneWidget);
+    expect(find.textContaining('٥٠٪'), findsOneWidget);
+    final lines = tester
+        .widgetList<LinearProgressIndicator>(
+          find.byType(LinearProgressIndicator),
+        )
+        .map((l) => l.value)
+        .toList();
+    expect(lines, hasLength(2));
+    expect(lines[0], closeTo(25 / 33, 0.001)); // tasbeeh (first card)
+    expect(lines[1], 0.5); // Al-Kahf
+  });
+
+  testWidgets('Kahf reminder settings: switch and 1h / 2h before Maghrib', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 3000);
+    tester.view.devicePixelRatio = 2;
+    addTearDown(tester.view.reset);
+    final prefs = await _prefs();
+    await tester.pumpWidget(_app(prefs, const AdhkarRemindersScreen()));
+    await tester.pumpAndSettle();
+
+    expect(find.text('سورة الكهف يوم الجمعة'), findsOneWidget);
+    expect(find.text('تذكير سورة الكهف'), findsOneWidget);
+    expect(find.text('قبل المغرب بساعة'), findsWidgets);
+
+    // Default: on, one hour. Pick two hours.
+    await tester.tap(find.text('قبل المغرب بساعتين'));
+    await tester.pumpAndSettle();
+    expect(prefs.getInt('notif_kahf_lead_min'), 120);
+  });
+
   testWidgets('Al-Kahf reader saves the reading position', (tester) async {
     tester.view.physicalSize = const Size(800, 1600);
     tester.view.devicePixelRatio = 2;
@@ -328,7 +379,9 @@ void main() {
         'متوقف',
         'عن التطبيق',
         'أواب - صلاتي أذكاري ومهامي اليومية',
-        'الإصدار 1.0.0 +8',
+        'الإصدار 1.0.0 +9',
+        'التطبيق صدقة جارية للشيخ فريح التميمي رحمه الله',
+        'برمجة وتطوير فارس التريباني',
       ]) {
         expect(find.text(text), findsWidgets, reason: text);
       }

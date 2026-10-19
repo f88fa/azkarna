@@ -54,6 +54,15 @@ class NoopNotificationScheduler implements NotificationScheduler {
   }) async {}
 
   @override
+  Future<void> scheduleKahfReminders(
+    List<PrayerTimes> fridays, {
+    required Duration before,
+  }) async {}
+
+  @override
+  Future<void> cancelKahfReminders() async {}
+
+  @override
   Future<void> scheduleDailyKhatmahReminder(ReminderTime time) async {}
 
   @override

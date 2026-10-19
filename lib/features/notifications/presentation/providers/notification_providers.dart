@@ -91,6 +91,16 @@ class NotificationSettingsNotifier extends AsyncNotifier<NotificationSettings> {
   Future<void> setKhatmahReminderTime(ReminderTime time) =>
       _update((s) => s.copyWith(khatmahReminderTime: time));
 
+  /// Returns false when the OS denied notification permission.
+  Future<bool> setKahfReminderEnabled(bool enabled) async {
+    if (enabled && !await _ensurePermission()) return false;
+    await _update((s) => s.copyWith(kahfReminderEnabled: enabled));
+    return true;
+  }
+
+  Future<void> setKahfLead(KahfLead lead) =>
+      _update((s) => s.copyWith(kahfLead: lead));
+
   Future<void> setAdhanSound(AdhanSound sound) =>
       _update((s) => s.copyWith(adhanSound: sound));
 

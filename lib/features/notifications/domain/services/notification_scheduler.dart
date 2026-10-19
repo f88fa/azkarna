@@ -53,6 +53,14 @@ abstract interface class NotificationScheduler {
     bool sound = true,
   });
 
+  /// Replaces the Surah Al-Kahf reminders: one notification [before] each
+  /// Maghrib in [fridays] (days that are Fridays).
+  Future<void> scheduleKahfReminders(
+    List<PrayerTimes> fridays, {
+    required Duration before,
+  });
+  Future<void> cancelKahfReminders();
+
   /// Schedules a notification repeating every day at [time].
   Future<void> scheduleDailyKhatmahReminder(ReminderTime time);
   Future<void> cancelKhatmahReminder();

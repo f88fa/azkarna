@@ -28,6 +28,9 @@ class LocalNotificationScheduler implements NotificationScheduler {
   // Test notifications sit between the dhikr ids and the task ids.
   static const int _testAdhanId = 300001;
   static const int _testDhikrId = 300002;
+  // Friday Al-Kahf reminders: [_kahfIdBase, _kahfIdEnd).
+  static const int _kahfIdBase = 300100;
+  static const int _kahfIdEnd = 300200;
   // iOS keeps at most 64 pending local notifications.
   static const int _pendingLimit = 64;
   static const int _pendingSafety = 8;
@@ -109,6 +112,21 @@ class LocalNotificationScheduler implements NotificationScheduler {
       'tasks',
       'تذكير المهام',
       channelDescription: 'تنبيه عند وقت المهمة',
+      importance: Importance.high,
+      priority: Priority.high,
+    ),
+    iOS: DarwinNotificationDetails(
+      presentAlert: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    ),
+  );
+
+  static const NotificationDetails _kahfDetails = NotificationDetails(
+    android: AndroidNotificationDetails(
+      'kahf',
+      'تذكير سورة الكهف',
+      channelDescription: 'تذكير يوم الجمعة بقراءة سورة الكهف قبل المغرب',
       importance: Importance.high,
       priority: Priority.high,
     ),
@@ -284,6 +302,46 @@ class LocalNotificationScheduler implements NotificationScheduler {
           when: when,
           details: _adhkarDetails,
         );
+      }
+    }
+  }
+
+  @override
+  Future<void> scheduleKahfReminders(
+    List<PrayerTimes> fridays, {
+    required Duration before,
+  }) async {
+    await cancelKahfReminders();
+    for (var i = 0; i < fridays.length && i < _kahfIdEnd - _kahfIdBase; i++) {
+      final day = fridays[i];
+      final maghrib = day.times[Prayer.maghrib];
+      if (maghrib == null) continue;
+      final location = _locationFor(day.timeZone);
+      final when = tz.TZDateTime(
+        location,
+        maghrib.year,
+        maghrib.month,
+        maghrib.day,
+        maghrib.hour,
+        maghrib.minute,
+      ).subtract(before);
+      if (!when.isAfter(tz.TZDateTime.now(location))) continue;
+      await _schedule(
+        id: _kahfIdBase + i,
+        title: 'سورة الكهف · يوم الجمعة',
+        body: 'لا تنسَ قراءة سورة الكهف قبل أذان المغرب',
+        when: when,
+        details: _kahfDetails,
+      );
+    }
+  }
+
+  @override
+  Future<void> cancelKahfReminders() async {
+    final pending = await _plugin.pendingNotificationRequests();
+    for (final request in pending) {
+      if (request.id >= _kahfIdBase && request.id < _kahfIdEnd) {
+        await _plugin.cancel(id: request.id);
       }
     }
   }

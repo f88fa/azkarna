@@ -27,6 +27,21 @@ class _FakeScheduler extends NoopNotificationScheduler {
   bool? evening;
   int adhkarCancels = 0;
   int adhanSchedules = 0;
+  List<PrayerTimes>? kahfDays;
+  Duration? kahfBefore;
+  int kahfCancels = 0;
+
+  @override
+  Future<void> scheduleKahfReminders(
+    List<PrayerTimes> fridays, {
+    required Duration before,
+  }) async {
+    kahfDays = fridays;
+    kahfBefore = before;
+  }
+
+  @override
+  Future<void> cancelKahfReminders() async => kahfCancels++;
 
   @override
   Future<void> scheduleAdhkarReminders(
@@ -73,7 +88,73 @@ class _FakePrayerRepo implements PrayerTimesRepository {
   ];
 }
 
+/// Thursday, Friday and Saturday (2030-01-03 .. 05; the 4th is a Friday).
+class _WeekPrayerRepo extends _FakePrayerRepo {
+  @override
+  Future<List<PrayerTimes>> getUpcomingPrayerTimes(
+    PrayerLocation location, {
+    int days = 7,
+  }) async => [
+    for (var d = 3; d <= 5; d++)
+      PrayerTimes(
+        location: 'حائل',
+        timeZone: 'Asia/Riyadh',
+        utcOffset: const Duration(hours: 3),
+        date: DateTime(2030, 1, d),
+        hijriDate: '',
+        times: {Prayer.maghrib: DateTime(2030, 1, d, 17, 30)},
+      ),
+  ];
+}
+
+Future<SyncNotifications> _syncWith(
+  Map<String, Object> values,
+  _FakeScheduler scheduler,
+) async {
+  SharedPreferences.setMockInitialValues(values);
+  final prefs = await SharedPreferences.getInstance();
+  return SyncNotifications(
+    NotificationSettingsRepositoryImpl(
+      SharedPrefsNotificationSettingsDataSource(prefs),
+    ),
+    _WeekPrayerRepo(),
+    scheduler,
+  );
+}
+
 void main() {
+  test(
+    'Kahf reminder: only Fridays, one hour before Maghrib by default',
+    () async {
+      final scheduler = _FakeScheduler();
+      await (await _syncWith({}, scheduler))(PrayerLocation.hail);
+      expect(scheduler.kahfDays, hasLength(1));
+      expect(scheduler.kahfDays!.single.date.weekday, DateTime.friday);
+      expect(scheduler.kahfBefore, const Duration(hours: 1));
+      expect(scheduler.kahfCancels, 0);
+    },
+  );
+
+  test('Kahf reminder: two hours before Maghrib when chosen', () async {
+    final scheduler = _FakeScheduler();
+    await (await _syncWith({'notif_kahf_lead_min': 120}, scheduler))(
+      PrayerLocation.hail,
+    );
+    expect(scheduler.kahfBefore, const Duration(hours: 2));
+  });
+
+  test(
+    'Kahf reminder: switching it off cancels and schedules nothing',
+    () async {
+      final scheduler = _FakeScheduler();
+      await (await _syncWith({'notif_kahf_enabled': false}, scheduler))(
+        PrayerLocation.hail,
+      );
+      expect(scheduler.kahfCancels, 1);
+      expect(scheduler.kahfDays, isNull);
+    },
+  );
+
   test('adhkar reminder delays are 30 min after Fajr and 20 after Asr', () {
     expect(AdhkarReminderDelays.morningAfterFajr, const Duration(minutes: 30));
     expect(AdhkarReminderDelays.eveningAfterAsr, const Duration(minutes: 20));

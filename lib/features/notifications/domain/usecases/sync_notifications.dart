@@ -1,5 +1,6 @@
 import '../../../../core/error/failures.dart';
 import '../../../prayer_times/domain/entities/prayer_location.dart';
+import '../../../prayer_times/domain/entities/prayer_times.dart';
 import '../../../prayer_times/domain/repositories/prayer_times_repository.dart';
 import '../entities/notification_settings.dart';
 import '../repositories/notification_settings_repository.dart';
@@ -11,6 +12,7 @@ class SyncNotifications {
 
   static const int adhanDaysAhead = 7;
   static const int adhanDaysWithDhikr = 4;
+  static const int kahfDaysAhead = 8;
 
   final NotificationSettingsRepository _settings;
   final PrayerTimesRepository _prayerTimes;
@@ -28,6 +30,7 @@ class SyncNotifications {
     }
 
     await _syncPrayerBased(settings, location);
+    await _syncKahf(settings, location);
 
     // Last, so it only uses the room left under the OS pending limit.
     if (settings.dhikr.enabled) {
@@ -66,6 +69,35 @@ class SyncNotifications {
       }
     } on Failure {
       // Offline or API error: keep the previously scheduled notifications.
+    }
+  }
+
+  /// Friday reminder: the Fridays of the coming week, [KahfLead] before
+  /// Maghrib. Fetches its own days so it never depends on how many days the
+  /// Adhan scheduling asked for.
+  Future<void> _syncKahf(
+    NotificationSettings settings,
+    PrayerLocation location,
+  ) async {
+    if (!settings.kahfReminderEnabled) {
+      await _scheduler.cancelKahfReminders();
+      return;
+    }
+    try {
+      final days = await _prayerTimes.getUpcomingPrayerTimes(
+        location,
+        days: kahfDaysAhead,
+      );
+      final fridays = [
+        for (final day in days)
+          if (day.times[Prayer.maghrib]?.weekday == DateTime.friday) day,
+      ];
+      await _scheduler.scheduleKahfReminders(
+        fridays,
+        before: settings.kahfLead.duration,
+      );
+    } on Failure {
+      // Keep whatever was scheduled before.
     }
   }
 }

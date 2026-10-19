@@ -260,35 +260,58 @@ class _AboutSection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset(
-                  'assets/images/app_icon.png',
-                  width: 72,
-                  height: 72,
-                  fit: BoxFit.cover,
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    'assets/images/app_icon.png',
+                    width: 72,
+                    height: 72,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                '${AppConstants.appName} - ${AppConstants.appTagline}',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.primary,
+                const SizedBox(height: 12),
+                Text(
+                  '${AppConstants.appName} - ${AppConstants.appTagline}',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'الإصدار ${AppConstants.appVersion} +${AppConstants.buildNumber}',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: muted,
-                  fontWeight: FontWeight.w600,
+                const SizedBox(height: 6),
+                Text(
+                  'الإصدار ${AppConstants.appVersion} +${AppConstants.buildNumber}',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: muted,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 10),
+                Text(
+                  'التطبيق صدقة جارية للشيخ فريح التميمي رحمه الله',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  'برمجة وتطوير فارس التريباني',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: muted.withValues(alpha: 0.55),
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
