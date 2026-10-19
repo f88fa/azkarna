@@ -58,7 +58,11 @@ class SyncNotifications {
       );
       if (days.isEmpty) return;
       if (settings.adhanEnabled) {
-        await _scheduler.scheduleAdhan(days, sound: settings.adhanSound);
+        await _scheduler.scheduleAdhan(
+          days,
+          sound: settings.adhanSound,
+          duration: settings.adhanDuration,
+        );
       }
       if (adhkar) {
         await _scheduler.scheduleAdhkarReminders(

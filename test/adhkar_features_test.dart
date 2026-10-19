@@ -61,6 +61,7 @@ class _FakeScheduler extends NoopNotificationScheduler {
   Future<void> scheduleAdhan(
     List<PrayerTimes> days, {
     required AdhanSound sound,
+    AdhanDuration duration = AdhanDuration.full,
   }) async => adhanSchedules++;
 }
 

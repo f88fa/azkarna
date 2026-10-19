@@ -101,6 +101,9 @@ class NotificationSettingsNotifier extends AsyncNotifier<NotificationSettings> {
   Future<void> setKahfLead(KahfLead lead) =>
       _update((s) => s.copyWith(kahfLead: lead));
 
+  Future<void> setAdhanDuration(AdhanDuration duration) =>
+      _update((s) => s.copyWith(adhanDuration: duration));
+
   Future<void> setAdhanSound(AdhanSound sound) =>
       _update((s) => s.copyWith(adhanSound: sound));
 
@@ -132,9 +135,13 @@ class NotificationSettingsNotifier extends AsyncNotifier<NotificationSettings> {
   /// when the OS denied notification permission.
   Future<bool> testAdhan() async {
     if (!await _ensurePermission()) return false;
-    final sound =
-        (state.asData?.value ?? await _repository.getSettings()).adhanSound;
-    await ref.read(notificationSchedulerProvider).scheduleTestAdhan(sound);
+    final settings = state.asData?.value ?? await _repository.getSettings();
+    await ref
+        .read(notificationSchedulerProvider)
+        .scheduleTestAdhan(
+          settings.adhanSound,
+          duration: settings.adhanDuration,
+        );
     return true;
   }
 

@@ -15,6 +15,7 @@ abstract interface class NotificationScheduler {
   Future<void> scheduleAdhan(
     List<PrayerTimes> days, {
     required AdhanSound sound,
+    AdhanDuration duration = AdhanDuration.full,
   });
   Future<void> cancelAdhan();
 
@@ -45,6 +46,7 @@ abstract interface class NotificationScheduler {
   Future<void> scheduleTestAdhan(
     AdhanSound sound, {
     Duration delay = const Duration(seconds: 5),
+    AdhanDuration duration = AdhanDuration.full,
   });
 
   /// Fires a test dhikr notification after [delay].

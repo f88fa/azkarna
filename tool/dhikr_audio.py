@@ -13,7 +13,11 @@ import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from adhan_audio import ROOT, register_in_xcode  # noqa: E402
+import numpy as np  # noqa: E402
+from adhan_audio import (  # noqa: E402
+    ROOT, decode, loudify, register_in_xcode, write_wav)
+
+SR = 24000
 
 # id -> source file in azkarmp3/ (the order is the rotation order in the app)
 SOURCES = {
@@ -34,11 +38,9 @@ def main():
     for sid, src in SOURCES.items():
         name = f'dhikr_{sid}'
         wav = os.path.join(raw, f'{name}.wav')
-        subprocess.run(
-            ['ffmpeg', '-y', '-v', 'error', '-i',
-             os.path.join(ROOT, 'azkarmp3', src), '-ac', '1', '-ar', '24000',
-             '-af', 'loudnorm=I=-16:TP=-1.5:LRA=11,apad=pad_dur=0.15',
-             '-c:a', 'pcm_s16le', wav], check=True)
+        x = decode(os.path.join(ROOT, 'azkarmp3', src), SR)
+        x = np.concatenate([loudify(x, SR, -12.0), np.zeros(int(0.15 * SR))])
+        write_wav(wav, x, SR)
         subprocess.run(
             ['afconvert', '-f', 'caff', '-d', 'LEI16', wav,
              os.path.join(ROOT, 'ios/Runner', f'{name}.caf')], check=True)

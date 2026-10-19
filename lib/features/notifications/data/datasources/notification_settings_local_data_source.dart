@@ -22,6 +22,7 @@ class SharedPrefsNotificationSettingsDataSource
   static const String _hourKey = 'notif_khatmah_hour';
   static const String _minuteKey = 'notif_khatmah_minute';
   static const String _soundKey = 'notif_adhan_sound';
+  static const String _durationKey = 'notif_adhan_duration';
   static const String _dhikrOnKey = 'notif_dhikr_enabled';
   static const String _dhikrIntervalKey = 'notif_dhikr_interval_min';
   static const String _dhikrSoundKey = 'notif_dhikr_sound';
@@ -59,6 +60,7 @@ class SharedPrefsNotificationSettingsDataSource
           ? ReminderTime(hour: hour, minute: minute)
           : defaults.khatmahReminderTime,
       adhanSound: AdhanSound.fromId(_prefs.getString(_soundKey)),
+      adhanDuration: AdhanDuration.fromName(_prefs.getString(_durationKey)),
       kahfReminderEnabled:
           _prefs.getBool(_kahfOnKey) ?? defaults.kahfReminderEnabled,
       kahfLead: KahfLead.fromMinutes(_prefs.getInt(_kahfLeadKey)),
@@ -95,6 +97,7 @@ class SharedPrefsNotificationSettingsDataSource
     await _prefs.setInt(_hourKey, settings.khatmahReminderTime.hour);
     await _prefs.setInt(_minuteKey, settings.khatmahReminderTime.minute);
     await _prefs.setString(_soundKey, settings.adhanSound.id);
+    await _prefs.setString(_durationKey, settings.adhanDuration.name);
     await _prefs.setBool(_kahfOnKey, settings.kahfReminderEnabled);
     await _prefs.setInt(_kahfLeadKey, settings.kahfLead.minutes);
     final d = settings.dhikr;

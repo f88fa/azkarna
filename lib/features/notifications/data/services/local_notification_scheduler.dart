@@ -41,25 +41,27 @@ class LocalNotificationScheduler implements NotificationScheduler {
   /// Adhan notification playing [sound]. iOS needs the bundled `.caf` file
   /// name; Android needs a channel per sound (a channel's sound is fixed once
   /// created) and the raw resource name.
-  static NotificationDetails _adhanDetails(AdhanSound sound) =>
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          'adhan_${sound.file}',
-          'الأذان · ${sound.label}',
-          channelDescription: 'تنبيهات الأذان عند كل صلاة',
-          importance: Importance.max,
-          priority: Priority.high,
-          category: AndroidNotificationCategory.alarm,
-          playSound: true,
-          sound: RawResourceAndroidNotificationSound(sound.file),
-        ),
-        iOS: DarwinNotificationDetails(
-          presentAlert: true,
-          presentSound: true,
-          sound: sound.iosFile,
-          interruptionLevel: InterruptionLevel.timeSensitive,
-        ),
-      );
+  static NotificationDetails _adhanDetails(
+    AdhanSound sound,
+    AdhanDuration duration,
+  ) => NotificationDetails(
+    android: AndroidNotificationDetails(
+      'adhan_${sound.fileFor(duration)}',
+      'الأذان · ${sound.label}${duration == AdhanDuration.short ? ' (مختصر)' : ''}',
+      channelDescription: 'تنبيهات الأذان عند كل صلاة',
+      importance: Importance.max,
+      priority: Priority.high,
+      category: AndroidNotificationCategory.alarm,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound(sound.fileFor(duration)),
+    ),
+    iOS: DarwinNotificationDetails(
+      presentAlert: true,
+      presentSound: true,
+      sound: sound.iosFileFor(duration),
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    ),
+  );
 
   /// Periodic dhikr: the spoken recording of [message], or a silent
   /// notification when [sound] is off. Android needs one channel per sound
@@ -205,9 +207,10 @@ class LocalNotificationScheduler implements NotificationScheduler {
   Future<void> scheduleAdhan(
     List<PrayerTimes> days, {
     required AdhanSound sound,
+    AdhanDuration duration = AdhanDuration.full,
   }) async {
     await cancelAdhan();
-    final details = _adhanDetails(sound);
+    final details = _adhanDetails(sound, duration);
 
     for (var dayIndex = 0; dayIndex < days.length; dayIndex++) {
       final day = days[dayIndex];
@@ -407,12 +410,13 @@ class LocalNotificationScheduler implements NotificationScheduler {
   Future<void> scheduleTestAdhan(
     AdhanSound sound, {
     Duration delay = const Duration(seconds: 5),
+    AdhanDuration duration = AdhanDuration.full,
   }) => _schedule(
     id: _testAdhanId,
     title: 'تجربة إشعار الأذان',
     body: sound.label,
     when: tz.TZDateTime.now(tz.local).add(delay),
-    details: _adhanDetails(sound),
+    details: _adhanDetails(sound, duration),
   );
 
   @override

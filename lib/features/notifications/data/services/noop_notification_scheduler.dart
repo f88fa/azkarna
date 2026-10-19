@@ -17,6 +17,7 @@ class NoopNotificationScheduler implements NotificationScheduler {
   Future<void> scheduleAdhan(
     List<PrayerTimes> days, {
     required AdhanSound sound,
+    AdhanDuration duration = AdhanDuration.full,
   }) async {}
 
   @override
@@ -45,6 +46,7 @@ class NoopNotificationScheduler implements NotificationScheduler {
   Future<void> scheduleTestAdhan(
     AdhanSound sound, {
     Duration delay = const Duration(seconds: 5),
+    AdhanDuration duration = AdhanDuration.full,
   }) async {}
 
   @override

@@ -5,6 +5,7 @@ import 'package:azkarna/core/theme/app_theme.dart';
 import 'package:azkarna/features/home/presentation/widgets/home_feature_cards.dart';
 import 'package:azkarna/features/notifications/domain/entities/adhan_sound.dart';
 import 'package:azkarna/features/notifications/domain/entities/dhikr_reminder.dart';
+import 'package:azkarna/features/notifications/domain/entities/notification_settings.dart';
 import 'package:azkarna/features/notifications/presentation/providers/notification_providers.dart';
 import 'package:azkarna/features/quran/presentation/screens/kahf_reader_screen.dart';
 import 'package:azkarna/core/constants/app_constants.dart';
@@ -103,17 +104,55 @@ void main() {
         // 16 kHz mono 16-bit WAV: 32 000 bytes per second (+44-byte header).
         final bytes = File('assets/audio/${s.file}.wav').lengthSync();
         expect((bytes - 44) / 32000, lessThan(29), reason: s.file);
-        expect(File('ios/Runner/${s.iosFile}').existsSync(), isTrue);
+        for (final d in AdhanDuration.values) {
+          expect(File('ios/Runner/${s.iosFileFor(d)}').existsSync(), isTrue);
+          expect(
+            File(
+              'android/app/src/main/res/raw/${s.fileFor(d)}.wav',
+            ).existsSync(),
+            isTrue,
+          );
+          expect(
+            RegExp(
+              '${RegExp.escape(s.iosFileFor(d))} in Resources',
+            ).hasMatch(pbx),
+            isTrue,
+            reason: s.iosFileFor(d),
+          );
+        }
+        // The short version really is short (about 7 - 11 s).
+        final shortBytes = File(
+          'android/app/src/main/res/raw/${s.fileFor(AdhanDuration.short)}.wav',
+        ).lengthSync();
         expect(
-          File('android/app/src/main/res/raw/${s.file}.wav').existsSync(),
-          isTrue,
-        );
-        expect(
-          RegExp('${RegExp.escape(s.iosFile)} in Resources').hasMatch(pbx),
-          isTrue,
-          reason: s.iosFile,
+          (shortBytes - 44) / 32000,
+          inInclusiveRange(6, 12),
+          reason: s.id,
         );
       }
+    });
+
+    test('adhan duration is saved and defaults to the full version', () async {
+      expect(const NotificationSettings().adhanDuration, AdhanDuration.full);
+      expect(AdhanDuration.fromName('nope'), AdhanDuration.full);
+      expect(
+        AdhanSound.dosari.fileFor(AdhanDuration.short),
+        'adhan_dosari_short',
+      );
+      expect(
+        AdhanSound.dosari.iosFileFor(AdhanDuration.full),
+        'adhan_dosari.caf',
+      );
+      final prefs = await _prefs();
+      final c = ProviderContainer(
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+      );
+      addTearDown(c.dispose);
+      await c.read(notificationSettingsProvider.future);
+      await c
+          .read(notificationSettingsProvider.notifier)
+          .setAdhanDuration(AdhanDuration.short);
+      expect(prefs.getString('notif_adhan_duration'), 'short');
     });
 
     test('search and unknown ids', () {
@@ -374,12 +413,13 @@ void main() {
         'إشعارات الصلوات الخمس',
         'صوت المؤذن',
         'أذان علي بن أحمد ملا',
+        'مدة الأذان في الإشعار',
         'تجربة إشعار الأذان الآن (بعد ٥ ثوانٍ)',
         'تذكيرات الذكر الدورية',
         'متوقف',
         'عن التطبيق',
         'أواب - صلاتي أذكاري ومهامي اليومية',
-        'الإصدار 1.0.0 +9',
+        'الإصدار 1.0.0 +10',
         'التطبيق صدقة جارية للشيخ فريح التميمي رحمه الله',
         'برمجة وتطوير فارس التريباني',
       ]) {

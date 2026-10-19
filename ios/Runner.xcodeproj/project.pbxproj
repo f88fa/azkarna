@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A8E8A78D5CF407ECF1A23DC1 /* adhan_rajhi_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */; };
+		4BF47C6695254BABBB144E0F /* adhan_suhail_hafez_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */; };
+		A893A1205E8C817AE6499B2D /* adhan_hussein_shahat_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */; };
+		52CCC6A69DF6AB4E0BF1458E /* adhan_ibrahim_madani_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9397BA907634AAEC02AA5238 /* adhan_ibrahim_madani_short.caf */; };
+		761D5D001B1B8CCA1F79C1FD /* adhan_basaad_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 6105C76480ADBA2EA5069EB1 /* adhan_basaad_short.caf */; };
+		E3367D8FE68BB70C292DC337 /* adhan_ramadan_saad_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = E57F94E6D500D91086A6F190 /* adhan_ramadan_saad_short.caf */; };
+		E120FC109FA602EFFE065868 /* adhan_nasser_obaid_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 2A9521FB22023D0665496C4F /* adhan_nasser_obaid_short.caf */; };
+		3F21E7958C2C0E7C01BFF88B /* adhan_dosari_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = CFDA46D9E23A49241ACABC8D /* adhan_dosari_short.caf */; };
+		3E222CB051DDD6C8C61F8749 /* adhan_qatami_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = DC07A341814D30EC27125FD9 /* adhan_qatami_short.caf */; };
+		8DA593625905FB3CF4FD6AFB /* adhan_abdulbasit_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9A28CACF9379CE7F0279D29B /* adhan_abdulbasit_short.caf */; };
+		00833D9B819BFF8F1DABA6B2 /* adhan_dagriri_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = DA03FAE4B3893F36BD8246AF /* adhan_dagriri_short.caf */; };
+		051D4AC6A147FFD80957A449 /* adhan_hadrawi_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0096E5211A9645FF82383982 /* adhan_hadrawi_short.caf */; };
+		83BEFD4496A3E9386E83DE08 /* adhan_ali_mulla_2_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7D3A4C52E7448E1EC7618991 /* adhan_ali_mulla_2_short.caf */; };
+		8F670C6ABC38A2E72DBD0FA8 /* adhan_ali_mulla_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = B8440742831BF0EE3B237ABE /* adhan_ali_mulla_short.caf */; };
 		EB37DE57B5D8FAB86C06ACE1 /* adhan_rajhi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3EEE786001D412F92CF57B97 /* adhan_rajhi.caf */; };
 		37351D026836523C84B6EA14 /* adhan_suhail_hafez.caf in Resources */ = {isa = PBXBuildFile; fileRef = EFBFE312C05DBA81958B1338 /* adhan_suhail_hafez.caf */; };
 		1F2E5F32CC9CD4E2F0409C87 /* adhan_hussein_shahat.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3B2950CFBF4B85264E7C8959 /* adhan_hussein_shahat.caf */; };
@@ -63,6 +77,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_rajhi_short.caf; sourceTree = "<group>"; };
+		5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_suhail_hafez_short.caf; sourceTree = "<group>"; };
+		D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hussein_shahat_short.caf; sourceTree = "<group>"; };
+		9397BA907634AAEC02AA5238 /* adhan_ibrahim_madani_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ibrahim_madani_short.caf; sourceTree = "<group>"; };
+		6105C76480ADBA2EA5069EB1 /* adhan_basaad_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_basaad_short.caf; sourceTree = "<group>"; };
+		E57F94E6D500D91086A6F190 /* adhan_ramadan_saad_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ramadan_saad_short.caf; sourceTree = "<group>"; };
+		2A9521FB22023D0665496C4F /* adhan_nasser_obaid_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_nasser_obaid_short.caf; sourceTree = "<group>"; };
+		CFDA46D9E23A49241ACABC8D /* adhan_dosari_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dosari_short.caf; sourceTree = "<group>"; };
+		DC07A341814D30EC27125FD9 /* adhan_qatami_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_qatami_short.caf; sourceTree = "<group>"; };
+		9A28CACF9379CE7F0279D29B /* adhan_abdulbasit_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_abdulbasit_short.caf; sourceTree = "<group>"; };
+		DA03FAE4B3893F36BD8246AF /* adhan_dagriri_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dagriri_short.caf; sourceTree = "<group>"; };
+		0096E5211A9645FF82383982 /* adhan_hadrawi_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hadrawi_short.caf; sourceTree = "<group>"; };
+		7D3A4C52E7448E1EC7618991 /* adhan_ali_mulla_2_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla_2_short.caf; sourceTree = "<group>"; };
+		B8440742831BF0EE3B237ABE /* adhan_ali_mulla_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla_short.caf; sourceTree = "<group>"; };
 		3EEE786001D412F92CF57B97 /* adhan_rajhi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_rajhi.caf; sourceTree = "<group>"; };
 		EFBFE312C05DBA81958B1338 /* adhan_suhail_hafez.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_suhail_hafez.caf; sourceTree = "<group>"; };
 		3B2950CFBF4B85264E7C8959 /* adhan_hussein_shahat.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hussein_shahat.caf; sourceTree = "<group>"; };
@@ -155,6 +183,20 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */,
+				5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */,
+				D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */,
+				9397BA907634AAEC02AA5238 /* adhan_ibrahim_madani_short.caf */,
+				6105C76480ADBA2EA5069EB1 /* adhan_basaad_short.caf */,
+				E57F94E6D500D91086A6F190 /* adhan_ramadan_saad_short.caf */,
+				2A9521FB22023D0665496C4F /* adhan_nasser_obaid_short.caf */,
+				CFDA46D9E23A49241ACABC8D /* adhan_dosari_short.caf */,
+				DC07A341814D30EC27125FD9 /* adhan_qatami_short.caf */,
+				9A28CACF9379CE7F0279D29B /* adhan_abdulbasit_short.caf */,
+				DA03FAE4B3893F36BD8246AF /* adhan_dagriri_short.caf */,
+				0096E5211A9645FF82383982 /* adhan_hadrawi_short.caf */,
+				7D3A4C52E7448E1EC7618991 /* adhan_ali_mulla_2_short.caf */,
+				B8440742831BF0EE3B237ABE /* adhan_ali_mulla_short.caf */,
 				3EEE786001D412F92CF57B97 /* adhan_rajhi.caf */,
 				EFBFE312C05DBA81958B1338 /* adhan_suhail_hafez.caf */,
 				3B2950CFBF4B85264E7C8959 /* adhan_hussein_shahat.caf */,
@@ -281,6 +323,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A8E8A78D5CF407ECF1A23DC1 /* adhan_rajhi_short.caf in Resources */,
+				4BF47C6695254BABBB144E0F /* adhan_suhail_hafez_short.caf in Resources */,
+				A893A1205E8C817AE6499B2D /* adhan_hussein_shahat_short.caf in Resources */,
+				52CCC6A69DF6AB4E0BF1458E /* adhan_ibrahim_madani_short.caf in Resources */,
+				761D5D001B1B8CCA1F79C1FD /* adhan_basaad_short.caf in Resources */,
+				E3367D8FE68BB70C292DC337 /* adhan_ramadan_saad_short.caf in Resources */,
+				E120FC109FA602EFFE065868 /* adhan_nasser_obaid_short.caf in Resources */,
+				3F21E7958C2C0E7C01BFF88B /* adhan_dosari_short.caf in Resources */,
+				3E222CB051DDD6C8C61F8749 /* adhan_qatami_short.caf in Resources */,
+				8DA593625905FB3CF4FD6AFB /* adhan_abdulbasit_short.caf in Resources */,
+				00833D9B819BFF8F1DABA6B2 /* adhan_dagriri_short.caf in Resources */,
+				051D4AC6A147FFD80957A449 /* adhan_hadrawi_short.caf in Resources */,
+				83BEFD4496A3E9386E83DE08 /* adhan_ali_mulla_2_short.caf in Resources */,
+				8F670C6ABC38A2E72DBD0FA8 /* adhan_ali_mulla_short.caf in Resources */,
 				EB37DE57B5D8FAB86C06ACE1 /* adhan_rajhi.caf in Resources */,
 				37351D026836523C84B6EA14 /* adhan_suhail_hafez.caf in Resources */,
 				1F2E5F32CC9CD4E2F0409C87 /* adhan_hussein_shahat.caf in Resources */,

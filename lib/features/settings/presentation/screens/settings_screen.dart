@@ -13,6 +13,7 @@ import '../../../../core/utils/arabic_format.dart';
 import '../../../../core/widgets/app_snack.dart';
 import '../../../../core/widgets/error_view.dart';
 import '../../../../core/widgets/popup_scaffold.dart';
+import '../../../notifications/domain/entities/adhan_sound.dart';
 import '../../../notifications/domain/entities/notification_settings.dart';
 import '../../../notifications/presentation/providers/notification_providers.dart';
 import '../../../notifications/presentation/providers/sound_preview_provider.dart';
@@ -223,6 +224,15 @@ class _AdhanSection extends ConsumerWidget {
           title: 'صوت المؤذن',
           subtitle: settings.adhanSound.label,
           onTap: () => context.push(AppRoutes.settingsMuadhin),
+        ),
+        SettingsChoiceTile<AdhanDuration>(
+          icon: Icons.content_cut_rounded,
+          color: AppColors.orange,
+          title: 'مدة الأذان في الإشعار',
+          options: AdhanDuration.values,
+          selected: settings.adhanDuration,
+          labelOf: (d) => '${d.label} · ${d.hint}',
+          onSelected: notifier.setAdhanDuration,
         ),
         SettingsActionTile(
           icon: Icons.notifications_active_rounded,

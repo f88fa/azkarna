@@ -19,6 +19,8 @@ Usage (macOS: needs ffmpeg, numpy and afconvert):
 Only use recordings you are licensed to redistribute inside the app.
 """
 import hashlib
+import re
+import tempfile
 import unicodedata
 import os
 import subprocess
@@ -47,13 +49,15 @@ FOLDER_SOURCES = {
     'suhail_hafez': 'سهيل حافظ.mp3',
     'rajhi': 'جامع الراجحي.mp3',
 }
+TARGET_LUFS = -10.5  # loud; the notification volume is the phone's
+SHORT_SECONDS = (7.0, 11.0)  # the "short" variant ends in this window
 MAX_SECONDS = 28.0  # + 0.2 s tail: stays under iOS's 30 s notification limit
 
 
-def decode(path):
+def decode(path, sr=None):
     """Any audio file -> mono float32 at SR (via ffmpeg)."""
     raw = subprocess.run(
-        ['ffmpeg', '-v', 'error', '-i', path, '-ac', '1', '-ar', str(SR),
+        ['ffmpeg', '-v', 'error', '-i', path, '-ac', '1', '-ar', str(sr or SR),
          '-f', 'f32le', '-'],
         check=True, capture_output=True).stdout
     return np.frombuffer(raw, dtype='<f4').copy()
@@ -83,22 +87,67 @@ def cut(x, lo, hi):
     return x[:end]
 
 
-def finish(x, fade=0.45):
+def fade_clip(x, fade):
+    """Short fade-in, `fade` seconds of fade-out."""
     fi, fo = int(0.04 * SR), int(fade * SR)
     x = x.copy()
     x[:fi] *= np.linspace(0, 1, fi)
     x[-fo:] *= np.linspace(1, 0, fo)
-    x = x / (np.max(np.abs(x)) + 1e-9) * 0.9
+    return x
+
+
+def with_tail(x):
     return np.concatenate([x, np.zeros(int(0.2 * SR))])
 
 
-def write_wav(path, x):
+def write_wav(path, x, sr=None):
     pcm = (np.clip(x, -1, 1) * 32767).astype('<i2')
     with wave.open(path, 'wb') as w:
         w.setnchannels(1)
         w.setsampwidth(2)
-        w.setframerate(SR)
+        w.setframerate(sr or SR)
         w.writeframes(pcm.tobytes())
+
+
+def _lufs(x, sr):
+    with tempfile.NamedTemporaryFile(suffix='.wav') as t:
+        write_wav(t.name, x, sr)
+        out = subprocess.run(
+            ['ffmpeg', '-nostats', '-i', t.name, '-af', 'ebur128', '-f', 'null',
+             '-'], capture_output=True, text=True).stderr
+    return float(re.findall(r'I:\s+(-?[\d.]+) LUFS', out)[-1])
+
+
+def _punch(x, rms_db, ceil=0.84, knee=0.3):
+    """Gain to a speech-RMS of rms_db dBFS, then a soft limiter below ceil."""
+    a = np.abs(x)
+    act = x[a > a.max() * 0.05]
+    y = x * (10 ** (rms_db / 20) / np.sqrt((act ** 2).mean()))
+    m = np.abs(y)
+    soft = np.sign(y) * (knee + (ceil - knee) * np.tanh((m - knee) / (ceil - knee)))
+    return np.where(m < knee, y, soft)
+
+
+def loudify(x, sr=None, target=TARGET_LUFS):
+    """Makes the clip as loud as the notification can be: bisects the gain so
+    the integrated loudness reaches `target` LUFS (soft-limited, never above
+    -1 dBFS). Notification volume itself is controlled by the phone."""
+    sr = sr or SR
+    lo, hi = -24.0, -3.0
+    for _ in range(7):
+        mid = (lo + hi) / 2
+        if _lufs(_punch(x, mid), sr) < target:
+            lo = mid
+        else:
+            hi = mid
+    y = _punch(x, hi)
+    # Inter-sample peaks of a saturated wave can exceed the sample ceiling:
+    # estimate the true peak (4x FFT upsample) and keep it below -0.5 dBFS.
+    spec = np.fft.rfft(y)
+    up = np.zeros(len(spec) * 4 - 3, complex)
+    up[:len(spec)] = spec
+    tp = np.abs(np.fft.irfft(up)).max() * 4
+    return y * min(1.0, 0.94 / tp)
 
 
 def register_in_xcode(caf_name):
@@ -139,22 +188,33 @@ def register_in_xcode(caf_name):
     open(p, 'w', encoding='utf-8').write('\n'.join(lines))
 
 
-def build(sound_id, src, takbeer=False, fade=0.45):
-    name = f'adhan_{sound_id}'
-    x = trim_start(decode(src))
-    x = cut(x, 5, 13) if takbeer else cut(x, 14, MAX_SECONDS)
-    x = finish(x, fade)
+def _emit(name, x, preview):
+    """Writes android raw wav + iOS caf (+ in-app preview wav)."""
     secs = len(x) / SR
     assert secs < 29, f'{name} is {secs:.1f}s (iOS limit is 30s)'
-    for d in ('assets/audio', 'android/app/src/main/res/raw', 'ios/Runner'):
-        os.makedirs(os.path.join(ROOT, d), exist_ok=True)
-    wav = os.path.join(ROOT, 'assets/audio', f'{name}.wav')
+    raw = os.path.join(ROOT, 'android/app/src/main/res/raw')
+    os.makedirs(raw, exist_ok=True)
+    os.makedirs(os.path.join(ROOT, 'ios/Runner'), exist_ok=True)
+    wav = os.path.join(raw, f'{name}.wav')
     write_wav(wav, x)
-    write_wav(os.path.join(ROOT, 'android/app/src/main/res/raw', f'{name}.wav'), x)
+    if preview:
+        os.makedirs(os.path.join(ROOT, 'assets/audio'), exist_ok=True)
+        write_wav(os.path.join(ROOT, 'assets/audio', f'{name}.wav'), x)
     subprocess.run(['afconvert', '-f', 'caff', '-d', 'LEI16', wav,
                     os.path.join(ROOT, 'ios/Runner', f'{name}.caf')], check=True)
     register_in_xcode(f'{name}.caf')
     print(f'{name}: {secs:.1f}s')
+
+
+def build(sound_id, src, takbeer=False, fade=0.45):
+    """Full version (adhan_<id>, also the in-app preview) and a short one
+    (adhan_<id>_short, notification only) chosen from the app settings."""
+    x = trim_start(decode(src))
+    full = cut(x, 5, 13) if takbeer else cut(x, 14, MAX_SECONDS)
+    short = cut(x, *SHORT_SECONDS)
+    _emit(f'adhan_{sound_id}', with_tail(loudify(fade_clip(full, fade))), True)
+    _emit(f'adhan_{sound_id}_short',
+          with_tail(loudify(fade_clip(short, 1.2))), False)
 
 
 if __name__ == '__main__':

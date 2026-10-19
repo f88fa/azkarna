@@ -49,6 +49,7 @@ class NotificationSettings {
     this.khatmahReminderEnabled = true,
     this.khatmahReminderTime = ReminderTime.defaultKhatmah,
     this.adhanSound = AdhanSound.defaultSound,
+    this.adhanDuration = AdhanDuration.full,
     this.dhikr = const DhikrReminderSettings(),
     this.kahfReminderEnabled = true,
     this.kahfLead = KahfLead.oneHour,
@@ -67,6 +68,9 @@ class NotificationSettings {
   /// Sound played by the Adhan notifications.
   final AdhanSound adhanSound;
 
+  /// Full recording or the short (about 10 s) version.
+  final AdhanDuration adhanDuration;
+
   /// Periodic dhikr reminders (every 15 min … 3 h).
   final DhikrReminderSettings dhikr;
 
@@ -81,6 +85,7 @@ class NotificationSettings {
     bool? khatmahReminderEnabled,
     ReminderTime? khatmahReminderTime,
     AdhanSound? adhanSound,
+    AdhanDuration? adhanDuration,
     DhikrReminderSettings? dhikr,
     bool? kahfReminderEnabled,
     KahfLead? kahfLead,
@@ -92,6 +97,7 @@ class NotificationSettings {
         khatmahReminderEnabled ?? this.khatmahReminderEnabled,
     khatmahReminderTime: khatmahReminderTime ?? this.khatmahReminderTime,
     adhanSound: adhanSound ?? this.adhanSound,
+    adhanDuration: adhanDuration ?? this.adhanDuration,
     dhikr: dhikr ?? this.dhikr,
     kahfReminderEnabled: kahfReminderEnabled ?? this.kahfReminderEnabled,
     kahfLead: kahfLead ?? this.kahfLead,

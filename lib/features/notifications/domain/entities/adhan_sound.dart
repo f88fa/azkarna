@@ -1,3 +1,20 @@
+/// How much of the Adhan the notification plays (chosen in the settings).
+enum AdhanDuration {
+  full('كامل', 'حتى ٢٨ ثانية'),
+  short('مختصر', 'نحو ١٠ ثوانٍ');
+
+  const AdhanDuration(this.label, this.hint);
+
+  final String label;
+  final String hint;
+
+  /// Suffix of the bundled notification file.
+  String get suffix => this == short ? '_short' : '';
+
+  static AdhanDuration fromName(String? name) => AdhanDuration.values
+      .firstWhere((d) => d.name == name, orElse: () => AdhanDuration.full);
+}
+
 /// The sounds a user can pick for the Adhan notification.
 ///
 /// All of them are real muezzin recordings supplied with the app (source files
@@ -80,8 +97,13 @@ enum AdhanSound {
   /// Path for `AssetSource` (relative to `assets/`).
   String get previewAsset => 'audio/$file.wav';
 
-  /// Bundle file name used by iOS notifications.
+  /// Bundle file name used by iOS notifications (full version).
   String get iosFile => '$file.caf';
+
+  /// Notification file base name for [duration] (`adhan_<id>[_short]`): the
+  /// Android raw resource and, with `.caf`, the iOS bundle file.
+  String fileFor(AdhanDuration duration) => '$file${duration.suffix}';
+  String iosFileFor(AdhanDuration duration) => '${fileFor(duration)}.caf';
 
   /// Unknown or retired ids (earlier builds) fall back to the default.
   static AdhanSound fromId(String? id) {
