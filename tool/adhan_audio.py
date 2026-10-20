@@ -8,8 +8,11 @@ Every sound ships as three files that share a base name `adhan_<id>`:
 
 Usage (macOS: needs ffmpeg, numpy and afconvert):
   python3 tool/adhan_audio.py folder
-      Converts every recording listed in FOLDER_SOURCES from the `mp3/` folder
-      (first <= 28 s, cut at a quiet moment, 2 s fade-out).
+      Converts every recording listed in FOLDER_SOURCES from the `mp3/` folder:
+        * notification clip, first <= 28 s (cut at a quiet moment, fade-out),
+        * "two takbeers" clip: the file listed in TAKBEER_SOURCES when there is
+          one, else the first line up to the first long pause (best guess),
+        * the whole adhan for in-app playback (assets/audio/full/*.m4a).
 
   python3 tool/adhan_audio.py import <id> <audio-file> [--takbeer]
       Same for any other recording, then add one entry to the `AdhanSound` enum
@@ -49,8 +52,13 @@ FOLDER_SOURCES = {
     'suhail_hafez': 'سهيل حافظ.mp3',
     'rajhi': 'جامع الراجحي.mp3',
 }
+# Dedicated "two takbeers" recordings dropped into mp3/ (matched like above).
+TAKBEER_SOURCES = {
+    'dagriri': 'حمد الدغريري (تكبيراتان).mp3',
+}
+FULL_SR = 24000  # in-app full adhan (AAC); the notification clips stay 16 kHz
+FULL_KBPS = 48
 TARGET_LUFS = -10.5  # loud; the notification volume is the phone's
-SHORT_SECONDS = (7.0, 11.0)  # the "short" variant ends in this window
 MAX_SECONDS = 28.0  # + 0.2 s tail: stays under iOS's 30 s notification limit
 
 
@@ -63,17 +71,18 @@ def decode(path, sr=None):
     return np.frombuffer(raw, dtype='<f4').copy()
 
 
-def frame_rms(x, ms=60):
-    n = int(SR * ms / 1000)
+def frame_rms(x, ms=60, sr=None):
+    n = int((sr or SR) * ms / 1000)
     k = len(x) // n
     return np.sqrt((x[: k * n].reshape(k, n) ** 2).mean(axis=1)), n
 
 
-def trim_start(x):
-    rms, n = frame_rms(x)
+def trim_start(x, sr=None):
+    sr = sr or SR
+    rms, n = frame_rms(x, sr=sr)
     thr = max(rms.max() * 0.08, 1e-4)
     first = int(np.argmax(rms > thr))
-    return x[max(0, first * n - int(0.15 * SR)):]
+    return x[max(0, first * n - int(0.15 * sr)):]
 
 
 def cut(x, lo, hi):
@@ -85,6 +94,29 @@ def cut(x, lo, hi):
     smooth = np.convolve(rms, np.ones(3) / 3, mode='same')
     end = (a + int(np.argmin(smooth[a:b]))) * n
     return x[:end]
+
+
+def first_line_end(x, min_start=8.0, max_start=24.0, min_gap=0.8):
+    """Seconds at which "الله أكبر الله أكبر" (the opening two takbeers) ends:
+    the first pause of at least `min_gap` s that begins after `min_start` s
+    (two takbeers never fit in less). Best guess, not hearing-checked."""
+    n = int(SR * 0.04)
+    k = len(x) // n
+    rms = np.sqrt((x[: k * n].reshape(k, n) ** 2).mean(axis=1))
+    quiet = rms < rms.max() * 0.06
+    i = 0
+    while i < k and i * n / SR <= max_start:
+        if quiet[i]:
+            j = i
+            while j < k and quiet[j]:
+                j += 1
+            start, length = i * n / SR, (j - i) * n / SR
+            if start >= min_start and length >= min_gap:
+                return start + 0.15
+            i = j
+        else:
+            i += 1
+    return None
 
 
 def fade_clip(x, fade):
@@ -206,15 +238,48 @@ def _emit(name, x, preview):
     print(f'{name}: {secs:.1f}s')
 
 
-def build(sound_id, src, takbeer=False, fade=0.45):
-    """Full version (adhan_<id>, also the in-app preview) and a short one
-    (adhan_<id>_short, notification only) chosen from the app settings."""
+def emit_full(sound_id, src):
+    """The whole adhan for in-app playback: assets/audio/full/adhan_<id>.m4a."""
+    x = trim_start(decode(src, FULL_SR), FULL_SR)
+    x = loudify(fade_clip_sr(x, 2.5, FULL_SR), FULL_SR)
+    out_dir = os.path.join(ROOT, 'assets/audio/full')
+    os.makedirs(out_dir, exist_ok=True)
+    with tempfile.NamedTemporaryFile(suffix='.wav') as t:
+        write_wav(t.name, x, FULL_SR)
+        out = os.path.join(out_dir, f'adhan_{sound_id}.m4a')
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', t.name, '-c:a',
+                        'aac', '-b:a', f'{FULL_KBPS}k', '-ac', '1', out],
+                       check=True)
+    print(f'adhan_{sound_id}.m4a: {len(x) / FULL_SR:.0f}s, '
+          f'{os.path.getsize(out) / 1e6:.1f} MB')
+
+
+def fade_clip_sr(x, fade, sr):
+    fi, fo = int(0.04 * sr), int(fade * sr)
+    x = x.copy()
+    x[:fi] *= np.linspace(0, 1, fi)
+    x[-fo:] *= np.linspace(1, 0, fo)
+    return x
+
+
+def build(sound_id, src, takbeer=False, fade=0.45, takbeer_src=None):
+    """Notification clip (adhan_<id>, also the in-app preview), the two-takbeers
+    clip (adhan_<id>_short; the app calls it "تكبيرتان") and the in-app full
+    adhan. Each is chosen from the app settings."""
     x = trim_start(decode(src))
     full = cut(x, 5, 13) if takbeer else cut(x, 14, MAX_SECONDS)
-    short = cut(x, *SHORT_SECONDS)
+    if takbeer_src:
+        short = trim_start(decode(takbeer_src))
+        how = 'dedicated file'
+    else:
+        end = first_line_end(x)
+        short = x[: int(end * SR)] if end else cut(x, 10, 16)
+        how = f'first pause at {end:.1f}s' if end else 'fallback 10-16 s'
+    print(f'{sound_id}: two takbeers = {len(short) / SR:.1f}s ({how})')
     _emit(f'adhan_{sound_id}', with_tail(loudify(fade_clip(full, fade))), True)
     _emit(f'adhan_{sound_id}_short',
-          with_tail(loudify(fade_clip(short, 1.2))), False)
+          with_tail(loudify(fade_clip(short, 0.7))), False)
+    emit_full(sound_id, src)
 
 
 if __name__ == '__main__':
@@ -225,7 +290,10 @@ if __name__ == '__main__':
         norm = lambda n: ''.join(unicodedata.normalize('NFC', n).split())
         files = {norm(f): f for f in os.listdir(folder)}
         for sid, name in FOLDER_SOURCES.items():
-            build(sid, os.path.join(folder, files[norm(name)]), fade=2.0)
+            tk = TAKBEER_SOURCES.get(sid)
+            build(sid, os.path.join(folder, files[norm(name)]), fade=2.0,
+                  takbeer_src=os.path.join(folder, files[norm(tk)])
+                  if tk else None)
     elif args[:1] == ['import'] and len(args) >= 3:
         build(args[1], args[2], takbeer='--takbeer' in args, fade=2.0)
     else:

@@ -228,7 +228,7 @@ class _AdhanSection extends ConsumerWidget {
         SettingsChoiceTile<AdhanDuration>(
           icon: Icons.content_cut_rounded,
           color: AppColors.orange,
-          title: 'مدة الأذان في الإشعار',
+          title: 'الأذان في الإشعار',
           options: AdhanDuration.values,
           selected: settings.adhanDuration,
           labelOf: (d) => '${d.label} · ${d.hint}',

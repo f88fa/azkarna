@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:azkarna/features/notifications/domain/entities/notification_tap.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -120,16 +121,41 @@ void main() {
             reason: s.iosFileFor(d),
           );
         }
-        // The short version really is short (about 7 - 11 s).
+        // "Two takbeers" really is short (a few seconds to about 20 s).
         final shortBytes = File(
           'android/app/src/main/res/raw/${s.fileFor(AdhanDuration.short)}.wav',
         ).lengthSync();
         expect(
           (shortBytes - 44) / 32000,
-          inInclusiveRange(6, 12),
+          inInclusiveRange(6, 22),
           reason: s.id,
         );
       }
+    });
+
+    test('the whole adhan ships for in-app playback after a tap', () {
+      final pubspec = File('pubspec.yaml').readAsStringSync();
+      expect(pubspec, contains('- assets/audio/full/'));
+      for (final s in AdhanSound.values) {
+        final f = File('assets/${s.fullAsset}');
+        expect(f.existsSync(), isTrue, reason: s.id);
+        // Minutes of audio, not a notification clip (> 60 s at >= 6 KB/s).
+        expect(f.lengthSync(), greaterThan(400000), reason: s.id);
+      }
+    });
+
+    test('adhan notification payload round trips', () {
+      final payload = AdhanPayload(
+        AdhanSound.dagriri,
+        'الفجر',
+        AdhanDuration.short,
+      ).encode();
+      final parsed = AdhanPayload.tryParse(payload)!;
+      expect(parsed.sound, AdhanSound.dagriri);
+      expect(parsed.prayerLabel, 'الفجر');
+      expect(parsed.duration, AdhanDuration.short);
+      expect(AdhanPayload.tryParse('task|1'), isNull);
+      expect(AdhanPayload.tryParse(null), isNull);
     });
 
     test('adhan duration is saved and defaults to the full version', () async {
@@ -413,13 +439,13 @@ void main() {
         'إشعارات الصلوات الخمس',
         'صوت المؤذن',
         'أذان علي بن أحمد ملا',
-        'مدة الأذان في الإشعار',
+        'الأذان في الإشعار',
         'تجربة إشعار الأذان الآن (بعد ٥ ثوانٍ)',
         'تذكيرات الذكر الدورية',
         'متوقف',
         'عن التطبيق',
         'أواب - صلاتي أذكاري ومهامي اليومية',
-        'الإصدار 1.0.0 +12',
+        'الإصدار 1.0.0 +13',
       ]) {
         expect(find.text(text), findsWidgets, reason: text);
       }

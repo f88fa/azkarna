@@ -1,7 +1,8 @@
-/// How much of the Adhan the notification plays (chosen in the settings).
+/// What the Adhan notification plays (chosen in the settings): the opening
+/// of the adhan (up to 28 s) or only its first two takbeers.
 enum AdhanDuration {
-  full('كامل', 'حتى ٢٨ ثانية'),
-  short('مختصر', 'نحو ١٠ ثوانٍ');
+  full('كامل', 'اضغط الإشعار لسماعه كاملًا'),
+  short('تكبيرتان', 'التكبيرتان الأوليان فقط');
 
   const AdhanDuration(this.label, this.hint);
 
@@ -96,6 +97,10 @@ enum AdhanSound {
 
   /// Path for `AssetSource` (relative to `assets/`).
   String get previewAsset => 'audio/$file.wav';
+
+  /// The whole adhan (2-5 min) played inside the app after tapping the
+  /// notification: a notification sound is limited to 30 s by iOS.
+  String get fullAsset => 'audio/full/$file.m4a';
 
   /// Bundle file name used by iOS notifications (full version).
   String get iosFile => '$file.caf';

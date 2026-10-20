@@ -9,6 +9,7 @@ import '../../../tasks/domain/entities/task.dart';
 import '../../domain/entities/adhan_sound.dart';
 import '../../domain/entities/dhikr_reminder.dart';
 import '../../domain/entities/notification_settings.dart';
+import '../../domain/entities/notification_tap.dart';
 import '../../domain/services/notification_scheduler.dart';
 
 class LocalNotificationScheduler implements NotificationScheduler {
@@ -47,7 +48,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
   ) => NotificationDetails(
     android: AndroidNotificationDetails(
       'adhan_${sound.fileFor(duration)}',
-      'الأذان · ${sound.label}${duration == AdhanDuration.short ? ' (مختصر)' : ''}',
+      'الأذان · ${sound.label}${duration == AdhanDuration.short ? ' (تكبيرتان)' : ''}',
       channelDescription: 'تنبيهات الأذان عند كل صلاة',
       importance: Importance.max,
       priority: Priority.high,
@@ -169,7 +170,14 @@ class LocalNotificationScheduler implements NotificationScheduler {
           requestSoundPermission: false,
         ),
       ),
+      onDidReceiveNotificationResponse: (r) => NotificationTaps.add(r.payload),
     );
+
+    // The app was started by tapping a notification (cold start).
+    final launch = await _plugin.getNotificationAppLaunchDetails();
+    if (launch?.didNotificationLaunchApp ?? false) {
+      NotificationTaps.add(launch?.notificationResponse?.payload);
+    }
   }
 
   @override
@@ -238,6 +246,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
           body: 'حان الآن موعد أذان ${prayer.label} · ${day.location}',
           when: when,
           details: details,
+          payload: AdhanPayload(sound, prayer.label, duration).encode(),
         );
       }
     }
@@ -417,6 +426,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
     body: sound.label,
     when: tz.TZDateTime.now(tz.local).add(delay),
     details: _adhanDetails(sound, duration),
+    payload: AdhanPayload(sound, 'التجربة', duration).encode(),
   );
 
   @override
@@ -564,6 +574,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
     required tz.TZDateTime when,
     required NotificationDetails details,
     DateTimeComponents? match,
+    String? payload,
   }) async {
     Future<void> run(AndroidScheduleMode mode) => _plugin.zonedSchedule(
       id: id,
@@ -571,6 +582,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
       body: body,
       scheduledDate: when,
       notificationDetails: details,
+      payload: payload,
       androidScheduleMode: mode,
       matchDateTimeComponents: match,
     );
