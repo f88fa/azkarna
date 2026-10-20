@@ -420,11 +420,12 @@ void main() {
         'عن التطبيق',
         'أواب - صلاتي أذكاري ومهامي اليومية',
         'الإصدار 1.0.0 +12',
-        'التطبيق صدقة جارية للشيخ فريح التميمي رحمه الله',
-        'برمجة وتطوير فارس التريباني',
       ]) {
         expect(find.text(text), findsWidgets, reason: text);
       }
+      // No dedication / developer credit line in About.
+      expect(find.textContaining('صدقة جارية'), findsNothing);
+      expect(find.textContaining('برمجة وتطوير'), findsNothing);
       // The long lists are NOT dumped on the main page any more.
       expect(find.byIcon(Icons.play_arrow_rounded), findsNothing);
       expect(find.text('كل ١٥ دقيقة'), findsNothing);
