@@ -4,10 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/utils/arabic_format.dart';
+import '../../../prayer_times/presentation/providers/prayer_times_providers.dart';
+import '../../../qibla/domain/qibla.dart';
 import '../../../quran/presentation/providers/kahf_providers.dart';
 import '../../../tasbeeh/presentation/providers/tasbeeh_providers.dart';
 
-/// Two feature cards under the adhkar: the tasbeeh counter and Surah Al-Kahf.
+/// Feature cards under the adhkar: the tasbeeh counter, Surah Al-Kahf and
+/// the Qibla compass.
 class HomeFeatureCards extends ConsumerWidget {
   const HomeFeatureCards({super.key});
 
@@ -21,36 +24,143 @@ class HomeFeatureCards extends ConsumerWidget {
         ? 'أكملت ${arNum((progress * 100).round())}٪ · تابع القراءة'
         : (isFriday ? 'اليوم الجمعة · ابدأ القراءة' : 'ابدأ القراءة');
 
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: _FeatureCard(
-              icon: Icons.touch_app_rounded,
-              title: 'المسبحة',
-              subtitle: tasbeeh.count > 0
-                  ? 'وصلت إلى ${arNum(tasbeeh.count)}'
-                        '${tasbeeh.target > 0 ? ' من ${arNum(tasbeeh.target)}' : ''}'
-                  : 'عدّاد التسبيح',
-              progress: tasbeeh.progress,
-              colors: const [Color(0xFF0E9F6E), Color(0xFF0B7A55)],
-              onTap: () => context.push(AppRoutes.tasbeeh),
+    final location = ref.watch(prayerLocationProvider);
+    final qibla = qiblaBearing(location.latitude, location.longitude);
+
+    return Column(
+      children: [
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _FeatureCard(
+                  icon: Icons.touch_app_rounded,
+                  title: 'المسبحة',
+                  subtitle: tasbeeh.count > 0
+                      ? 'وصلت إلى ${arNum(tasbeeh.count)}'
+                            '${tasbeeh.target > 0 ? ' من ${arNum(tasbeeh.target)}' : ''}'
+                      : 'عدّاد التسبيح',
+                  progress: tasbeeh.progress,
+                  colors: const [Color(0xFF0E9F6E), Color(0xFF0B7A55)],
+                  onTap: () => context.push(AppRoutes.tasbeeh),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _FeatureCard(
+                  icon: Icons.menu_book_rounded,
+                  title: 'سورة الكهف',
+                  subtitle: kahfSubtitle,
+                  progress: progress,
+                  badge: isFriday ? 'الجمعة' : null,
+                  colors: const [Color(0xFFB8860B), Color(0xFF8A6508)],
+                  onTap: () => context.push(AppRoutes.kahf),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        _QiblaCard(
+          subtitle: '${arNum(qibla.round())}° من الشمال · ${location.city}',
+          onTap: () => context.push(AppRoutes.qibla),
+        ),
+      ],
+    );
+  }
+}
+
+/// Wide card that opens the Qibla compass.
+class _QiblaCard extends StatelessWidget {
+  const _QiblaCard({required this.subtitle, required this.onTap});
+
+  final String subtitle;
+  final VoidCallback onTap;
+
+  static const _colors = [Color(0xFF1F2937), Color(0xFF0B1220)];
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(26);
+    return Semantics(
+      button: true,
+      label: 'اتجاه القبلة. $subtitle',
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: radius,
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: radius,
+            gradient: const LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: _colors,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: _colors.last.withValues(alpha: 0.3),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: InkWell(
+            borderRadius: radius,
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.14),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(
+                      Icons.explore_rounded,
+                      color: Color(0xFFD4A537),
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'اتجاه القبلة',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          subtitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.85),
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_left_rounded,
+                    color: Colors.white.withValues(alpha: 0.7),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _FeatureCard(
-              icon: Icons.menu_book_rounded,
-              title: 'سورة الكهف',
-              subtitle: kahfSubtitle,
-              progress: progress,
-              badge: isFriday ? 'الجمعة' : null,
-              colors: const [Color(0xFFB8860B), Color(0xFF8A6508)],
-              onTap: () => context.push(AppRoutes.kahf),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

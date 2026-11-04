@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/adhkar/presentation/screens/adhkar_category_screen.dart';
 import '../../features/adhkar/presentation/screens/adhkar_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
+import '../../features/qibla/presentation/screens/qibla_screen.dart';
 import '../../features/quran/presentation/screens/kahf_reader_screen.dart';
 import '../../features/quran/presentation/screens/mushaf_reader_screen.dart';
 import '../../features/quran/presentation/screens/quran_screen.dart';
@@ -46,6 +47,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       _sheet(AppRoutes.settingsDhikr, const DhikrSettingsScreen()),
       _sheet(AppRoutes.settingsReminders, const AdhkarRemindersScreen()),
       _sheet(AppRoutes.tasbeeh, const TasbeehScreen()),
+      _sheet(AppRoutes.qibla, const QiblaScreen()),
       GoRoute(
         path: AppRoutes.kahf,
         builder: (context, state) => const KahfReaderScreen(),

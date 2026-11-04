@@ -12,6 +12,7 @@ abstract final class AppRoutes {
   static const String settingsDhikr = '/settings/dhikr';
   static const String settingsReminders = '/settings/reminders';
   static const String tasbeeh = '/tasbeeh';
+  static const String qibla = '/qibla';
 
   // Full-screen pages pushed on top of a sheet or the home screen.
   static const String kahf = '/kahf';
