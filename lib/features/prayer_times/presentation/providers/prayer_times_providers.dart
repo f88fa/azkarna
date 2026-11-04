@@ -8,9 +8,11 @@ import '../../domain/entities/prayer_location.dart';
 import '../../domain/entities/prayer_times.dart';
 import '../../domain/repositories/prayer_times_repository.dart';
 import '../../domain/usecases/get_today_prayer_times.dart';
+import 'location_providers.dart';
 
+/// The location prayer times are computed for (auto GPS or a picked city).
 final prayerLocationProvider = Provider<PrayerLocation>(
-  (ref) => PrayerLocation.hail,
+  (ref) => ref.watch(locationProvider.select((s) => s.location)),
 );
 
 final prayerOffsetsLocalDataSourceProvider =

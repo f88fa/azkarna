@@ -1,21 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../../../../core/layout/layout.dart';
+import '../../../../core/router/app_routes.dart';
+import '../../../../core/widgets/app_snack.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/arabic_format.dart';
 import '../../../../core/widgets/popup_scaffold.dart';
 import '../../../prayer_times/domain/entities/prayer_times.dart';
+import '../../../prayer_times/data/services/device_location_service.dart';
+import '../../../prayer_times/domain/entities/saudi_city.dart';
+import '../../../prayer_times/presentation/providers/location_providers.dart';
 import '../../../prayer_times/presentation/providers/prayer_times_providers.dart';
 import '../widgets/settings_group.dart';
 
-/// City, calculation method and the manual per-prayer minute offsets.
-class LocationSettingsScreen extends ConsumerWidget {
+/// Location (automatic GPS or a picked Saudi city), calculation method and
+/// the manual per-prayer minute offsets.
+class LocationSettingsScreen extends ConsumerStatefulWidget {
   const LocationSettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final location = ref.watch(prayerLocationProvider);
+  ConsumerState<LocationSettingsScreen> createState() =>
+      _LocationSettingsScreenState();
+}
+
+class _LocationSettingsScreenState
+    extends ConsumerState<LocationSettingsScreen> {
+  bool _busy = false;
+
+  Future<void> _locate() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    final outcome = await ref.read(locationProvider.notifier).enableAuto();
+    if (!mounted) return;
+    setState(() => _busy = false);
+    switch (outcome) {
+      case LocationUpdated(:final location):
+        showAppSnack(
+          context,
+          'تم تحديد موقعك: ${location.city}، وحُدّثت مواقيت الصلاة.',
+        );
+      case LocationFailed():
+        showAppSnack(context, outcome.message);
+        final service = ref.read(deviceLocationServiceProvider);
+        if (outcome.access == LocationAccess.deniedForever) {
+          await service.openSettings();
+        } else if (outcome.access == LocationAccess.serviceOff) {
+          await service.openLocationSettings();
+        }
+    }
+  }
+
+  Future<void> _setAuto(bool on) async {
+    if (on) return _locate();
+    final state = ref.read(locationProvider);
+    final city = SaudiCity.byId(state.cityId) ?? SaudiCity.hail;
+    await ref.read(locationProvider.notifier).setManual(city);
+    if (!mounted) return;
+    showAppSnack(
+      context,
+      'الوضع اليدوي: المواقيت لمدينة ${city.name}. يمكنك تغييرها من «المدينة».',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(locationProvider);
+    final location = state.location;
 
     return PopupScaffold(
       title: 'الموقع وطريقة الحساب',
@@ -27,16 +80,56 @@ class LocationSettingsScreen extends ConsumerWidget {
         child: Column(
           children: [
             SettingsSection(
-              title: 'مواقيت الصلاة',
-              footer: 'تُحسب المواقيت لهذه المدينة بطريقة أم القرى.',
+              title: 'الموقع',
+              footer: state.isAuto
+                  ? 'يقرأ التطبيق موقعك عند فتحه، وإذا انتقلت إلى مدينة أخرى '
+                        'تتحدّث المواقيت والتنبيهات تلقائيًا.'
+                  : 'المواقيت ثابتة على المدينة المختارة. إذا انتقلت إلى مدينة '
+                        'أخرى سيسألك التطبيق هل تريد تحديثها.',
               children: [
+                SettingsSwitchTile(
+                  icon: Icons.my_location_rounded,
+                  color: AppColors.primary,
+                  title: 'تحديد الموقع تلقائيًا',
+                  subtitle: _busy
+                      ? 'جارٍ تحديد موقعك…'
+                      : state.isAuto
+                      ? 'من موقع الجهاز (GPS)'
+                      : 'متوقف · مدينة مختارة يدويًا',
+                  value: state.isAuto,
+                  onChanged: _busy ? (_) {} : _setAuto,
+                ),
                 SettingsValueTile(
                   icon: Icons.location_on_rounded,
                   color: AppColors.red,
-                  title: 'الموقع',
-                  value: location.displayName,
+                  title: state.isAuto ? 'موقعك الحالي' : 'المدينة',
+                  value: location.city,
+                  onTap: state.isAuto
+                      ? null
+                      : () => context.push(AppRoutes.settingsCity),
                 ),
-                const SettingsValueTile(
+                if (state.isAuto)
+                  SettingsActionTile(
+                    icon: Icons.refresh_rounded,
+                    color: AppColors.teal,
+                    title: _busy ? 'جارٍ التحديث…' : 'تحديث الموقع الآن',
+                    onTap: _locate,
+                  )
+                else
+                  SettingsActionTile(
+                    icon: Icons.location_city_rounded,
+                    color: AppColors.teal,
+                    title: 'اختيار مدينة أخرى',
+                    subtitle: 'مدن المملكة مرتّبة حسب المنطقة',
+                    onTap: () => context.push(AppRoutes.settingsCity),
+                  ),
+              ],
+            ),
+            const SettingsSection(
+              title: 'طريقة الحساب',
+              footer: 'تُحسب المواقيت لهذا الموقع بطريقة أم القرى.',
+              children: [
+                SettingsValueTile(
                   icon: Icons.calculate_rounded,
                   color: AppColors.purple,
                   title: 'طريقة الحساب',

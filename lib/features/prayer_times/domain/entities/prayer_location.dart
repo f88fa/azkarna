@@ -21,7 +21,7 @@ class PrayerLocation {
   /// Fixed offset of [timeZone] from UTC (Saudi Arabia has no DST).
   final Duration utcOffset;
 
-  String get displayName => '$city، $country';
+  String get displayName => country.isEmpty ? city : '$city، $country';
 
   /// Current wall-clock time at this location, independent of the device
   /// time zone.

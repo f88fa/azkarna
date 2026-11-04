@@ -26,6 +26,7 @@ class AzkarnaApp extends ConsumerWidget {
         darkTheme: AppTheme.dark,
         themeMode: themeMode,
         routerConfig: router,
+        scaffoldMessengerKey: rootMessengerKey,
         // Arabic-first: a single locale, always right-to-left.
         locale: AppConstants.locale,
         supportedLocales: AppConstants.supportedLocales,

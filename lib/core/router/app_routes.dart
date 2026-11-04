@@ -7,6 +7,7 @@ abstract final class AppRoutes {
   static const String adhkar = '/adhkar';
   static const String settings = '/settings';
   static const String settingsLocation = '/settings/location';
+  static const String settingsCity = '/settings/location/city';
   static const String settingsMuadhin = '/settings/muadhin';
   static const String settingsDhikr = '/settings/dhikr';
   static const String settingsReminders = '/settings/reminders';

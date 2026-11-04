@@ -9,6 +9,7 @@ import '../../features/quran/presentation/screens/kahf_reader_screen.dart';
 import '../../features/quran/presentation/screens/mushaf_reader_screen.dart';
 import '../../features/quran/presentation/screens/quran_screen.dart';
 import '../../features/settings/presentation/screens/adhkar_reminders_screen.dart';
+import '../../features/settings/presentation/screens/city_picker_screen.dart';
 import '../../features/settings/presentation/screens/dhikr_settings_screen.dart';
 import '../../features/settings/presentation/screens/location_settings_screen.dart';
 import '../../features/settings/presentation/screens/muadhin_picker_screen.dart';
@@ -20,8 +21,15 @@ import 'app_routes.dart';
 
 /// The home screen is the single base page. Tasks, Quran, Adhkar and
 /// Settings open as pop-up sheets over it; closing a sheet returns home.
+/// Root navigator, used for app-level dialogs (e.g. "did you move city?").
+final rootNavigatorKey = GlobalKey<NavigatorState>();
+
+/// App-level messenger for snack bars shown outside any page.
+final rootMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 final appRouterProvider = Provider<GoRouter>((ref) {
   final router = GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: AppRoutes.home,
     routes: [
       GoRoute(
@@ -33,6 +41,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       _sheet(AppRoutes.adhkar, const AdhkarScreen()),
       _sheet(AppRoutes.settings, const SettingsScreen()),
       _sheet(AppRoutes.settingsLocation, const LocationSettingsScreen()),
+      _sheet(AppRoutes.settingsCity, const CityPickerScreen()),
       _sheet(AppRoutes.settingsMuadhin, const MuadhinPickerScreen()),
       _sheet(AppRoutes.settingsDhikr, const DhikrSettingsScreen()),
       _sheet(AppRoutes.settingsReminders, const AdhkarRemindersScreen()),
