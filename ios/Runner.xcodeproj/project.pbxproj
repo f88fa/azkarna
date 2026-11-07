@@ -26,6 +26,7 @@
 		431C3A3D39C6B34CA6C21175 /* before_isha.caf in Resources */ = {isa = PBXBuildFile; fileRef = A0AA61C9FF1607EBC66FFB8D /* before_isha.caf */; };
 		4549F9A9354AEC8C828E07CC /* before_asr.caf in Resources */ = {isa = PBXBuildFile; fileRef = FA47E581FE9377FADE22401B /* before_asr.caf */; };
 		4BF47C6695254BABBB144E0F /* adhan_suhail_hafez_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */; };
+		4D8FC34D8E67BCE30F25DEFF /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4964BE05E842278668858B71 /* PrivacyInfo.xcprivacy */; };
 		4E6BCBCF7E126DA87055A68F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C7A6DF4A400358D413293ED /* WidgetKit.framework */; };
 		50955B9B3B41590434412048 /* adhan_ali_mulla.caf in Resources */ = {isa = PBXBuildFile; fileRef = AAC3207AEA06F2E372DC8B6B /* adhan_ali_mulla.caf */; };
 		52CCC6A69DF6AB4E0BF1458E /* adhan_ibrahim_madani_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9397BA907634AAEC02AA5238 /* adhan_ibrahim_madani_short.caf */; };
@@ -46,6 +47,7 @@
 		A604445D51C780632A4A5839 /* dhikr_subhan_allah_wa_bihamdihi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 52A5F8A8FDBFCC33C03C2C70 /* dhikr_subhan_allah_wa_bihamdihi.caf */; };
 		A893A1205E8C817AE6499B2D /* adhan_hussein_shahat_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */; };
 		A8E8A78D5CF407ECF1A23DC1 /* adhan_rajhi_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */; };
+		A9C673E11696622E8C4584F6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 953D3CB1CEB713B8DF8433BB /* PrivacyInfo.xcprivacy */; };
 		AC280C26052BEE65BE9965A0 /* adhan_ali_mulla_2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 86CFBB6ED3C3E1B7F8B27106 /* adhan_ali_mulla_2.caf */; };
 		B62C7C29E147971A01F7BBC9 /* dhikr_subhan_allah.caf in Resources */ = {isa = PBXBuildFile; fileRef = 6BAF8911AA0FD8739310D61E /* dhikr_subhan_allah.caf */; };
 		BAB16507C40E722DCB9C0992 /* dhikr_astaghfirullah.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0E6E0B7FBA24E7F0E40EA87F /* dhikr_astaghfirullah.caf */; };
@@ -123,6 +125,7 @@
 		3B2950CFBF4B85264E7C8959 /* adhan_hussein_shahat.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hussein_shahat.caf; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		3EEE786001D412F92CF57B97 /* adhan_rajhi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_rajhi.caf; sourceTree = "<group>"; };
+		4964BE05E842278668858B71 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		52A5F8A8FDBFCC33C03C2C70 /* dhikr_subhan_allah_wa_bihamdihi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_subhan_allah_wa_bihamdihi.caf; sourceTree = "<group>"; };
 		5617C0241A1BE66C10657802 /* dhikr_uthkur_allah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_uthkur_allah.caf; sourceTree = "<group>"; };
 		5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_suhail_hafez_short.caf; sourceTree = "<group>"; };
@@ -141,6 +144,7 @@
 		8E6E4F3FC1B2F7402042EA19 /* before_maghrib.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_maghrib.caf; sourceTree = "<group>"; };
 		92AD2E5BEF535E4E8AA33968 /* dhikr_allahumma_salli.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_allahumma_salli.caf; sourceTree = "<group>"; };
 		9397BA907634AAEC02AA5238 /* adhan_ibrahim_madani_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ibrahim_madani_short.caf; sourceTree = "<group>"; };
+		953D3CB1CEB713B8DF8433BB /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -211,6 +215,7 @@
 				F3030079D990A89E6BDC67EA /* Info.plist */,
 				6A72418DA5CB24478C400F3E /* PrayerWidget.entitlements */,
 				0D56730D93A6EFEAFE7D6600 /* PrayerWidget.xcconfig */,
+				953D3CB1CEB713B8DF8433BB /* PrivacyInfo.xcprivacy */,
 			);
 			name = PrayerWidget;
 			path = PrayerWidget;
@@ -303,6 +308,7 @@
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				356F91D08B1E114F9B0B01F9 /* Runner.entitlements */,
+				4964BE05E842278668858B71 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -436,6 +442,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9C673E11696622E8C4584F6 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,6 +495,7 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				4D8FC34D8E67BCE30F25DEFF /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
