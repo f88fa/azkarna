@@ -1,0 +1,3 @@
+// Gives the widget the same version/build as the app (FLUTTER_BUILD_NAME /
+// FLUTTER_BUILD_NUMBER), as the App Store requires for extensions.
+#include? "../Flutter/Generated.xcconfig"

@@ -237,8 +237,8 @@ class LocalNotificationScheduler implements NotificationScheduler {
 
         await _schedule(
           id: _adhanIdBase + dayIndex * _idsPerDay + i,
-          title: 'حان وقت صلاة ${prayer.label}',
-          body: 'حان الآن موعد أذان ${prayer.label} · ${day.location}',
+          title: prayer.label,
+          body: 'حان وقت أذان ${prayer.label}',
           when: when,
           details: details,
         );
@@ -281,9 +281,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
         await _schedule(
           id: _adhanIdBase + dayIndex * _idsPerDay + _beforeSlot + i,
           title: 'اقتربت صلاة ${prayer.label}',
-          body:
-              'بقي ${_minutesLabel(minutes)} على أذان ${prayer.label} · '
-              'استعد للصلاة',
+          body: 'بقي ${_minutesLabel(minutes)} على الأذان',
           when: when,
           details: _beforePrayerDetails(prayer),
         );
@@ -354,7 +352,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
             prayer: Prayer.fajr,
             delay: AdhkarReminderDelays.morningAfterFajr,
             title: 'أذكار الصباح',
-            body: 'ابدأ يومك بذكر الله · أذكار الصباح',
+            body: 'ابدأ يومك بذكر الله',
           ),
         if (evening)
           (
@@ -362,7 +360,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
             prayer: Prayer.asr,
             delay: AdhkarReminderDelays.eveningAfterAsr,
             title: 'أذكار المساء',
-            body: 'حان وقت أذكار المساء، لا تنسَ وردك',
+            body: 'لا تنسَ وردك',
           ),
       ];
 
@@ -412,8 +410,8 @@ class LocalNotificationScheduler implements NotificationScheduler {
       if (!when.isAfter(tz.TZDateTime.now(location))) continue;
       await _schedule(
         id: _kahfIdBase + i,
-        title: 'سورة الكهف · يوم الجمعة',
-        body: 'لا تنسَ قراءة سورة الكهف قبل أذان المغرب',
+        title: 'سورة الكهف',
+        body: 'اقرأها قبل أذان المغرب',
         when: when,
         details: _kahfDetails,
       );
@@ -620,7 +618,7 @@ class LocalNotificationScheduler implements NotificationScheduler {
     await _schedule(
       id: _khatmahId,
       title: 'الختمة اليومية',
-      body: 'خصّص دقائق لقراءة وردك اليومي من القرآن الكريم.',
+      body: 'خصّص دقائق لوردك اليومي',
       when: when,
       details: _khatmahDetails,
       match: DateTimeComponents.time,

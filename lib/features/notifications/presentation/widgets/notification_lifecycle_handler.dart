@@ -5,6 +5,7 @@ import '../../../../core/router/app_router.dart';
 import '../../../prayer_times/domain/entities/saudi_city.dart';
 import '../../../prayer_times/presentation/providers/location_providers.dart';
 import '../../../prayer_times/presentation/providers/prayer_times_providers.dart';
+import '../../../prayer_widget/prayer_widget_sync.dart';
 import '../../../tasks/domain/entities/task.dart';
 import '../../../tasks/presentation/providers/task_providers.dart';
 import '../providers/notification_providers.dart';
@@ -47,6 +48,7 @@ class _NotificationLifecycleHandlerState
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state != AppLifecycleState.resumed) return;
     _refreshPrayerTimesIfStale();
+    _syncWidget();
     _checkLocation();
     final tasks = ref.read(tasksProvider).asData?.value;
     if (tasks != null) _syncTaskReminders(tasks);
@@ -72,7 +74,15 @@ class _NotificationLifecycleHandlerState
     }
   }
 
+  /// Refreshes the prayer times shown by the iOS widget.
+  void _syncWidget() {
+    PrayerWidgetSync(
+      ref.read(prayerTimesRepositoryProvider),
+    ).call(ref.read(prayerLocationProvider));
+  }
+
   Future<void> _bootstrap() async {
+    _syncWidget();
     _lastSync = DateTime.now();
     try {
       await ref
@@ -192,7 +202,10 @@ class _NotificationLifecycleHandlerState
   Widget build(BuildContext context) {
     // Re-schedule the Adhan notifications whenever a manual offset changes.
     ref.listen(prayerOffsetsProvider, (previous, next) {
-      if (previous != next) _sync();
+      if (previous != next) {
+        _sync();
+        _syncWidget();
+      }
     });
     // …and whenever the location (city or GPS fix) changes.
     ref.listen(prayerLocationProvider, (previous, next) {
@@ -200,6 +213,7 @@ class _NotificationLifecycleHandlerState
           previous.latitude != next.latitude ||
           previous.longitude != next.longitude) {
         _sync();
+        _syncWidget();
       }
     });
     // Keep task reminders in line with the task list.

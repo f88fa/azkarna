@@ -7,55 +7,61 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		431C3A3D39C6B34CA6C21175 /* before_isha.caf in Resources */ = {isa = PBXBuildFile; fileRef = A0AA61C9FF1607EBC66FFB8D /* before_isha.caf */; };
-		F81BFA2C350A501CF9B133AD /* before_maghrib.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8E6E4F3FC1B2F7402042EA19 /* before_maghrib.caf */; };
-		4549F9A9354AEC8C828E07CC /* before_asr.caf in Resources */ = {isa = PBXBuildFile; fileRef = FA47E581FE9377FADE22401B /* before_asr.caf */; };
-		C67E6CDF6FA3BE0D51ABF630 /* before_dhuhr.caf in Resources */ = {isa = PBXBuildFile; fileRef = CB39210A4F35BA0A2C4BD7CA /* before_dhuhr.caf */; };
-		0D1313F772F0ABC95B85B433 /* before_fajr.caf in Resources */ = {isa = PBXBuildFile; fileRef = 26C0396F8725ECA2E73F1BCF /* before_fajr.caf */; };
-		A8E8A78D5CF407ECF1A23DC1 /* adhan_rajhi_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */; };
-		4BF47C6695254BABBB144E0F /* adhan_suhail_hafez_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */; };
-		A893A1205E8C817AE6499B2D /* adhan_hussein_shahat_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */; };
-		52CCC6A69DF6AB4E0BF1458E /* adhan_ibrahim_madani_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9397BA907634AAEC02AA5238 /* adhan_ibrahim_madani_short.caf */; };
-		761D5D001B1B8CCA1F79C1FD /* adhan_basaad_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 6105C76480ADBA2EA5069EB1 /* adhan_basaad_short.caf */; };
-		E3367D8FE68BB70C292DC337 /* adhan_ramadan_saad_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = E57F94E6D500D91086A6F190 /* adhan_ramadan_saad_short.caf */; };
-		E120FC109FA602EFFE065868 /* adhan_nasser_obaid_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 2A9521FB22023D0665496C4F /* adhan_nasser_obaid_short.caf */; };
-		3F21E7958C2C0E7C01BFF88B /* adhan_dosari_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = CFDA46D9E23A49241ACABC8D /* adhan_dosari_short.caf */; };
-		3E222CB051DDD6C8C61F8749 /* adhan_qatami_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = DC07A341814D30EC27125FD9 /* adhan_qatami_short.caf */; };
-		8DA593625905FB3CF4FD6AFB /* adhan_abdulbasit_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9A28CACF9379CE7F0279D29B /* adhan_abdulbasit_short.caf */; };
 		00833D9B819BFF8F1DABA6B2 /* adhan_dagriri_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = DA03FAE4B3893F36BD8246AF /* adhan_dagriri_short.caf */; };
 		051D4AC6A147FFD80957A449 /* adhan_hadrawi_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0096E5211A9645FF82383982 /* adhan_hadrawi_short.caf */; };
-		83BEFD4496A3E9386E83DE08 /* adhan_ali_mulla_2_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7D3A4C52E7448E1EC7618991 /* adhan_ali_mulla_2_short.caf */; };
-		8F670C6ABC38A2E72DBD0FA8 /* adhan_ali_mulla_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = B8440742831BF0EE3B237ABE /* adhan_ali_mulla_short.caf */; };
-		EB37DE57B5D8FAB86C06ACE1 /* adhan_rajhi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3EEE786001D412F92CF57B97 /* adhan_rajhi.caf */; };
-		37351D026836523C84B6EA14 /* adhan_suhail_hafez.caf in Resources */ = {isa = PBXBuildFile; fileRef = EFBFE312C05DBA81958B1338 /* adhan_suhail_hafez.caf */; };
-		1F2E5F32CC9CD4E2F0409C87 /* adhan_hussein_shahat.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3B2950CFBF4B85264E7C8959 /* adhan_hussein_shahat.caf */; };
-		3388B4D6CD09CA362F1EDAAE /* adhan_ibrahim_madani.caf in Resources */ = {isa = PBXBuildFile; fileRef = D58626D1FAC563A50089C8CB /* adhan_ibrahim_madani.caf */; };
-		DC9D5D80802BB16171A89A1F /* adhan_basaad.caf in Resources */ = {isa = PBXBuildFile; fileRef = 87B2177FC09B2DC764394D48 /* adhan_basaad.caf */; };
-		5DE367915346FAD8EE9EFED7 /* adhan_ramadan_saad.caf in Resources */ = {isa = PBXBuildFile; fileRef = F640584C88A7E2D1970D5B33 /* adhan_ramadan_saad.caf */; };
-		EBBD87138BE781C17D718B71 /* adhan_nasser_obaid.caf in Resources */ = {isa = PBXBuildFile; fileRef = BFC87AD8661C173131EA6E8C /* adhan_nasser_obaid.caf */; };
-		F0668C70FF169F19CF8AB55E /* adhan_dosari.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9BF26EAD1FA25D36377A1F3A /* adhan_dosari.caf */; };
-		18A0E82AA009F1D3BA52BE6E /* adhan_qatami.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153D887E38BF818CF3B45CBF /* adhan_qatami.caf */; };
-		8C1805175973231E8967FC00 /* adhan_abdulbasit.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3507C978F8AB10330367DC6C /* adhan_abdulbasit.caf */; };
-		3ED1355214358BDB121E96CC /* adhan_dagriri.caf in Resources */ = {isa = PBXBuildFile; fileRef = ECCD6314D97159F5CA3794E5 /* adhan_dagriri.caf */; };
-		D12A38CF176FAFD726497B44 /* adhan_hadrawi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0A40FDE0CF779638E3CC0248 /* adhan_hadrawi.caf */; };
-		AC280C26052BEE65BE9965A0 /* adhan_ali_mulla_2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 86CFBB6ED3C3E1B7F8B27106 /* adhan_ali_mulla_2.caf */; };
-		50955B9B3B41590434412048 /* adhan_ali_mulla.caf in Resources */ = {isa = PBXBuildFile; fileRef = AAC3207AEA06F2E372DC8B6B /* adhan_ali_mulla.caf */; };
+		0D1313F772F0ABC95B85B433 /* before_fajr.caf in Resources */ = {isa = PBXBuildFile; fileRef = 26C0396F8725ECA2E73F1BCF /* before_fajr.caf */; };
 		10B2133B09C260CD4102C36C /* dhikr_alhamdulillah.caf in Resources */ = {isa = PBXBuildFile; fileRef = F86DC78EEB4A792EE92D077A /* dhikr_alhamdulillah.caf */; };
-		A604445D51C780632A4A5839 /* dhikr_subhan_allah_wa_bihamdihi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 52A5F8A8FDBFCC33C03C2C70 /* dhikr_subhan_allah_wa_bihamdihi.caf */; };
+		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		18A0E82AA009F1D3BA52BE6E /* adhan_qatami.caf in Resources */ = {isa = PBXBuildFile; fileRef = 153D887E38BF818CF3B45CBF /* adhan_qatami.caf */; };
+		1F2E5F32CC9CD4E2F0409C87 /* adhan_hussein_shahat.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3B2950CFBF4B85264E7C8959 /* adhan_hussein_shahat.caf */; };
 		2041DD995FB868435E9BE411 /* dhikr_uthkur_allah.caf in Resources */ = {isa = PBXBuildFile; fileRef = 5617C0241A1BE66C10657802 /* dhikr_uthkur_allah.caf */; };
 		296954CCB004B14AA9BE64F1 /* dhikr_allahu_akbar.caf in Resources */ = {isa = PBXBuildFile; fileRef = AD6C46129A9E991C898BABA1 /* dhikr_allahu_akbar.caf */; };
-		DC42D6F168CAC515D8DD53BA /* dhikr_allahumma_salli.caf in Resources */ = {isa = PBXBuildFile; fileRef = 92AD2E5BEF535E4E8AA33968 /* dhikr_allahumma_salli.caf */; };
-		BAB16507C40E722DCB9C0992 /* dhikr_astaghfirullah.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0E6E0B7FBA24E7F0E40EA87F /* dhikr_astaghfirullah.caf */; };
-		6D5F9B59379D51A42CB4799E /* dhikr_la_ilaha_illa_allah.caf in Resources */ = {isa = PBXBuildFile; fileRef = C779BEDE20540632AA8F5CA2 /* dhikr_la_ilaha_illa_allah.caf */; };
-		B62C7C29E147971A01F7BBC9 /* dhikr_subhan_allah.caf in Resources */ = {isa = PBXBuildFile; fileRef = 6BAF8911AA0FD8739310D61E /* dhikr_subhan_allah.caf */; };
-		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
+		3388B4D6CD09CA362F1EDAAE /* adhan_ibrahim_madani.caf in Resources */ = {isa = PBXBuildFile; fileRef = D58626D1FAC563A50089C8CB /* adhan_ibrahim_madani.caf */; };
+		37351D026836523C84B6EA14 /* adhan_suhail_hafez.caf in Resources */ = {isa = PBXBuildFile; fileRef = EFBFE312C05DBA81958B1338 /* adhan_suhail_hafez.caf */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		3E222CB051DDD6C8C61F8749 /* adhan_qatami_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = DC07A341814D30EC27125FD9 /* adhan_qatami_short.caf */; };
+		3ED1355214358BDB121E96CC /* adhan_dagriri.caf in Resources */ = {isa = PBXBuildFile; fileRef = ECCD6314D97159F5CA3794E5 /* adhan_dagriri.caf */; };
+		3F21E7958C2C0E7C01BFF88B /* adhan_dosari_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = CFDA46D9E23A49241ACABC8D /* adhan_dosari_short.caf */; };
+		431C3A3D39C6B34CA6C21175 /* before_isha.caf in Resources */ = {isa = PBXBuildFile; fileRef = A0AA61C9FF1607EBC66FFB8D /* before_isha.caf */; };
+		4549F9A9354AEC8C828E07CC /* before_asr.caf in Resources */ = {isa = PBXBuildFile; fileRef = FA47E581FE9377FADE22401B /* before_asr.caf */; };
+		4BF47C6695254BABBB144E0F /* adhan_suhail_hafez_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */; };
+		4E6BCBCF7E126DA87055A68F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C7A6DF4A400358D413293ED /* WidgetKit.framework */; };
+		50955B9B3B41590434412048 /* adhan_ali_mulla.caf in Resources */ = {isa = PBXBuildFile; fileRef = AAC3207AEA06F2E372DC8B6B /* adhan_ali_mulla.caf */; };
+		52CCC6A69DF6AB4E0BF1458E /* adhan_ibrahim_madani_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9397BA907634AAEC02AA5238 /* adhan_ibrahim_madani_short.caf */; };
+		5CB4D9B4B55AE10E78F2DE17 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 860A8D7CDCF8475865932802 /* Foundation.framework */; };
+		5DE367915346FAD8EE9EFED7 /* adhan_ramadan_saad.caf in Resources */ = {isa = PBXBuildFile; fileRef = F640584C88A7E2D1970D5B33 /* adhan_ramadan_saad.caf */; };
+		5F022BDB371568E7EBD59ADF /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C7A6DF4A400358D413293ED /* WidgetKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		6D5F9B59379D51A42CB4799E /* dhikr_la_ilaha_illa_allah.caf in Resources */ = {isa = PBXBuildFile; fileRef = C779BEDE20540632AA8F5CA2 /* dhikr_la_ilaha_illa_allah.caf */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		761D5D001B1B8CCA1F79C1FD /* adhan_basaad_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 6105C76480ADBA2EA5069EB1 /* adhan_basaad_short.caf */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
+		83BEFD4496A3E9386E83DE08 /* adhan_ali_mulla_2_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 7D3A4C52E7448E1EC7618991 /* adhan_ali_mulla_2_short.caf */; };
+		8C1805175973231E8967FC00 /* adhan_abdulbasit.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3507C978F8AB10330367DC6C /* adhan_abdulbasit.caf */; };
+		8DA593625905FB3CF4FD6AFB /* adhan_abdulbasit_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9A28CACF9379CE7F0279D29B /* adhan_abdulbasit_short.caf */; };
+		8F670C6ABC38A2E72DBD0FA8 /* adhan_ali_mulla_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = B8440742831BF0EE3B237ABE /* adhan_ali_mulla_short.caf */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		A604445D51C780632A4A5839 /* dhikr_subhan_allah_wa_bihamdihi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 52A5F8A8FDBFCC33C03C2C70 /* dhikr_subhan_allah_wa_bihamdihi.caf */; };
+		A893A1205E8C817AE6499B2D /* adhan_hussein_shahat_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */; };
+		A8E8A78D5CF407ECF1A23DC1 /* adhan_rajhi_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */; };
+		AC280C26052BEE65BE9965A0 /* adhan_ali_mulla_2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 86CFBB6ED3C3E1B7F8B27106 /* adhan_ali_mulla_2.caf */; };
+		B62C7C29E147971A01F7BBC9 /* dhikr_subhan_allah.caf in Resources */ = {isa = PBXBuildFile; fileRef = 6BAF8911AA0FD8739310D61E /* dhikr_subhan_allah.caf */; };
+		BAB16507C40E722DCB9C0992 /* dhikr_astaghfirullah.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0E6E0B7FBA24E7F0E40EA87F /* dhikr_astaghfirullah.caf */; };
+		C67E6CDF6FA3BE0D51ABF630 /* before_dhuhr.caf in Resources */ = {isa = PBXBuildFile; fileRef = CB39210A4F35BA0A2C4BD7CA /* before_dhuhr.caf */; };
+		CA6D3626365A491FAE848FA8 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0F7218777B85F76D0BF65D5 /* SwiftUI.framework */; };
+		CF88440C1B5460F658BCE6E2 /* PrayerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FFBE34EAC8C57E471EE07F1 /* PrayerWidget.swift */; };
+		D12A38CF176FAFD726497B44 /* adhan_hadrawi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 0A40FDE0CF779638E3CC0248 /* adhan_hadrawi.caf */; };
+		DC42D6F168CAC515D8DD53BA /* dhikr_allahumma_salli.caf in Resources */ = {isa = PBXBuildFile; fileRef = 92AD2E5BEF535E4E8AA33968 /* dhikr_allahumma_salli.caf */; };
+		DC9D5D80802BB16171A89A1F /* adhan_basaad.caf in Resources */ = {isa = PBXBuildFile; fileRef = 87B2177FC09B2DC764394D48 /* adhan_basaad.caf */; };
+		E120FC109FA602EFFE065868 /* adhan_nasser_obaid_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 2A9521FB22023D0665496C4F /* adhan_nasser_obaid_short.caf */; };
+		E3367D8FE68BB70C292DC337 /* adhan_ramadan_saad_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = E57F94E6D500D91086A6F190 /* adhan_ramadan_saad_short.caf */; };
+		EB37DE57B5D8FAB86C06ACE1 /* adhan_rajhi.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3EEE786001D412F92CF57B97 /* adhan_rajhi.caf */; };
+		EBBD87138BE781C17D718B71 /* adhan_nasser_obaid.caf in Resources */ = {isa = PBXBuildFile; fileRef = BFC87AD8661C173131EA6E8C /* adhan_nasser_obaid.caf */; };
+		EFAC8BBDC6D0DDE576CA893F /* PrayerWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D6EBB07A7D888D0612B9249D /* PrayerWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F0668C70FF169F19CF8AB55E /* adhan_dosari.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9BF26EAD1FA25D36377A1F3A /* adhan_dosari.caf */; };
+		F81BFA2C350A501CF9B133AD /* before_maghrib.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8E6E4F3FC1B2F7402042EA19 /* before_maghrib.caf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,9 +72,27 @@
 			remoteGlobalIDString = 97C146ED1CF9000F007C117D;
 			remoteInfo = Runner;
 		};
+		BDB23162D6E8BD6C73032B5F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 41E1C0E2D46CF22E58265BE5;
+			remoteInfo = PrayerWidget;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		85EDA5A645D32AF67DD578B3 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				EFAC8BBDC6D0DDE576CA893F /* PrayerWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -82,56 +106,41 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A0AA61C9FF1607EBC66FFB8D /* before_isha.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_isha.caf; sourceTree = "<group>"; };
-		8E6E4F3FC1B2F7402042EA19 /* before_maghrib.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_maghrib.caf; sourceTree = "<group>"; };
-		FA47E581FE9377FADE22401B /* before_asr.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_asr.caf; sourceTree = "<group>"; };
-		CB39210A4F35BA0A2C4BD7CA /* before_dhuhr.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_dhuhr.caf; sourceTree = "<group>"; };
-		26C0396F8725ECA2E73F1BCF /* before_fajr.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_fajr.caf; sourceTree = "<group>"; };
-		9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_rajhi_short.caf; sourceTree = "<group>"; };
-		5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_suhail_hafez_short.caf; sourceTree = "<group>"; };
-		D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hussein_shahat_short.caf; sourceTree = "<group>"; };
-		9397BA907634AAEC02AA5238 /* adhan_ibrahim_madani_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ibrahim_madani_short.caf; sourceTree = "<group>"; };
-		6105C76480ADBA2EA5069EB1 /* adhan_basaad_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_basaad_short.caf; sourceTree = "<group>"; };
-		E57F94E6D500D91086A6F190 /* adhan_ramadan_saad_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ramadan_saad_short.caf; sourceTree = "<group>"; };
-		2A9521FB22023D0665496C4F /* adhan_nasser_obaid_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_nasser_obaid_short.caf; sourceTree = "<group>"; };
-		CFDA46D9E23A49241ACABC8D /* adhan_dosari_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dosari_short.caf; sourceTree = "<group>"; };
-		DC07A341814D30EC27125FD9 /* adhan_qatami_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_qatami_short.caf; sourceTree = "<group>"; };
-		9A28CACF9379CE7F0279D29B /* adhan_abdulbasit_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_abdulbasit_short.caf; sourceTree = "<group>"; };
-		DA03FAE4B3893F36BD8246AF /* adhan_dagriri_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dagriri_short.caf; sourceTree = "<group>"; };
 		0096E5211A9645FF82383982 /* adhan_hadrawi_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hadrawi_short.caf; sourceTree = "<group>"; };
-		7D3A4C52E7448E1EC7618991 /* adhan_ali_mulla_2_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla_2_short.caf; sourceTree = "<group>"; };
-		B8440742831BF0EE3B237ABE /* adhan_ali_mulla_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla_short.caf; sourceTree = "<group>"; };
-		3EEE786001D412F92CF57B97 /* adhan_rajhi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_rajhi.caf; sourceTree = "<group>"; };
-		EFBFE312C05DBA81958B1338 /* adhan_suhail_hafez.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_suhail_hafez.caf; sourceTree = "<group>"; };
-		3B2950CFBF4B85264E7C8959 /* adhan_hussein_shahat.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hussein_shahat.caf; sourceTree = "<group>"; };
-		D58626D1FAC563A50089C8CB /* adhan_ibrahim_madani.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ibrahim_madani.caf; sourceTree = "<group>"; };
-		87B2177FC09B2DC764394D48 /* adhan_basaad.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_basaad.caf; sourceTree = "<group>"; };
-		F640584C88A7E2D1970D5B33 /* adhan_ramadan_saad.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ramadan_saad.caf; sourceTree = "<group>"; };
-		BFC87AD8661C173131EA6E8C /* adhan_nasser_obaid.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_nasser_obaid.caf; sourceTree = "<group>"; };
-		9BF26EAD1FA25D36377A1F3A /* adhan_dosari.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dosari.caf; sourceTree = "<group>"; };
-		153D887E38BF818CF3B45CBF /* adhan_qatami.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_qatami.caf; sourceTree = "<group>"; };
-		3507C978F8AB10330367DC6C /* adhan_abdulbasit.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_abdulbasit.caf; sourceTree = "<group>"; };
-		ECCD6314D97159F5CA3794E5 /* adhan_dagriri.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dagriri.caf; sourceTree = "<group>"; };
 		0A40FDE0CF779638E3CC0248 /* adhan_hadrawi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hadrawi.caf; sourceTree = "<group>"; };
-		86CFBB6ED3C3E1B7F8B27106 /* adhan_ali_mulla_2.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla_2.caf; sourceTree = "<group>"; };
-		AAC3207AEA06F2E372DC8B6B /* adhan_ali_mulla.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla.caf; sourceTree = "<group>"; };
-		F86DC78EEB4A792EE92D077A /* dhikr_alhamdulillah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_alhamdulillah.caf; sourceTree = "<group>"; };
-		52A5F8A8FDBFCC33C03C2C70 /* dhikr_subhan_allah_wa_bihamdihi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_subhan_allah_wa_bihamdihi.caf; sourceTree = "<group>"; };
-		5617C0241A1BE66C10657802 /* dhikr_uthkur_allah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_uthkur_allah.caf; sourceTree = "<group>"; };
-		AD6C46129A9E991C898BABA1 /* dhikr_allahu_akbar.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_allahu_akbar.caf; sourceTree = "<group>"; };
-		92AD2E5BEF535E4E8AA33968 /* dhikr_allahumma_salli.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_allahumma_salli.caf; sourceTree = "<group>"; };
+		0D56730D93A6EFEAFE7D6600 /* PrayerWidget.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = PrayerWidget.xcconfig; sourceTree = "<group>"; };
 		0E6E0B7FBA24E7F0E40EA87F /* dhikr_astaghfirullah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_astaghfirullah.caf; sourceTree = "<group>"; };
-		C779BEDE20540632AA8F5CA2 /* dhikr_la_ilaha_illa_allah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_la_ilaha_illa_allah.caf; sourceTree = "<group>"; };
-		6BAF8911AA0FD8739310D61E /* dhikr_subhan_allah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_subhan_allah.caf; sourceTree = "<group>"; };
+		0FFBE34EAC8C57E471EE07F1 /* PrayerWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PrayerWidget.swift; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		153D887E38BF818CF3B45CBF /* adhan_qatami.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_qatami.caf; sourceTree = "<group>"; };
+		26C0396F8725ECA2E73F1BCF /* before_fajr.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_fajr.caf; sourceTree = "<group>"; };
+		2A9521FB22023D0665496C4F /* adhan_nasser_obaid_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_nasser_obaid_short.caf; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3507C978F8AB10330367DC6C /* adhan_abdulbasit.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_abdulbasit.caf; sourceTree = "<group>"; };
+		356F91D08B1E114F9B0B01F9 /* Runner.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		3B2950CFBF4B85264E7C8959 /* adhan_hussein_shahat.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hussein_shahat.caf; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		3EEE786001D412F92CF57B97 /* adhan_rajhi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_rajhi.caf; sourceTree = "<group>"; };
+		52A5F8A8FDBFCC33C03C2C70 /* dhikr_subhan_allah_wa_bihamdihi.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_subhan_allah_wa_bihamdihi.caf; sourceTree = "<group>"; };
+		5617C0241A1BE66C10657802 /* dhikr_uthkur_allah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_uthkur_allah.caf; sourceTree = "<group>"; };
+		5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_suhail_hafez_short.caf; sourceTree = "<group>"; };
+		6105C76480ADBA2EA5069EB1 /* adhan_basaad_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_basaad_short.caf; sourceTree = "<group>"; };
+		6A72418DA5CB24478C400F3E /* PrayerWidget.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = PrayerWidget.entitlements; sourceTree = "<group>"; };
+		6BAF8911AA0FD8739310D61E /* dhikr_subhan_allah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_subhan_allah.caf; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
+		7D3A4C52E7448E1EC7618991 /* adhan_ali_mulla_2_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla_2_short.caf; sourceTree = "<group>"; };
+		860A8D7CDCF8475865932802 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		86CFBB6ED3C3E1B7F8B27106 /* adhan_ali_mulla_2.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla_2.caf; sourceTree = "<group>"; };
+		87B2177FC09B2DC764394D48 /* adhan_basaad.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_basaad.caf; sourceTree = "<group>"; };
+		8C7A6DF4A400358D413293ED /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		8E6E4F3FC1B2F7402042EA19 /* before_maghrib.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_maghrib.caf; sourceTree = "<group>"; };
+		92AD2E5BEF535E4E8AA33968 /* dhikr_allahumma_salli.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_allahumma_salli.caf; sourceTree = "<group>"; };
+		9397BA907634AAEC02AA5238 /* adhan_ibrahim_madani_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ibrahim_madani_short.caf; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,13 +148,48 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9A28CACF9379CE7F0279D29B /* adhan_abdulbasit_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_abdulbasit_short.caf; sourceTree = "<group>"; };
+		9BF26EAD1FA25D36377A1F3A /* adhan_dosari.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dosari.caf; sourceTree = "<group>"; };
+		9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_rajhi_short.caf; sourceTree = "<group>"; };
+		A0AA61C9FF1607EBC66FFB8D /* before_isha.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_isha.caf; sourceTree = "<group>"; };
+		AAC3207AEA06F2E372DC8B6B /* adhan_ali_mulla.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla.caf; sourceTree = "<group>"; };
+		AD6C46129A9E991C898BABA1 /* dhikr_allahu_akbar.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_allahu_akbar.caf; sourceTree = "<group>"; };
+		B8440742831BF0EE3B237ABE /* adhan_ali_mulla_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ali_mulla_short.caf; sourceTree = "<group>"; };
+		BFC87AD8661C173131EA6E8C /* adhan_nasser_obaid.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_nasser_obaid.caf; sourceTree = "<group>"; };
+		C779BEDE20540632AA8F5CA2 /* dhikr_la_ilaha_illa_allah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_la_ilaha_illa_allah.caf; sourceTree = "<group>"; };
+		CB39210A4F35BA0A2C4BD7CA /* before_dhuhr.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_dhuhr.caf; sourceTree = "<group>"; };
+		CFDA46D9E23A49241ACABC8D /* adhan_dosari_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dosari_short.caf; sourceTree = "<group>"; };
+		D58626D1FAC563A50089C8CB /* adhan_ibrahim_madani.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ibrahim_madani.caf; sourceTree = "<group>"; };
+		D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hussein_shahat_short.caf; sourceTree = "<group>"; };
+		D6EBB07A7D888D0612B9249D /* PrayerWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PrayerWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA03FAE4B3893F36BD8246AF /* adhan_dagriri_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dagriri_short.caf; sourceTree = "<group>"; };
+		DC07A341814D30EC27125FD9 /* adhan_qatami_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_qatami_short.caf; sourceTree = "<group>"; };
+		E0F7218777B85F76D0BF65D5 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		E57F94E6D500D91086A6F190 /* adhan_ramadan_saad_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ramadan_saad_short.caf; sourceTree = "<group>"; };
+		ECCD6314D97159F5CA3794E5 /* adhan_dagriri.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_dagriri.caf; sourceTree = "<group>"; };
+		EFBFE312C05DBA81958B1338 /* adhan_suhail_hafez.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_suhail_hafez.caf; sourceTree = "<group>"; };
+		F3030079D990A89E6BDC67EA /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F640584C88A7E2D1970D5B33 /* adhan_ramadan_saad.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_ramadan_saad.caf; sourceTree = "<group>"; };
+		F86DC78EEB4A792EE92D077A /* dhikr_alhamdulillah.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = dhikr_alhamdulillah.caf; sourceTree = "<group>"; };
+		FA47E581FE9377FADE22401B /* before_asr.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_asr.caf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		490A3825733212241BDD6E75 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5CB4D9B4B55AE10E78F2DE17 /* Foundation.framework in Frameworks */,
+				4E6BCBCF7E126DA87055A68F /* WidgetKit.framework in Frameworks */,
+				CA6D3626365A491FAE848FA8 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F022BDB371568E7EBD59ADF /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,6 +202,18 @@
 				331C807B294A618700263BE5 /* RunnerTests.swift */,
 			);
 			path = RunnerTests;
+			sourceTree = "<group>";
+		};
+		89F0C48015485ADE83AFD504 /* PrayerWidget */ = {
+			isa = PBXGroup;
+			children = (
+				0FFBE34EAC8C57E471EE07F1 /* PrayerWidget.swift */,
+				F3030079D990A89E6BDC67EA /* Info.plist */,
+				6A72418DA5CB24478C400F3E /* PrayerWidget.entitlements */,
+				0D56730D93A6EFEAFE7D6600 /* PrayerWidget.xcconfig */,
+			);
+			name = PrayerWidget;
+			path = PrayerWidget;
 			sourceTree = "<group>";
 		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
@@ -178,6 +234,8 @@
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
 				331C8082294A63A400263BE5 /* RunnerTests */,
+				BC90E298E9D542FB769CDB59 /* Frameworks */,
+				89F0C48015485ADE83AFD504 /* PrayerWidget */,
 			);
 			sourceTree = "<group>";
 		};
@@ -186,6 +244,7 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
+				D6EBB07A7D888D0612B9249D /* PrayerWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -243,8 +302,27 @@
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
+				356F91D08B1E114F9B0B01F9 /* Runner.entitlements */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		A31444C13EE072C109AC05A0 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				860A8D7CDCF8475865932802 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		BC90E298E9D542FB769CDB59 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A31444C13EE072C109AC05A0 /* iOS */,
+				8C7A6DF4A400358D413293ED /* WidgetKit.framework */,
+				E0F7218777B85F76D0BF65D5 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -267,6 +345,23 @@
 			productReference = 331C8081294A63A400263BE5 /* RunnerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		41E1C0E2D46CF22E58265BE5 /* PrayerWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E33340B11B3433CEF562442 /* Build configuration list for PBXNativeTarget "PrayerWidget" */;
+			buildPhases = (
+				F644BAA2E1E6416A00044DE0 /* Sources */,
+				490A3825733212241BDD6E75 /* Frameworks */,
+				4290900A23AA165BACE99FE8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PrayerWidget;
+			productName = PrayerWidget;
+			productReference = D6EBB07A7D888D0612B9249D /* PrayerWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		97C146ED1CF9000F007C117D /* Runner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
@@ -276,11 +371,13 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				85EDA5A645D32AF67DD578B3 /* Embed Foundation Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				28F41BECCEDEC680965F4A2A /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -322,12 +419,20 @@
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
+				41E1C0E2D46CF22E58265BE5 /* PrayerWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		331C807F294A63A400263BE5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4290900A23AA165BACE99FE8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -441,9 +546,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F644BAA2E1E6416A00044DE0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF88440C1B5460F658BCE6E2 /* PrayerWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		28F41BECCEDEC680965F4A2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PrayerWidget;
+			target = 41E1C0E2D46CF22E58265BE5 /* PrayerWidget */;
+			targetProxy = BDB23162D6E8BD6C73032B5F /* PBXContainerItemProxy */;
+		};
 		331C8086294A63A400263BE5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
@@ -529,6 +648,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconV2;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -708,6 +828,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconV2;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -730,6 +851,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconV2;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -745,6 +867,89 @@
 			};
 			name = Release;
 		};
+		AB382C9A924FD6C45AAEE9E6 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0D56730D93A6EFEAFE7D6600 /* PrayerWidget.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PrayerWidget/PrayerWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = PrayerWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.alray.azkarna.PrayerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		DF8A8F7EBD9A6C1B73F50601 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0D56730D93A6EFEAFE7D6600 /* PrayerWidget.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PrayerWidget/PrayerWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = PrayerWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.alray.azkarna.PrayerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E1076B29511933F9EEC1F3D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0D56730D93A6EFEAFE7D6600 /* PrayerWidget.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = PrayerWidget/PrayerWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = PrayerWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.alray.azkarna.PrayerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -754,6 +959,16 @@
 				331C8088294A63A400263BE5 /* Debug */,
 				331C8089294A63A400263BE5 /* Release */,
 				331C808A294A63A400263BE5 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3E33340B11B3433CEF562442 /* Build configuration list for PBXNativeTarget "PrayerWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF8A8F7EBD9A6C1B73F50601 /* Release */,
+				E1076B29511933F9EEC1F3D3 /* Debug */,
+				AB382C9A924FD6C45AAEE9E6 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
