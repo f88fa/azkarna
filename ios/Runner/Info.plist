@@ -35,6 +35,8 @@
 		<string>public.app-category.lifestyle</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>يستخدم «أوّاب» موقعك لحساب مواقيت الصلاة لمدينتك وتحديثها عند انتقالك إلى مدينة أخرى.</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>يستخدم «أوّاب» موقعك لحساب مواقيت الصلاة لمدينتك وتحديثها عند انتقالك إلى مدينة أخرى.</string>
 		<key>UIApplicationSceneManifest</key>
