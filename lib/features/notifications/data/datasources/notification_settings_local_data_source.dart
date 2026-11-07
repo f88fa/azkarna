@@ -31,6 +31,8 @@ class SharedPrefsNotificationSettingsDataSource
   static const String _quietEndKey = 'notif_dhikr_quiet_end';
   static const String _kahfOnKey = 'notif_kahf_enabled';
   static const String _kahfLeadKey = 'notif_kahf_lead_min';
+  static const String _beforeOnKey = 'notif_before_prayer_enabled';
+  static const String _beforeMinKey = 'notif_before_prayer_min';
   static const String _askedKey = 'notif_permission_requested';
 
   final SharedPreferences _prefs;
@@ -64,6 +66,11 @@ class SharedPrefsNotificationSettingsDataSource
       kahfReminderEnabled:
           _prefs.getBool(_kahfOnKey) ?? defaults.kahfReminderEnabled,
       kahfLead: KahfLead.fromMinutes(_prefs.getInt(_kahfLeadKey)),
+      prayerReminderEnabled:
+          _prefs.getBool(_beforeOnKey) ?? defaults.prayerReminderEnabled,
+      prayerReminderMinutes: PrayerReminderLead.sanitize(
+        _prefs.getInt(_beforeMinKey),
+      ),
       dhikr: DhikrReminderSettings(
         enabled: _prefs.getBool(_dhikrOnKey) ?? defaults.dhikr.enabled,
         interval: DhikrInterval.fromMinutes(_prefs.getInt(_dhikrIntervalKey)),
@@ -100,6 +107,8 @@ class SharedPrefsNotificationSettingsDataSource
     await _prefs.setString(_durationKey, settings.adhanDuration.name);
     await _prefs.setBool(_kahfOnKey, settings.kahfReminderEnabled);
     await _prefs.setInt(_kahfLeadKey, settings.kahfLead.minutes);
+    await _prefs.setBool(_beforeOnKey, settings.prayerReminderEnabled);
+    await _prefs.setInt(_beforeMinKey, settings.prayerReminderMinutes);
     final d = settings.dhikr;
     await _prefs.setBool(_dhikrOnKey, d.enabled);
     await _prefs.setInt(_dhikrIntervalKey, d.interval.minutes);

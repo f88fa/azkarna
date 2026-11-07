@@ -98,6 +98,17 @@ class NotificationSettingsNotifier extends AsyncNotifier<NotificationSettings> {
     return true;
   }
 
+  Future<bool> setPrayerReminderEnabled(bool enabled) async {
+    if (enabled && !await _ensurePermission()) return false;
+    await _update((s) => s.copyWith(prayerReminderEnabled: enabled));
+    return true;
+  }
+
+  Future<void> setPrayerReminderMinutes(int minutes) => _update(
+    (s) =>
+        s.copyWith(prayerReminderMinutes: PrayerReminderLead.sanitize(minutes)),
+  );
+
   Future<void> setKahfLead(KahfLead lead) =>
       _update((s) => s.copyWith(kahfLead: lead));
 

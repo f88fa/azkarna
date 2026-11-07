@@ -6,7 +6,7 @@ abstract final class AppConstants {
   /// Tagline shown under the app name inside the app.
   /// Keep in sync with `version:` in pubspec.yaml (a test checks it).
   static const String appVersion = '1.0.0';
-  static const String buildNumber = '16';
+  static const String buildNumber = '17';
 
   static const String appTagline = 'صلاتي أذكاري ومهامي اليومية';
 

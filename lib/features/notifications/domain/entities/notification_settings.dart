@@ -41,6 +41,15 @@ enum KahfLead {
   );
 }
 
+/// Minutes before each prayer the user can pick for the pre-prayer alert.
+abstract final class PrayerReminderLead {
+  static const List<int> options = [5, 10, 15, 20, 30, 45, 60];
+  static const int defaultMinutes = 15;
+
+  static int sanitize(int? minutes) =>
+      options.contains(minutes) ? minutes! : defaultMinutes;
+}
+
 class NotificationSettings {
   const NotificationSettings({
     this.adhanEnabled = true,
@@ -53,6 +62,8 @@ class NotificationSettings {
     this.dhikr = const DhikrReminderSettings(),
     this.kahfReminderEnabled = true,
     this.kahfLead = KahfLead.oneHour,
+    this.prayerReminderEnabled = false,
+    this.prayerReminderMinutes = PrayerReminderLead.defaultMinutes,
   });
 
   final bool adhanEnabled;
@@ -78,6 +89,10 @@ class NotificationSettings {
   final bool kahfReminderEnabled;
   final KahfLead kahfLead;
 
+  /// Alert [prayerReminderMinutes] before each of the five prayers.
+  final bool prayerReminderEnabled;
+  final int prayerReminderMinutes;
+
   NotificationSettings copyWith({
     bool? adhanEnabled,
     bool? morningAdhkarEnabled,
@@ -89,6 +104,8 @@ class NotificationSettings {
     DhikrReminderSettings? dhikr,
     bool? kahfReminderEnabled,
     KahfLead? kahfLead,
+    bool? prayerReminderEnabled,
+    int? prayerReminderMinutes,
   }) => NotificationSettings(
     adhanEnabled: adhanEnabled ?? this.adhanEnabled,
     morningAdhkarEnabled: morningAdhkarEnabled ?? this.morningAdhkarEnabled,
@@ -101,5 +118,7 @@ class NotificationSettings {
     dhikr: dhikr ?? this.dhikr,
     kahfReminderEnabled: kahfReminderEnabled ?? this.kahfReminderEnabled,
     kahfLead: kahfLead ?? this.kahfLead,
+    prayerReminderEnabled: prayerReminderEnabled ?? this.prayerReminderEnabled,
+    prayerReminderMinutes: prayerReminderMinutes ?? this.prayerReminderMinutes,
   );
 }

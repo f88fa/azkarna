@@ -12,6 +12,10 @@ class SyncNotifications {
 
   static const int adhanDaysAhead = 7;
   static const int adhanDaysWithDhikr = 4;
+  // Pre-prayer alerts double the per-day count; fewer days keep everything
+  // under the iOS cap of 64 pending notifications (topped up on each open).
+  static const int adhanDaysWithBefore = 4;
+  static const int adhanDaysWithBeforeAndDhikr = 3;
   static const int kahfDaysAhead = 8;
 
   final NotificationSettingsRepository _settings;
@@ -46,15 +50,20 @@ class SyncNotifications {
   ) async {
     final adhkar =
         settings.morningAdhkarEnabled || settings.eveningAdhkarEnabled;
+    final before = settings.prayerReminderEnabled;
     if (!settings.adhanEnabled) await _scheduler.cancelAdhan();
     if (!adhkar) await _scheduler.cancelAdhkarReminders();
-    if (!settings.adhanEnabled && !adhkar) return;
+    if (!before) await _scheduler.cancelPrayerReminders();
+    if (!settings.adhanEnabled && !adhkar && !before) return;
 
+    final dhikr = settings.dhikr.enabled;
     try {
       final days = await _prayerTimes.getUpcomingPrayerTimes(
         location,
-        // Fewer days when the periodic reminders also need pending slots.
-        days: settings.dhikr.enabled ? adhanDaysWithDhikr : adhanDaysAhead,
+        // Fewer days when other reminders also need pending slots.
+        days: before
+            ? (dhikr ? adhanDaysWithBeforeAndDhikr : adhanDaysWithBefore)
+            : (dhikr ? adhanDaysWithDhikr : adhanDaysAhead),
       );
       if (days.isEmpty) return;
       if (settings.adhanEnabled) {
@@ -62,6 +71,12 @@ class SyncNotifications {
           days,
           sound: settings.adhanSound,
           duration: settings.adhanDuration,
+        );
+      }
+      if (before) {
+        await _scheduler.schedulePrayerReminders(
+          days,
+          before: Duration(minutes: settings.prayerReminderMinutes),
         );
       }
       if (adhkar) {

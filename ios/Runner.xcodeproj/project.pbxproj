@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		431C3A3D39C6B34CA6C21175 /* before_isha.caf in Resources */ = {isa = PBXBuildFile; fileRef = A0AA61C9FF1607EBC66FFB8D /* before_isha.caf */; };
+		F81BFA2C350A501CF9B133AD /* before_maghrib.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8E6E4F3FC1B2F7402042EA19 /* before_maghrib.caf */; };
+		4549F9A9354AEC8C828E07CC /* before_asr.caf in Resources */ = {isa = PBXBuildFile; fileRef = FA47E581FE9377FADE22401B /* before_asr.caf */; };
+		C67E6CDF6FA3BE0D51ABF630 /* before_dhuhr.caf in Resources */ = {isa = PBXBuildFile; fileRef = CB39210A4F35BA0A2C4BD7CA /* before_dhuhr.caf */; };
+		0D1313F772F0ABC95B85B433 /* before_fajr.caf in Resources */ = {isa = PBXBuildFile; fileRef = 26C0396F8725ECA2E73F1BCF /* before_fajr.caf */; };
 		A8E8A78D5CF407ECF1A23DC1 /* adhan_rajhi_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */; };
 		4BF47C6695254BABBB144E0F /* adhan_suhail_hafez_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = 5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */; };
 		A893A1205E8C817AE6499B2D /* adhan_hussein_shahat_short.caf in Resources */ = {isa = PBXBuildFile; fileRef = D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */; };
@@ -77,6 +82,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A0AA61C9FF1607EBC66FFB8D /* before_isha.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_isha.caf; sourceTree = "<group>"; };
+		8E6E4F3FC1B2F7402042EA19 /* before_maghrib.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_maghrib.caf; sourceTree = "<group>"; };
+		FA47E581FE9377FADE22401B /* before_asr.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_asr.caf; sourceTree = "<group>"; };
+		CB39210A4F35BA0A2C4BD7CA /* before_dhuhr.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_dhuhr.caf; sourceTree = "<group>"; };
+		26C0396F8725ECA2E73F1BCF /* before_fajr.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = before_fajr.caf; sourceTree = "<group>"; };
 		9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_rajhi_short.caf; sourceTree = "<group>"; };
 		5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_suhail_hafez_short.caf; sourceTree = "<group>"; };
 		D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */ = {isa = PBXFileReference; lastKnownFileType = audio.caf; path = adhan_hussein_shahat_short.caf; sourceTree = "<group>"; };
@@ -183,6 +193,11 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				A0AA61C9FF1607EBC66FFB8D /* before_isha.caf */,
+				8E6E4F3FC1B2F7402042EA19 /* before_maghrib.caf */,
+				FA47E581FE9377FADE22401B /* before_asr.caf */,
+				CB39210A4F35BA0A2C4BD7CA /* before_dhuhr.caf */,
+				26C0396F8725ECA2E73F1BCF /* before_fajr.caf */,
 				9F4BCA9069CFF2A64EDEFBC9 /* adhan_rajhi_short.caf */,
 				5DB40A97A67C419AB6E82AF0 /* adhan_suhail_hafez_short.caf */,
 				D59E0C4635493DF9B4EFEB97 /* adhan_hussein_shahat_short.caf */,
@@ -323,6 +338,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				431C3A3D39C6B34CA6C21175 /* before_isha.caf in Resources */,
+				F81BFA2C350A501CF9B133AD /* before_maghrib.caf in Resources */,
+				4549F9A9354AEC8C828E07CC /* before_asr.caf in Resources */,
+				C67E6CDF6FA3BE0D51ABF630 /* before_dhuhr.caf in Resources */,
+				0D1313F772F0ABC95B85B433 /* before_fajr.caf in Resources */,
 				A8E8A78D5CF407ECF1A23DC1 /* adhan_rajhi_short.caf in Resources */,
 				4BF47C6695254BABBB144E0F /* adhan_suhail_hafez_short.caf in Resources */,
 				A893A1205E8C817AE6499B2D /* adhan_hussein_shahat_short.caf in Resources */,

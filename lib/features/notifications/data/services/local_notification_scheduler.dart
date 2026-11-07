@@ -4,6 +4,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../../../core/utils/arabic_format.dart';
 import '../../../prayer_times/domain/entities/prayer_times.dart';
 import '../../../tasks/domain/entities/task.dart';
 import '../../domain/entities/adhan_sound.dart';
@@ -22,6 +23,8 @@ class LocalNotificationScheduler implements NotificationScheduler {
   static const int _adhkarIdBase = 500;
   static const int _adhanIdBase = 1000;
   static const int _idsPerDay = 10;
+  // Within a day's 10 ids: Adhan uses slots 0–4, pre-prayer alerts 5–9.
+  static const int _beforeSlot = 5;
   // Periodic dhikr reminders: [_dhikrIdBase, _dhikrIdEnd).
   static const int _dhikrIdBase = 200000;
   static const int _dhikrIdEnd = 300000;
@@ -244,14 +247,92 @@ class LocalNotificationScheduler implements NotificationScheduler {
   }
 
   @override
-  Future<void> cancelAdhan() async {
+  Future<void> cancelAdhan() =>
+      _cancelPrayerSlots((slot) => slot < _beforeSlot);
+
+  @override
+  Future<void> schedulePrayerReminders(
+    List<PrayerTimes> days, {
+    required Duration before,
+  }) async {
+    await cancelPrayerReminders();
+    final minutes = before.inMinutes;
+
+    for (var dayIndex = 0; dayIndex < days.length; dayIndex++) {
+      final day = days[dayIndex];
+      final location = _locationFor(day.timeZone);
+      final now = tz.TZDateTime.now(location);
+
+      for (var i = 0; i < Prayer.adhanPrayers.length; i++) {
+        final prayer = Prayer.adhanPrayers[i];
+        final time = day.times[prayer];
+        if (time == null) continue;
+
+        final when = tz.TZDateTime(
+          location,
+          time.year,
+          time.month,
+          time.day,
+          time.hour,
+          time.minute,
+        ).subtract(before);
+        if (!when.isAfter(now)) continue;
+
+        await _schedule(
+          id: _adhanIdBase + dayIndex * _idsPerDay + _beforeSlot + i,
+          title: 'اقتربت صلاة ${prayer.label}',
+          body:
+              'بقي ${_minutesLabel(minutes)} على أذان ${prayer.label} · '
+              'استعد للصلاة',
+          when: when,
+          details: _beforePrayerDetails(prayer),
+        );
+      }
+    }
+  }
+
+  @override
+  Future<void> cancelPrayerReminders() =>
+      _cancelPrayerSlots((slot) => slot >= _beforeSlot);
+
+  Future<void> _cancelPrayerSlots(bool Function(int slot) match) async {
     final pending = await _plugin.pendingNotificationRequests();
     for (final request in pending) {
-      if (request.id >= _adhanIdBase && request.id < _dhikrIdBase) {
+      if (request.id >= _adhanIdBase &&
+          request.id < _dhikrIdBase &&
+          match((request.id - _adhanIdBase) % _idsPerDay)) {
         await _plugin.cancel(id: request.id);
       }
     }
   }
+
+  /// "٥ دقائق" / "١٥ دقيقة" / "ساعة".
+  static String _minutesLabel(int minutes) {
+    if (minutes == 60) return 'ساعة';
+    final n = arNum(minutes);
+    return minutes >= 3 && minutes <= 10 ? '$n دقائق' : '$n دقيقة';
+  }
+
+  /// Pre-prayer alert with the spoken "اقتربت صلاة …" for [prayer]. Android
+  /// needs one channel per sound (a channel's sound is fixed once created).
+  static NotificationDetails _beforePrayerDetails(Prayer prayer) =>
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'before_${prayer.name}',
+          'تنبيه قبل صلاة ${prayer.label}',
+          channelDescription: 'تنبيه صوتي قبل دخول وقت الصلاة بدقائق',
+          importance: Importance.high,
+          priority: Priority.high,
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound('before_${prayer.name}'),
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentSound: true,
+          sound: 'before_${prayer.name}.caf',
+          interruptionLevel: InterruptionLevel.timeSensitive,
+        ),
+      );
 
   @override
   Future<void> scheduleAdhkarReminders(

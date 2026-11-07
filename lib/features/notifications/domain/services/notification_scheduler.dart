@@ -19,6 +19,14 @@ abstract interface class NotificationScheduler {
   });
   Future<void> cancelAdhan();
 
+  /// Replaces the pre-prayer alerts: one notification [before] each of the
+  /// five prayers in [days].
+  Future<void> schedulePrayerReminders(
+    List<PrayerTimes> days, {
+    required Duration before,
+  });
+  Future<void> cancelPrayerReminders();
+
   /// Replaces the Adhkar reminders: morning Adhkar
   /// [AdhkarReminderDelays.morningAfterFajr] after Fajr and evening Adhkar
   /// [AdhkarReminderDelays.eveningAfterAsr] after Asr, for each day in [days].

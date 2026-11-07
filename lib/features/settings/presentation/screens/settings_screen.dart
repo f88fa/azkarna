@@ -234,6 +234,34 @@ class _AdhanSection extends ConsumerWidget {
           labelOf: (d) => '${d.label} · ${d.hint}',
           onSelected: notifier.setAdhanDuration,
         ),
+        SettingsSwitchTile(
+          icon: Icons.alarm_rounded,
+          color: AppColors.indigo,
+          title: 'تنبيه قبل الصلاة',
+          subtitle: settings.prayerReminderEnabled
+              ? 'قبل كل صلاة بـ ${_leadLabel(settings.prayerReminderMinutes)}'
+              : 'تنبيه يسبق الأذان لتستعد للصلاة',
+          value: settings.prayerReminderEnabled,
+          onChanged: (v) async {
+            final ok = await notifier.setPrayerReminderEnabled(v);
+            if (!ok && context.mounted) {
+              showAppSnack(
+                context,
+                'الإشعارات محظورة. فعّلها من إعدادات النظام.',
+              );
+            }
+          },
+        ),
+        SettingsChoiceTile<int>(
+          icon: Icons.timer_rounded,
+          color: AppColors.blue,
+          title: 'قبل الصلاة بـ',
+          options: PrayerReminderLead.options,
+          selected: settings.prayerReminderMinutes,
+          labelOf: _leadLabel,
+          enabled: settings.prayerReminderEnabled,
+          onSelected: notifier.setPrayerReminderMinutes,
+        ),
         SettingsActionTile(
           icon: Icons.notifications_active_rounded,
           color: AppColors.red,
@@ -254,6 +282,13 @@ class _AdhanSection extends ConsumerWidget {
       ],
     );
   }
+}
+
+/// "٥ دقائق" / "١٥ دقيقة" / "ساعة".
+String _leadLabel(int minutes) {
+  if (minutes == 60) return 'ساعة';
+  final n = arNum(minutes);
+  return minutes <= 10 ? '$n دقائق' : '$n دقيقة';
 }
 
 /// App identity and version at the bottom.
